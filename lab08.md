@@ -10,7 +10,7 @@ This lab encourages you to become familiar with Amazon's Simple Storage System (
 
 - Amazon Educate includes a library of shared material such as a tutorial about getting started with S3
     - [Here is a link to the PDF](https://www.cs.otago.ac.nz/cosc349/cache/s3-website-tute.pdf) that we will follow along.
-    - However, note that—to my surprise—the PDF above is written for an older version of the Amazon web console, so I have tried to augment the instructions with screeenshots from my working through the exercise.
+    - However, note that—to my surprise—the PDF above is written for an older version of the Amazon web console, so I have tried to augment the instructions with screenshots from my working through the exercise.
     - Not all of the steps in the tutorial are relevant or necessary, so I will provide a guide that you should read in parallel, below.
     - Ensure that you are reading the material critically and are thinking through what is being achieved as the exercise progresses.
 
