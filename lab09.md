@@ -31,7 +31,7 @@ vagrant plugin install vagrant-aws
 
 - This will take a while to download, and configure the plug-in. Installation was tested in the CS Lab environments, and should not require super-user privileges.
 
-- The other configuration step required is to download a dummy Vagrant box. Since AWS EC2 provides its own infrastructure for disk images (i.e., AMIs), the Vagrant box facilites are unneeded. (Vagrant boxes can contain AWS configuration parameters, but in this lab we will be also to set these sorts of parameters just as easily, within the `Vagrantfile`.)
+- The other configuration step required is to download a dummy Vagrant box. Since AWS EC2 provides its own infrastructure for disk images (i.e., AMIs), the Vagrant box facilities are unneeded. (Vagrant boxes can contain AWS configuration parameters, but in this lab we will be also to set these sorts of parameters just as easily, within the `Vagrantfile`.)
 
 ```
 vagrant box add dummy https://github.com/mitchellh/vagrant-aws/raw/master/dummy.box
@@ -43,7 +43,7 @@ vagrant box add dummy https://github.com/mitchellh/vagrant-aws/raw/master/dummy.
 
 - A git repository that provides a starting point for your `Vagrantfile` is available at https://altitude.otago.ac.nz/cosc349/lab09-vagrant-aws
 
-- `git checkout` this repository
+- `git clone` this repository so that you acquire a local copy.
 
 - You will need to have your AWS API credentials set up so that Vagrant can work on your behalf. 
 
@@ -74,6 +74,7 @@ export AWS_SESSION_TOKEN=
 ## Prepare a VM that has the `aws` command
 
 - The Vagrant configuration steps below involve information that can be gathered by the `aws` command line interface.
+- Thus, you will need to have access to the `aws` command, and in the instructions here for Lab 9 we suggest how to use the VM from [Lab 8] to achieve this.
 - [Lab 8] describes how to use Vagrant to create a machine into which you set up AWS credentials, and that has the `aws` command installed.
 - Open a terminal window focused on your [Lab 8] VM and a separate terminal window working through this lab.
 - Ensure that you have done the usual `vagrant up`, `vagrant ssh` invocations successfully in your [Lab 8] window, and have tested that the `aws` command works as expected.
@@ -451,7 +452,7 @@ Exercise:
 
 ![](https://i.imgur.com/WIsBaed.png)
 
-- Select (left-hand box) the EC2 instance that you wish to reassign security groups for, and navigate through the menu options shown. (Actions -> Networking -> Change Securit Groups.)
+- Select (left-hand box) the EC2 instance that you wish to reassign security groups for, and navigate through the menu options shown. (Actions -> Networking -> Change Security Groups.)
 
 ![](https://i.imgur.com/LL81y0X.png)
 
