@@ -116,7 +116,11 @@ In this lab we will explore AWS Lambda, which is Amazon's Function as a Service 
 
 - In your other browser tab, where you are editing your test event, paste in your ARN as the value of the "arn" key in the test event's JSON.
 - Also change the "name" of your "bucket" to the value that you are using.
-- 
+- Note that in the "object" section, the "key" of the object that will be retrieved defaults to `test/key`. 
+    - Recall that S3 keys are the names of S3 objects.
+    - You need to change the value `test/key` to an S3 key of an object that is actually in your bucket.
+    - (Also, if you have no objects in your S3 bucket, you will first need to upload one.)
+ 
 ![](https://i.imgur.com/2o22qRF.png)
 
 - Save your updated test event.
