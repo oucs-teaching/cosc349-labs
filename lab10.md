@@ -33,7 +33,7 @@ In this lab we will explore AWS Lambda, which is Amazon's Function as a Service 
 
 ![](https://i.imgur.com/tGWvEKO.png)
 
-- The "Designer" pane shows your AWS Lambda function, and the resources it could iteract with. The test function currently does not interact with other AWS services—we will later interact AWS S3.
+- The "Designer" pane shows your AWS Lambda function, and the resources it could interact with. The test function currently does not interact with other AWS services—we will later interact AWS S3.
 - Scroll down and you will find the "Function code" pane.
 - In this case the "hello world" type of message will be sufficient for testing.
 
@@ -45,7 +45,7 @@ In this lab we will explore AWS Lambda, which is Amazon's Function as a Service 
 
 - In this case there is no need to fine-tune the test event that you are defining.
 - Lambda maintains the set of test events that you define for each function, so that you can reuse them.
-- Complete the definition of your test event (likely this ust involves giving it a name), and you will be returned to the function designer page.
+- Complete the definition of your test event (likely this just involves giving it a name), and you will be returned to the function designer page.
 
 ![](https://i.imgur.com/9ltClvw.png)
 
@@ -108,8 +108,8 @@ In this lab we will explore AWS Lambda, which is Amazon's Function as a Service 
 
 ![](https://i.imgur.com/KOnZIe7.png)
 
-- In a separate web browser tab or window, navigate to the S3 bucket that you indend to use.
-- Selectng the bucket from the S3 console should show a pop-up information panel.
+- In a separate web browser tab or window, navigate to the S3 bucket that you intend to use.
+- Selecting the bucket from the S3 console should show a pop-up information panel.
 - Click the "Copy Bucket ARN" button, to place the specific Amazon Resource Name into the clipboard.
 
 ![](https://i.imgur.com/mWQ6iwi.png)
