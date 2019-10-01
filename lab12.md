@@ -4,6 +4,14 @@ tags: cosc349
 # COSC349 Lab 12—Cloud Architecture—2019
 ## Lab 12—Work on assignment 2
 
+[gitsurvey]: https://forms.office.com/Pages/ResponsePage.aspx?id=xe8lAv54KEmxV57ySAnpuqui8exv8e1Ps7Lrl2YV1z1UN0wzNVNHWlhLUVJRQzhQQ0kyUUVQNDBHOS4u
+
+:::info
+Please do consider taking a minute to complete the [`git` teaching survey][gitsurvey].
+
+It will take even less than a minute if you don't answer all the questions! :tada:
+:::
+
 This lab time has been set aside for you to work on assignment 2.
 
 Some suggestions regarding techniques and approaches to problems that have been encountered are listed below. Feel free to augment this information.
@@ -57,3 +65,27 @@ You can set up a resource that all of your VMs can access, such as an S3 bucket 
 If your VMs have access to your AWS credentials, you can use the `aws` command (or equivalent) to read and write to your S3 bucket.
 
 There will be other ways to scan for AWS resources: although I have not used the mechanism, I believe that tags can be applied to EC2 instances, and would likely be able to be queried using the `aws` command.
+
+## Permissions if using Vagrant for deployment
+
+:::info
+Note that it is absolutely not required that you use Vagrant to deploy your application to the cloud.
+:::
+
+However, if you do use Vagrant to deploy your application to the cloud remember that your provisioning script will be running as `root` whereas if you `ssh` into an EC2 instance that you've provisioned, then you will be running as `ubuntu` or whatever the default user is for the operating system AMI that you're deploying.
+
+One useful approach is to run scripts as user `ubuntu` from your Vagrant provisioning scripting. The `su` command can be used to do this.
+
+Looking at Vagrantfiles I've used in the past for research work, I see lines such as—
+```
+su -c "echo 'run some shell script'; ./some-shell-script.sh" ubuntu
+```
+—which will run run a shell as user `ubuntu` and execute the scripting that's in quotes. Note that in this case, the shell that's run as `ubuntu` goes and runs another script, namely `./some-shell-script.sh`.
+
+## Expiry of the AWS Educate sessions
+
+The validity of the "role" that allows you to use AWS Educate is set to be one hour by default.
+
+Keep this in mind when deploying your applications to the cloud, since it means that you should check that after an hour or so, your application still works. In particular, just passing your `.aws/credentials` to your cloud scripting means it will only work until your role refreshes.
+
+It may be that you need to organise ways to access resources that leave them more open than you would do in production.
