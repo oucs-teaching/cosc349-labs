@@ -33,18 +33,26 @@ At this time your AWS Educate application will go in for review, which appears t
 
 :::warning
 Since I already have an AWS account, and at the time of writing these instructions I hadn't yet initiated the request to create your accounts, I was not able to see precisely what you see through all steps entering your AWS classroom. I believe that you end up seeing the same AWS Console that I do, but with some key differences:
-- I can potentially log into your AWS Console (only) in the context of your AWS Educate account. In practice I don't expect to do this without you inviting me, or unless some other problem arises and I need to perform action;
+- I can potentially log into your AWS Console (only) in the context of your AWS Educate Classroom. In practice I don't expect to do this without you inviting me, or unless some other problem arises and I need to perform action;
 - You don't need a registered credit card;
 - You do not need to pay Amazon for the initial credit allocated to you;
-- Within the context of this AWS Classroom, your AWS credit and all AWS resources you use will vanish when the AWS Classroom closes (in the exam period after semester).
+- Within the context of this AWS Educate Classroom, your AWS credit and all AWS resources you use will vanish when the Classroom closes (in the exam period after semester).
 
 Of course please do let me know if you see material significantly different from the screen-shots and descriptions that I provide below!
 :::
 
 :::info
 Here's some more info about AWS Educate that was posted to Slack a couple of weeks ago. It goes into more detail about the sign-up process and the differences between the Classroom account you are allocated (and should probably use for this paper) and the extra credit avaliable for a personal account, in case anyone's interested.
+
 >For those that haven’t signed up for AWS yet (and those that have but haven’t linked a AWS account or made an AWS starter account), this is how it all works.
-When you follow the email link, you make an AWS Educate account under your student email. The email field is pre-populated with your student email and you seem to be automatically approved immediately. This gives you access to a ‘Classroom’ with $50 USD in credit for use in one of the US datacenters only (East Coast at that), which David Eyers can also access and is only available for the duration of the paper. You can also get $30/$40 USD in credit for a personal account if you want one. You can link an existing AWS account (or make one then link it) for $40 USD of credit, but a credit card is required. It is a full AWS account however. The other option is an AWS Starter account. No credit card is required, but you only get $30 USD of credit, you can’t add a payment method (the $30 USD is all you get, but I think you get another $30 each year), if you use it up your account disappears and you can’t convert it into a normal AWS account. You also don’t get access to some services and you don’t get Free Tier. If you’ve got a credit or debit card and you don’t mind giving it to Amazon (and having it charged if you use up your $40 USD credit), then I strongly recommend using a normal AWS account instead of a Starter account if you are wanting a personal AWS account. Do note however that you don’t need either for this course, you can just use the classroom with it’s $50 USD of credit. Unfortunately, you do have to logout of one account before switching to the other, so using both the classroom and either a normal or Starter AWS account at the same time is a pain. You’re probably best to just use the classroom for the course and worry about a personal account later. One other thing is that GitHub offers extra AWS credit as part of their GitHub Student Developer Pack (as well as a few other things like credit on other cloud providers). I’d recommend having a look at that.
+>
+>When you follow the email link, you make an AWS Educate account under your student email. The email field is pre-populated with your student email and you seem to be automatically approved immediately. This gives you access to a ‘Classroom’ with $50 USD in credit for use in one of the US datacenters only (East Coast at that), which David Eyers can also access and is only available for the duration of the paper. 
+>
+>You can also get $30/$40 USD in credit for a personal account if you want one. You can link an existing AWS account (or make one then link it) for $40 USD of credit, but a credit card is required. It is a full AWS account however. The other option is an AWS Starter account. No credit card is required, but you only get $30 USD of credit, you can’t add a payment method (the $30 USD is all you get, but I think you get another $30 each year), if you use it up your account disappears and you can’t convert it into a normal AWS account. You also don’t get access to some services and you don’t get Free Tier. If you’ve got a credit or debit card and you don’t mind giving it to Amazon (and having it charged if you use up your $40 USD credit), then I strongly recommend using a normal AWS account instead of a Starter account if you are wanting a personal AWS account. Do note however that you don’t need either for this course, you can just use the classroom with its $50 USD of credit. 
+>
+>Unfortunately, you do have to logout of one account before switching to the other, so using both the classroom and either a normal or Starter AWS account at the same time is a pain. You’re probably best to just use the classroom for the course and worry about a personal account later. 
+>
+>One other thing is that GitHub offers extra AWS credit as part of their GitHub Student Developer Pack (as well as a few other things like credit on other cloud providers). I’d recommend having a look at that.
 :::
 
 ## Lab 4—AWS IaaS with EC2
