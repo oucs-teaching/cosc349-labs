@@ -1,5 +1,5 @@
 ---
-tags: cosc349 todo
+tags: cosc349
 ---
 # COSC349 Lab 13—Cloud Architecture—2019
 ## Lab 13—Kubernetes and AWS orchestration with CloudFormation
