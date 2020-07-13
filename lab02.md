@@ -1,7 +1,7 @@
 ---
 tags: cosc349
 ---
-# COSC349 Lab 2—Cloud Architecture—2019
+# COSC349 Lab 2—Cloud Architecture—2020
 
 [Lab 4]: /DclJIDNxQtO40T8TnOOvEg
 [COSC301 lab book]: https://www.cs.otago.ac.nz/cosc301/student2019.pdf
@@ -11,12 +11,6 @@ tags: cosc349
 ### Dynamically updating lab exercises...
 
 When we discover bugs, typos, or areas that need elaboration in any of the lab exercises, I may well be fixing things _in_ the lab class. If you log in to https://hackmd.io you will be able to edit the lab exercises yourself, and will have any changes anyone makes to this page pushed to your web browser dynamically. If you do not log in, before seeking help, try reloading the web page to receive any updates to its content.
-
-### Slack team for COSC349
-
-Do consider joining the [COSC349 Slack] team. I'm hoping to use it to allow you to interact with class members, and with me, and also to provide links to resources that should not be publicly accessible.
-
-[COSC349 Slack]: https://join.slack.com/t/ou-cosc349/signup
 
 ### Before starting lab 2... please register for AWS Educate
 
@@ -61,9 +55,11 @@ We recommend that you follow the same guidance as in the [COSC301 lab book] for 
 > 3. Under the General section, use the pull down menu at the right-hand side of the "Default Machine Folder:", choose "Other...", and then select the "myvms" folder that you created. For me, the resulting value is `/home/cshome/d/dme/Desktop/myvms`, and you can type in the equivalent for your user account directly.
 
 :::info
-VirtualBox on the lab machine I used is version 5.2.18. When you first start up VirtualBox, you may need to click "Details" on the welcome window that is shown on the right-hand part of the VirtualBox Manager window, so that you see the same sort of display that I do.
+VirtualBox on the lab machine I used is version 6.1.2. When you first start up VirtualBox, you may need to click "Details" on the welcome window that is shown on the right-hand part of the VirtualBox Manager window, so that you see the same sort of display that I do.
 
 If you are running VirtualBox on your own computer, I assume that you will be using something in the version 6 series, from which the screen captures in this lab were recorded.
+
+Note that previous screen captures will sometimes be reused, assuming that you are comfortable to make up for small differences in the user interface.
 :::
 
 :::danger
@@ -106,8 +102,8 @@ Note that the rectangles with dashed outlines in the screenshots below are redac
 
 - You can now see your newly created VM on the left-most list of VMs. Note that it is "Powered Off".
 - You need to change the configuration of the VM before you can do anything useful with it, since at the moment it has no configured way to boot an operating system.
-- For newer versions of VirtualBox, click on the icon that looks like three checkboxes just to the right of the text "ReactOS test" on the left-most VM list.
-- For older versions of VirtualBox, you can right-click the "ReactOS test" VM and choose "Settings..."
+- Click on the VM in the left-hand-side list.
+- Click on the "Settings" button in the toolbar.
 - In the settings window that appears, click the "Storage" tab to show the following window.
 
 ![](https://i.imgur.com/a9URTsO.png)
@@ -142,6 +138,7 @@ If you are doing these labs on a computer other than a CS lab machine, you can f
 ![](https://i.imgur.com/ECeulXU.png)
 
 - A new window should appear that is the "monitor" of your VM, which I will also refer to as the "console window".
+- On Macs with retina displays, VirtualBox may present a microscopic window. You can change the window size by clicking on he little picture of a screen in the bottom toolbar of the VM's window (i.e., the one with title "ReactOS test [Running]"). You can choose "Virtual Screen 1" and a setting like "Scale to 200%".
 - Note that VirtualBox may pop up some prompts over the top of the console window. You can dismiss them once or permanently by clicking on the icons at the right-hand side of the pop-ups.
 
 :::warning
@@ -181,7 +178,7 @@ At least once in the lab environment the VM failed to start up correctly for me.
 - ReactOS should then complete starting up, showing you a desktop interface that widely resembles (past versions of) a common commercial operating system.
 
 :::info
-Aside: ReactOS ended up [in the tech news](https://www.theregister.co.uk/2019/07/03/reactos_a_ripoff_of_the_windows_research_kernel_claims_microsoft_kernel_engineer/) soon after I had created this lab exercise! While the news item highlights questions regarding the provenance of the source code of ReactOS, the overall mission to create an open-source Win32 operating system is commendable, in my opinion. Such initiatives can extend the life of perfectly functional hardware, despite the need for commercial profits having causing such equipment to be deserted by commercial vendors. (I'm not blaming the vendors, but it would be good for governments and peoples globally to evolve to avoid much of the pointless wastefulness currently embodied within the technology sector...)
+Aside: ReactOS ended up [in the tech news](https://www.theregister.co.uk/2019/07/03/reactos_a_ripoff_of_the_windows_research_kernel_claims_microsoft_kernel_engineer/) soon after I had created the lab exercise last year. While the news item highlights questions regarding the provenance of the source code of ReactOS, the overall mission to create an open-source Win32 operating system is commendable, in my opinion. Such initiatives can extend the life of perfectly functional hardware, despite the need for commercial profits having causing such equipment to be deserted by commercial vendors. (I'm not blaming the vendors, but it would be good for governments and peoples globally to evolve to avoid much of the pointless wastefulness currently embodied within the technology sector...)
 :::
 
 ![](https://i.imgur.com/1Lz2f2A.png)
@@ -213,9 +210,9 @@ VirtualBox provides a rich set of ways to manage virtual networks. VirtualBox [p
 I find host-only networking to be a very useful—allowing me to add VMs to an internal network where they can communicate with each other, but which also has convenient access to the host network interface.
 
 :::danger
-However, at least for me, host-only networking did not function correctly in the CS labs! I have thus done a last-minute rewrite of the lab material...
+However, at least for me, host-only networking does not function correctly in the CS labs.
 
-You should thus just skip to the next section, and read about host-only networks if they are useful to you on your own computers.
+You should thus just skip to the next section, and read about host-only networks if they are useful to you when working on your own computers.
 :::
 
 In any case, you may find it useful to know how to configure the host-only networks, so I leave the documentation here for your interest.
@@ -602,7 +599,7 @@ You shouldn't need to change the IP addresses manually, and I wouldn't expect th
 ### DHCP worked to give your VMs different IP addresses
 
 :::warning
-Remember that your IP addresses are likely to be different, so you will need to replace the values I see with the values on your system.
+Remember that your IP addresses are likely to be different from the ones I see, so you will need to replace the values I see with the values on your system.
 :::
 
 Your two VMs should now be able to reach each other, using the virtual network. You can test this by using the `ping` command. I logged into my `bitnami-lampstack-1` VM using its console window and could successfully ping both my own address (10.0.2.15) and that of the other VM (10.0.2.16). 
