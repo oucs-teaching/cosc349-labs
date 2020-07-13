@@ -1,7 +1,7 @@
 ---
 tags: cosc349
 ---
-# COSC349 Lab 3—Cloud Architecture—2019
+# COSC349 Lab 3—Cloud Architecture—2020
 [Lab 2]: /h71h3B-3Tda2XUyNyzkanA
 
 ## Lab 3—Vagrant for automating virtualisation
@@ -35,7 +35,7 @@ You can explore the VirtualBox documentation for more details, but some explorat
   $ VBoxManage list hostinfo
   Host Information:
   
-  Host time: 2019-07-05T04:30:29.074000000Z
+  Host time: 2020-07-13T04:20:09.743000000Z
   Processor online count: 4
   Processor count: 4
   Processor online core count: 4
@@ -87,11 +87,13 @@ Vagrant does not provide a virtualisation system itself, it instead uses an exis
 
 ```bash
 $ vagrant --version
-Vagrant 2.2.4
+Vagrant 2.2.7
 ```
 
 :::info
-The CS Labs have just recently had their Vagrant installations updated, namely to 2.1.2, for 2019 semester two. I will try to ensure that these version differences don't cause problems, but I will typically show output from what you might see on your own computers (as I do on my laptop), as well as what you see in the CS Labs.
+Vagrant and VirtualBox can sometimes fail to work together depending on their versions. This will usually be documented online.
+
+The exercises are tested on CS lab computers to try to ensure that you don't run into version problems. Sometimes there may be minor differences in the output shown in the lab exercises from the versions of software that you are using, however.
 :::
 
 - If the above does not work, and you are on a computer that you administer, you can [install Vagrant][Vagrant].
@@ -102,7 +104,11 @@ The CS Labs have just recently had their Vagrant installations updated, namely t
 
 In a shell, create a new directory in which to store your Vagrant environment, and change into it.
 
-Now run the `vagrant init` command. Vagrant has been written to try to provide useful feedback, and indeed has indicated what the `vagrant init` command actually did. (Of course the notice abut there being a new Vagrant version will probably be different in your environment.)
+Now run the `vagrant init` command. Vagrant has been written to try to provide useful feedback, so please do read it, and indeed it has indicated what the `vagrant init` command actually did. (Of course the notice abut there being a new Vagrant version will probably be different in your environment.)
+
+:::info
+At some times when using Vagrant I have needed to run `vagrant plugin repair`... but I was instructed to do so by Vagrant...
+:::
 
 ```
 $ vagrant init
@@ -145,7 +151,6 @@ Although you can often treat a `Vagrantfile` just as a static configuration file
 It turns out that the default `Vagrantfile` is almost entirely comments aimed at helping you orient yourself. Some additional context will be provided, below.
 
 These following header lines tell editors that the file is Ruby source code (editors would typically use the extension of the filename to determine whether a source file is Ruby).
-
 
 ```ruby=
 # -*- mode: ruby -*-
@@ -255,7 +260,7 @@ Vagrant is intended to allow you to change provider and still do useful work for
 Nonetheless, it can be useful to include configuration parameters that are specific for a given virtualisation provider. The VirtualBox-specific parameters shown here allow you to turn on display of the "monitor" of the VirtualBox VM, and/or to change the memory allocated (although in this case you would probably first need to first look up in the Vagrant documentation what units that "1024" number is using!).
 
 ```ruby=+
-# Provider-specific configuration so you can fine-tune various
+  # Provider-specific configuration so you can fine-tune various
   # backing providers for Vagrant. These expose provider-specific options.
   # Example for VirtualBox:
   #
@@ -311,7 +316,7 @@ The first time you use a Vagrant box, it needs to be downloaded (it's about 270 
 :::
 
 :::info
-The CS Lab environment has Vagrant installed in a way where a non-functional libvirtio "provider" jumped ahead of the expected VirtualBox provider in priority. I've thus explicitly added the `--provider` switch here. On my laptop, and on installations of Vagrant that you do on your own computers, it is likely that `vagrant up` would be sufficient, and you would not need the `--provider` switch that is shown here.
+In 2019 the CS Lab environment has Vagrant installed in a way where a non-functional libvirtio "provider" jumped ahead of the expected VirtualBox provider in priority. You can override this behaviour by adding the `--provider` switch, as shown in the listing below. However in 2020 the CS labs appear to work without this option. On my laptop, and on installations of Vagrant that you do on your own computers, it is likely that `vagrant up` would be sufficient, and you would not need the `--provider` switch that is shown here.
 :::
 
 ```
@@ -399,6 +404,7 @@ If you run the VirtualBox command to list running VMs, you should see the above-
 $ VBoxManage list runningvms
 "cosc349-lab2_default_1562496643343_81571" {9be2e9c4-fe9d-4587-adf4-4510fdca42aa}
 ```
+Note also that if you start the main VirtualBox application, you will also see Vagrant's VMs displayed there. 
 
 Alternatively you can ask Vagrant about the status of the VM associated with the current directory (which contains a `Vagrantfile`, so Vagrant can determine the context).
 
@@ -717,7 +723,7 @@ By now the Apache webserver has been installed and started. The remaining output
 :::warning
 The CS lab environment seems to required some extra tweaking: what worked on my account didn't work on student accounts for as-yet unclear reasons.
 
-I have pushed the change to the git repository. If you search in your Vagrantfile for a line including "dmode", then you're using the fixed version. Run `git pull` if you had previously cloned an older version of the repository.
+I pushed a change to the git repository to fix the issue. This should mean that your `Vagrantfile` contains a line including "dmode". If I make any further changes to the repository you can always run `git pull` to update your clone of the repository.
 :::
 
 Now open in your web browser http://127.0.0.1:8080/ and you should see a test page. The HTML for this test page is contained within the `www` directory of the `git` repository that you cloned. Note that you have not needed to use `vagrant ssh` to set anything up—all the functionality required was set up by the shell provisioner in the `Vagrantfile`.
@@ -757,7 +763,7 @@ An useful capability of Vagrant is to be able to manage multiple VMs within a si
 In the meantime, though, you can interact with the repository that I have set up https://altitude.otago.ac.nz/cosc349/vagrant-multivm that shows a webserver and a database server interacting.
 
 :::warning
-When using this repository in the CS Labs, the `synced_folder` line in the `Vagrantfile` needs to set default permissions for files and directories (`fmode` and `dmode`). The repository has been updated to contain this option, since it seems not to break non-CS Lab environments, but if you checked out the `git` repository before week 5, you will need to apply this adjustment yourself in some way, e.g., modifying the file manually, running `git pull`, or doing a `git clone` to acquire a fresh working copy of the repository.
+When using this repository in the CS Labs, the `synced_folder` line in the `Vagrantfile` needs to set default permissions for files and directories (`fmode` and `dmode`). The repository has been updated to contain this option, since it seems not to break non-CS Lab environments.
 :::
 
 ## Advice on provisioning scripts
@@ -782,13 +788,13 @@ Reveal this if you really need to.
 </summary>
 Vagrant will place large cache files somewhere. This can be within your home directory on the CS network. You may find that the (reasonably new) CS network home is fast enough to "just work", which is ideal.
 
-If you want to store Vagrant files on the lab computer in front of you, rather than on the network home drives, you can use the `VAGRANT_HOME` environment variable to change where Vagrant is storing its files. Just remember that if you do use this route, your Vagrant files will be left behind on the lab computer you're using, and will not be copied into your home directory.
+If you want to store Vagrant files just on the lab computer in front of you, rather than on the network home drives, you can use the `VAGRANT_HOME` environment variable to change where Vagrant is storing its files. Just remember that if you do use this route, your Vagrant files will be left behind on the lab computer you're using, and will not be copied into your networked home directory.
 
 - To have Vagrant place its (large) cache files somewhere other than your home directory, there are at least two ways to proceed:
     - You can set the `VAGRANT_HOME` variable before _every_ command. So if the instructions say to run `vagrant --version` you'd add `VAGRANT_HOME=/tmp/vagrant ` before the command to turn it into `VAGRANT_HOME=/tmp/vagrant vagrant --version`.
 	- You can set the `VAGRANT_HOME` variable to the value `/tmp/vagrant` inside your `.profile` (or other appropriate startup file). You can test whether you have set the variable correctly by starting a new terminal window and running `echo $VAGRANT_HOME`, which should print back `/t/vagrant`. 
 
     :::danger
-    Make sure that you undo this change if you ever want to keep Vagrant files   on your network home directory though, e.g., at the end of the lab exercise.
+    Make sure that you undo this change if you ever want to keep Vagrant files on your network home directory though, e.g., at the end of the lab exercise.
     :::
 </details>
