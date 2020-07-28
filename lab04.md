@@ -1,5 +1,5 @@
 ---
-tags: cosc349,todo2020
+tags: cosc349
 ---
 # COSC349 Lab 4—Cloud Architecture—2020
 ## Preliminaries for Lab 4
@@ -73,7 +73,7 @@ Note that, consistent with the overall goals of COSC349, a primary aim is for yo
 1. Understand and practice good "cloud hygiene", such as always checking that you have shut down unused but resource (and credit) consuming VMs.
 
 :::info
-To get the most out of the lab exercises, it is likely that you should take notes about the concepts you are least clear about. That way you can easily do further reading to acquire the information that you need, or can ask 
+To get the most out of the lab exercises, it is likely that you should take notes about the concepts you are least clear about. That way you can easily do further reading to acquire the information that you need, or can ask the COSC349 teaching team members for help or explanations.
 :::
 
 ## Let's create a VM on AWS
