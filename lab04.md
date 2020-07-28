@@ -1,9 +1,20 @@
 ---
-tags: cosc349
+tags: cosc349,todo2020
 ---
-# COSC349 Lab 4—Cloud Architecture—2019
+# COSC349 Lab 4—Cloud Architecture—2020
 ## Preliminaries for Lab 4
 These preliminary steps should ideally be performed within week 2, to ensure that you are prepared for the lab in week 4... although you are indeed most welcome to start using the AWS credit on COSC349 labs and other exploration as soon as you receive it (just don't use it all up!).
+
+:::warning
+Since I already have an AWS account, I was not able to see precisely what you see through all steps entering your AWS classroom. I believe that you end up seeing the same AWS Console that I do, but with some key differences:
+- I can potentially log into your AWS Console (only) in the context of your AWS Educate Classroom. In practice I don't expect to do this without you inviting me, or unless some other problem arises and I need to perform action;
+- You don't need a registered credit card;
+- You do not need to pay Amazon for the initial credit allocated to you;
+- Within the context of this AWS Educate Classroom, your AWS credit and all AWS resources you use will vanish when the Classroom closes (in the exam period after semester).
+
+Of course please do let me know if you see material significantly different from the screen-shots and descriptions that I provide below!
+:::
+
 
 ### Activating your AWS Educate account
 
@@ -31,18 +42,8 @@ On completing the sign-up process, you will receive an email that includes a ver
 
 At this time your AWS Educate application will go in for review, which appears to be a non-automatic process: it may take a few days to be processed.
 
-:::warning
-Since I already have an AWS account, and at the time of writing these instructions I hadn't yet initiated the request to create your accounts, I was not able to see precisely what you see through all steps entering your AWS classroom. I believe that you end up seeing the same AWS Console that I do, but with some key differences:
-- I can potentially log into your AWS Console (only) in the context of your AWS Educate Classroom. In practice I don't expect to do this without you inviting me, or unless some other problem arises and I need to perform action;
-- You don't need a registered credit card;
-- You do not need to pay Amazon for the initial credit allocated to you;
-- Within the context of this AWS Educate Classroom, your AWS credit and all AWS resources you use will vanish when the Classroom closes (in the exam period after semester).
-
-Of course please do let me know if you see material significantly different from the screen-shots and descriptions that I provide below!
-:::
-
 :::info
-Here's some more info about AWS Educate that was posted to Slack a couple of weeks ago. It goes into more detail about the sign-up process and the differences between the Classroom account you are allocated (and should probably use for this paper) and the extra credit avaliable for a personal account, in case anyone's interested.
+Here's some more info about AWS Educate that was posted to by a student from 2019. It goes into more detail about the sign-up process and the differences between the Classroom account you are allocated (and should probably use for this paper) and the extra credit avaliable for a personal account, in case anyone's interested.
 
 >For those that haven’t signed up for AWS yet (and those that have but haven’t linked a AWS account or made an AWS starter account), this is how it all works.
 >
@@ -71,6 +72,10 @@ Note that, consistent with the overall goals of COSC349, a primary aim is for yo
 1. Interact with your EC2 VMs as a developer, using the secure shell (SSH).
 1. Understand and practice good "cloud hygiene", such as always checking that you have shut down unused but resource (and credit) consuming VMs.
 
+:::info
+To get the most out of the lab exercises, it is likely that you should take notes about the concepts you are least clear about. That way you can easily do further reading to acquire the information that you need, or can ask 
+:::
+
 ## Let's create a VM on AWS
 
 Infrastructure as a Service VMs on Amazon are managed under the Amazon's Elastic Compute Cloud service—known as EC2.
@@ -87,7 +92,7 @@ https://console.aws.amazon.com/console/home
 
 ![](https://i.imgur.com/dMYvfiU.png)
 
-In my case, I end up seeing the console on the North Virginia  region. You can change regions using the drop-down at the top-right of the window. However note that most resources have different prices in the different regions: the US East Coast regions are usually cheapest.
+In my case, I end up seeing the console on the North Virginia  region. AWS Educate classrooms run in a particular region, so you will not be able to change this. For unrestricted accounts, you can change regions using the drop-down at the top-right of the window. However note that most resources have different prices in the different regions: the US East Coast regions are usually the cheapest.
 
 One of the first points to note is that AWS provides a search-engine-style search box just to navigate within the services on offer. That should give you some idea of how many different types of services are available!
 
@@ -99,7 +104,7 @@ At first, let's use the EC2 wizard to launch a VM. You should see this as "Launc
 
 AMIs are akin to Vagrant "box" files or VirtualBox virtual hard disks. They are the starting point of the persistent storage of the machine.
 
-Select the Amazon Linux AMI 2018.03.0 (HVM), SSD Volume Type (the second on the list in this screen-shot)
+Select the Amazon Linux AMI 2018.03.0 (HVM), SSD Volume Type (the second on the list in this screen capture, but you may need to use the search control to find it).
 
 ![](https://i.imgur.com/WrOXh9r.png)
 
@@ -213,12 +218,12 @@ The "EC2 Instance Connect" option should allow you to open a JavaScript-driven S
 
 ![](https://i.imgur.com/bevjgf9.png)
 
-The "A standalone SSH client" option does not actually allow you to connect directly from the web browser (you need to use a standalone SSH client), but it does provide some useful instructions. You can clock "Close" when you have read through the information presented, as specific instructions will be presented below.
+The "A standalone SSH client" option does not actually allow you to connect directly from the web browser (you need to use a standalone SSH client), but it does provide some useful instructions. You can click "Close" when you have read through the information presented, as specific instructions will be presented below.
 
 :::info
 You may see slightly different information from what's shown in the following screen capture: in my case the DNS records for my EC2 VM were not yet ready, so Amazon has provided information about connecting to my VM using an IP address. However when DNS records have been prepared for your VM, you may instead see a DNS name instead of an IP address. Both should work.
 
-You can read up on the Domain Name System (DNS) but essentially DNS provides a mapping from names to IP addresses. So `cs.otago.ac.nz` is a DNS name, and on pretty much any Linux / macOS / Windows terminal or command prompt, if you run the command `nslookup cs.otago.ac.nz` then you will be told the IP address for that DNS name, `139.80.91.50`. Web browsers will happily reach the CS site with either form, but `cs.otago.ac.nz` is easier for humans to work with, since the name encodes semantics. (Actually, this is not entirely true---it may be that multiple DNS names point to the same IP address, which allows one webserver to serve up pages for multiple different websites, and thus if you visit the site by its IP address alone, the webserver will need to pick a default site for you to visit, of the possible choices.)
+You can read up on the Domain Name System (DNS) but essentially DNS provides a mapping from names to IP addresses. So `www.google.co.nz` is a DNS name, and on pretty much any Linux / macOS / Windows terminal or command prompt, if you run the command `nslookup www.google.co.nz` then you will be told the IP address for that DNS name, `172.217.167.67`. Web browsers will happily reach the CS site with either form, but `www.google.co.nz` is easier for humans to work with, since the name encodes semantics. (Actually, this is not entirely true---it may be that multiple DNS names point to the same IP address, which allows one webserver to serve up pages for multiple different websites, and thus if you visit the site by its IP address alone, the webserver will need to pick a default site for you to visit, of the possible choices.)
 :::
 
 ![](https://i.imgur.com/TvKGWPB.png)
@@ -229,7 +234,7 @@ Note the public IP address—in my case 54.205.214.108. It will almost certainly
 
 For security best practice, you should find out what the host (i.e., VM's) key fingerprint is, before you trust connecting to it. More pragmatically, though, it is unlikely that a man-in-the-middle attack will have been set up for a VM that you just created, and it is also unlikely that you will place material that you treat as sensitive on a VM for doing COSC349 lab exercises anyway...
 
-You can determine the host key by looking at the server logs, in this case the console output captured from the VM as it booted up (that is when it created the host key).
+You can determine the host key by looking at the server logs, in this case the console output captured from the VM as it booted up (that is when it created the host key). In my case SSH connected using the ECDSA encryption method, so I needed to find the fingerprint displayed soon after the log message "Your public key has been saved in /etc/ssh/ssh_host_ecdsa_key.pub.". Alternatively, there is a summary of keys printed near the bottom of the System Log.
 
 ![](https://i.imgur.com/5qTrbZG.png)
 ![](https://i.imgur.com/Y4ONdDk.png)
@@ -237,7 +242,7 @@ You can determine the host key by looking at the server logs, in this case the c
 
 ### Failing to connect to your VM
 
-First, let's try to connect to the EC2 VM in a way that will fail. Note that the first connection has prompted us to check the host key fingerprint. If you perform the steps described above, you can check that this really is your server that you're connecting to. (Although to be honest, the majority of users, globally, probably just type "yes" without checking...)
+First, let's try to connect to the EC2 VM in a way that will fail. Note that the first connection has prompted us to check the host key fingerprint. If you perform the steps described above, you can check that this really is your server that you're connecting to, as the long string starting `SHA256:` will match. (Although to be honest, the majority of users, globally, probably just type "yes" without checking, even though this is fundamentally insecure...)
 
 
 ```
@@ -253,7 +258,7 @@ This failed because the SSH server on the Amazon Linux VM does not accept passwo
 
 ### Successfully connecting to your VM
 
-This time, let's specify the key-pair file that we downloaded when we set up the EC2 instance. The command-line interaction below simply requests information about the running operating system, before logging out. (Typing <kbd>control</kbd><kbd>d</kbd> works to log out, too.)
+This time, let's specify the key-pair file that we downloaded when we set up the EC2 instance. You should be able to log in. You will see a command prompt similar to that shown below. As I have done, you can try running the `uname -a` command to request information about the running operating system. I then log out. (Typing <kbd>control</kbd><kbd>d</kbd> works to log out, too.)
 
 ```
 $ ssh -i ~/.ssh/cosc349-lab.pem ec2-user@54.205.214.108
@@ -263,8 +268,6 @@ $ ssh -i ~/.ssh/cosc349-lab.pem ec2-user@54.205.214.108
       ___|\___|___|
 
 https://aws.amazon.com/amazon-linux-ami/2018.03-release-notes/
-3 package(s) needed for security, out of 5 available
-Run "sudo yum update" to apply all updates.
 [ec2-user@ip-172-30-0-192 ~]$ uname -a
 Linux ip-172-30-0-192 4.14.123-86.109.amzn1.x86_64 #1 SMP Mon Jun 10 19:44:53 UTC 2019 x86_64 x86_64 x86_64 GNU/Linux
 [ec2-user@ip-172-30-0-192 ~]$ logout
@@ -300,110 +303,34 @@ Run "sudo yum update" to apply all updates.
 Loaded plugins: priorities, update-motd, upgrade-helper
 amzn-main                                                | 2.1 kB     00:00     
 amzn-updates                                             | 2.5 kB     00:00     
-Resolving Dependencies
---> Running transaction check
----> Package kernel.x86_64 0:4.14.128-87.105.amzn1 will be installed
----> Package kernel-tools.x86_64 0:4.14.123-86.109.amzn1 will be updated
----> Package kernel-tools.x86_64 0:4.14.128-87.105.amzn1 will be an update
----> Package python27.x86_64 0:2.7.16-1.125.amzn1 will be updated
----> Package python27.x86_64 0:2.7.16-1.127.amzn1 will be an update
----> Package python27-devel.x86_64 0:2.7.16-1.125.amzn1 will be updated
----> Package python27-devel.x86_64 0:2.7.16-1.127.amzn1 will be an update
----> Package python27-libs.x86_64 0:2.7.16-1.125.amzn1 will be updated
----> Package python27-libs.x86_64 0:2.7.16-1.127.amzn1 will be an update
---> Finished Dependency Resolution
-
-Dependencies Resolved
-
-================================================================================
- Package            Arch       Version                   Repository        Size
-================================================================================
-Installing:
- kernel             x86_64     4.14.128-87.105.amzn1     amzn-updates      22 M
-Updating:
- kernel-tools       x86_64     4.14.128-87.105.amzn1     amzn-updates     131 k
- python27           x86_64     2.7.16-1.127.amzn1        amzn-updates     103 k
- python27-devel     x86_64     2.7.16-1.127.amzn1        amzn-updates     525 k
- python27-libs      x86_64     2.7.16-1.127.amzn1        amzn-updates     6.8 M
-
-Transaction Summary
-================================================================================
-Install  1 Package
-Upgrade  4 Packages
-
-Total download size: 30 M
-Downloading packages:
-(1/5): python27-2.7.16-1.127.amzn1.x86_64.rpm              | 103 kB   00:00     
-(2/5): kernel-tools-4.14.128-87.105.amzn1.x86_64.rpm       | 131 kB   00:00     
-(3/5): python27-devel-2.7.16-1.127.amzn1.x86_64.rpm        | 525 kB   00:00     
-(4/5): python27-libs-2.7.16-1.127.amzn1.x86_64.rpm         | 6.8 MB   00:01     
-(5/5): kernel-4.14.128-87.105.amzn1.x86_64.rpm             |  22 MB   00:07     
---------------------------------------------------------------------------------
-Total                                              4.1 MB/s |  30 MB  00:07     
-Running transaction check
-Running transaction test
-Transaction test succeeded
-Running transaction
-  Updating   : python27-libs-2.7.16-1.127.amzn1.x86_64                      1/9 
-  Updating   : python27-2.7.16-1.127.amzn1.x86_64                           2/9 
-  Updating   : python27-devel-2.7.16-1.127.amzn1.x86_64                     3/9 
-  Installing : kernel-4.14.128-87.105.amzn1.x86_64                          4/9 
-  Updating   : kernel-tools-4.14.128-87.105.amzn1.x86_64                    5/9 
-  Cleanup    : python27-devel-2.7.16-1.125.amzn1.x86_64                     6/9 
-  Cleanup    : python27-libs-2.7.16-1.125.amzn1.x86_64                      7/9 
-  Cleanup    : python27-2.7.16-1.125.amzn1.x86_64                           8/9 
-  Cleanup    : kernel-tools-4.14.123-86.109.amzn1.x86_64                    9/9 
-intel-06-4f-01: model 'GenuineIntel 06-4f-01', path ' intel-ucode/06-4f-01', kvers ' 4.14.42'
-intel-06-4f-01: blacklist ''
-intel: model '', path ' intel-ucode/*', kvers ''
-intel: blacklist ''
-  Verifying  : python27-2.7.16-1.127.amzn1.x86_64                           1/9 
-  Verifying  : kernel-tools-4.14.128-87.105.amzn1.x86_64                    2/9 
-  Verifying  : python27-libs-2.7.16-1.127.amzn1.x86_64                      3/9 
-  Verifying  : python27-devel-2.7.16-1.127.amzn1.x86_64                     4/9 
-  Verifying  : kernel-4.14.128-87.105.amzn1.x86_64                          5/9 
-  Verifying  : kernel-tools-4.14.123-86.109.amzn1.x86_64                    6/9 
-  Verifying  : python27-devel-2.7.16-1.125.amzn1.x86_64                     7/9 
-  Verifying  : python27-2.7.16-1.125.amzn1.x86_64                           8/9 
-  Verifying  : python27-libs-2.7.16-1.125.amzn1.x86_64                      9/9 
-
-Installed:
-  kernel.x86_64 0:4.14.128-87.105.amzn1                                         
-
-Updated:
-  kernel-tools.x86_64 0:4.14.128-87.105.amzn1                                   
-  python27.x86_64 0:2.7.16-1.127.amzn1                                          
-  python27-devel.x86_64 0:2.7.16-1.127.amzn1                                    
-  python27-libs.x86_64 0:2.7.16-1.127.amzn1                                     
-
-Complete!
+No packages marked for update
 [ec2-user@ip-172-30-0-192 ~]$ sudo yum install -y httpd24 php56
 Loaded plugins: priorities, update-motd, upgrade-helper
 Resolving Dependencies
 --> Running transaction check
----> Package httpd24.x86_64 0:2.4.39-1.87.amzn1 will be installed
---> Processing Dependency: httpd24-tools = 2.4.39-1.87.amzn1 for package: httpd24-2.4.39-1.87.amzn1.x86_64
---> Processing Dependency: apr-util > 1.5.1 for package: httpd24-2.4.39-1.87.amzn1.x86_64
---> Processing Dependency: apr > 1.5.1 for package: httpd24-2.4.39-1.87.amzn1.x86_64
---> Processing Dependency: libaprutil-1.so.0()(64bit) for package: httpd24-2.4.39-1.87.amzn1.x86_64
---> Processing Dependency: libapr-1.so.0()(64bit) for package: httpd24-2.4.39-1.87.amzn1.x86_64
----> Package php56.x86_64 0:5.6.40-1.142.amzn1 will be installed
---> Processing Dependency: php56-cli(x86-64) = 5.6.40-1.142.amzn1 for package: php56-5.6.40-1.142.amzn1.x86_64
---> Processing Dependency: php56-common(x86-64) = 5.6.40-1.142.amzn1 for package: php56-5.6.40-1.142.amzn1.x86_64
---> Processing Dependency: php56-common for package: php56-5.6.40-1.142.amzn1.x86_64
+---> Package httpd24.x86_64 0:2.4.43-1.89.amzn1 will be installed
+--> Processing Dependency: httpd24-tools = 2.4.43-1.89.amzn1 for package: httpd24-2.4.43-1.89.amzn1.x86_64
+--> Processing Dependency: apr-util > 1.5.1 for package: httpd24-2.4.43-1.89.amzn1.x86_64
+--> Processing Dependency: apr > 1.5.1 for package: httpd24-2.4.43-1.89.amzn1.x86_64
+--> Processing Dependency: libaprutil-1.so.0()(64bit) for package: httpd24-2.4.43-1.89.amzn1.x86_64
+--> Processing Dependency: libapr-1.so.0()(64bit) for package: httpd24-2.4.43-1.89.amzn1.x86_64
+---> Package php56.x86_64 0:5.6.40-1.143.amzn1 will be installed
+--> Processing Dependency: php56-cli(x86-64) = 5.6.40-1.143.amzn1 for package: php56-5.6.40-1.143.amzn1.x86_64
+--> Processing Dependency: php56-common(x86-64) = 5.6.40-1.143.amzn1 for package: php56-5.6.40-1.143.amzn1.x86_64
+--> Processing Dependency: php56-common for package: php56-5.6.40-1.143.amzn1.x86_64
 --> Running transaction check
 ---> Package apr.x86_64 0:1.5.2-5.13.amzn1 will be installed
 ---> Package apr-util.x86_64 0:1.5.4-6.18.amzn1 will be installed
----> Package httpd24-tools.x86_64 0:2.4.39-1.87.amzn1 will be installed
----> Package php56-cli.x86_64 0:5.6.40-1.142.amzn1 will be installed
----> Package php56-common.x86_64 0:5.6.40-1.142.amzn1 will be installed
---> Processing Dependency: php56-process(x86-64) = 5.6.40-1.142.amzn1 for package: php56-common-5.6.40-1.142.amzn1.x86_64
---> Processing Dependency: php56-xml(x86-64) = 5.6.40-1.142.amzn1 for package: php56-common-5.6.40-1.142.amzn1.x86_64
---> Processing Dependency: php56-jsonc(x86-64) for package: php56-common-5.6.40-1.142.amzn1.x86_64
+---> Package httpd24-tools.x86_64 0:2.4.43-1.89.amzn1 will be installed
+---> Package php56-cli.x86_64 0:5.6.40-1.143.amzn1 will be installed
+---> Package php56-common.x86_64 0:5.6.40-1.143.amzn1 will be installed
+--> Processing Dependency: php56-process(x86-64) = 5.6.40-1.143.amzn1 for package: php56-common-5.6.40-1.143.amzn1.x86_64
+--> Processing Dependency: php56-xml(x86-64) = 5.6.40-1.143.amzn1 for package: php56-common-5.6.40-1.143.amzn1.x86_64
+--> Processing Dependency: php56-jsonc(x86-64) for package: php56-common-5.6.40-1.143.amzn1.x86_64
 --> Running transaction check
 ---> Package php56-jsonc.x86_64 0:1.3.10-1.20.amzn1 will be installed
----> Package php56-process.x86_64 0:5.6.40-1.142.amzn1 will be installed
----> Package php56-xml.x86_64 0:5.6.40-1.142.amzn1 will be installed
+---> Package php56-process.x86_64 0:5.6.40-1.143.amzn1 will be installed
+---> Package php56-xml.x86_64 0:5.6.40-1.143.amzn1 will be installed
 --> Finished Dependency Resolution
 
 Dependencies Resolved
@@ -412,17 +339,17 @@ Dependencies Resolved
  Package            Arch        Version                 Repository         Size
 ================================================================================
 Installing:
- httpd24            x86_64      2.4.39-1.87.amzn1       amzn-updates      1.6 M
- php56              x86_64      5.6.40-1.142.amzn1      amzn-updates      3.0 M
+ httpd24            x86_64      2.4.43-1.89.amzn1       amzn-updates      1.6 M
+ php56              x86_64      5.6.40-1.143.amzn1      amzn-updates      3.0 M
 Installing for dependencies:
  apr                x86_64      1.5.2-5.13.amzn1        amzn-main         118 k
  apr-util           x86_64      1.5.4-6.18.amzn1        amzn-main          99 k
- httpd24-tools      x86_64      2.4.39-1.87.amzn1       amzn-updates       91 k
- php56-cli          x86_64      5.6.40-1.142.amzn1      amzn-updates      4.2 M
- php56-common       x86_64      5.6.40-1.142.amzn1      amzn-updates      1.4 M
+ httpd24-tools      x86_64      2.4.43-1.89.amzn1       amzn-updates       92 k
+ php56-cli          x86_64      5.6.40-1.143.amzn1      amzn-updates      4.2 M
+ php56-common       x86_64      5.6.40-1.143.amzn1      amzn-updates      1.4 M
  php56-jsonc        x86_64      1.3.10-1.20.amzn1       amzn-main          82 k
- php56-process      x86_64      5.6.40-1.142.amzn1      amzn-updates      100 k
- php56-xml          x86_64      5.6.40-1.142.amzn1      amzn-updates      345 k
+ php56-process      x86_64      5.6.40-1.143.amzn1      amzn-updates      100 k
+ php56-xml          x86_64      5.6.40-1.143.amzn1      amzn-updates      345 k
 
 Transaction Summary
 ================================================================================
@@ -431,61 +358,59 @@ Install  2 Packages (+8 Dependent packages)
 Total download size: 11 M
 Installed size: 33 M
 Downloading packages:
-(1/10): httpd24-tools-2.4.39-1.87.amzn1.x86_64.rpm         |  91 kB   00:00     
-(2/10): apr-1.5.2-5.13.amzn1.x86_64.rpm                    | 118 kB   00:00     
-(3/10): apr-util-1.5.4-6.18.amzn1.x86_64.rpm               |  99 kB   00:00     
-(4/10): httpd24-2.4.39-1.87.amzn1.x86_64.rpm               | 1.6 MB   00:00     
-(5/10): php56-5.6.40-1.142.amzn1.x86_64.rpm                | 3.0 MB   00:01     
-(6/10): php56-process-5.6.40-1.142.amzn1.x86_64.rpm        | 100 kB   00:00     
-(7/10): php56-common-5.6.40-1.142.amzn1.x86_64.rpm         | 1.4 MB   00:00     
-(8/10): php56-jsonc-1.3.10-1.20.amzn1.x86_64.rpm           |  82 kB   00:00     
-(9/10): php56-xml-5.6.40-1.142.amzn1.x86_64.rpm            | 345 kB   00:00     
-(10/10): php56-cli-5.6.40-1.142.amzn1.x86_64.rpm           | 4.2 MB   00:00     
+(1/10): httpd24-tools-2.4.43-1.89.amzn1.x86_64.rpm         |  92 kB   00:00     
+(2/10): apr-util-1.5.4-6.18.amzn1.x86_64.rpm               |  99 kB   00:00     
+(3/10): apr-1.5.2-5.13.amzn1.x86_64.rpm                    | 118 kB   00:00     
+(4/10): php56-jsonc-1.3.10-1.20.amzn1.x86_64.rpm           |  82 kB   00:00     
+(5/10): php56-common-5.6.40-1.143.amzn1.x86_64.rpm         | 1.4 MB   00:00     
+(6/10): httpd24-2.4.43-1.89.amzn1.x86_64.rpm               | 1.6 MB   00:00     
+(7/10): php56-5.6.40-1.143.amzn1.x86_64.rpm                | 3.0 MB   00:00     
+(8/10): php56-process-5.6.40-1.143.amzn1.x86_64.rpm        | 100 kB   00:00     
+(9/10): php56-xml-5.6.40-1.143.amzn1.x86_64.rpm            | 345 kB   00:00     
+(10/10): php56-cli-5.6.40-1.143.amzn1.x86_64.rpm           | 4.2 MB   00:00     
 --------------------------------------------------------------------------------
-Total                                              6.9 MB/s |  11 MB  00:01     
+Total                                              9.1 MB/s |  11 MB  00:01     
 Running transaction check
 Running transaction test
 Transaction test succeeded
 Running transaction
-  Installing : apr-1.5.2-5.13.amzn1.x86_64                                 1/10 
-  Installing : apr-util-1.5.4-6.18.amzn1.x86_64                            2/10 
-  Installing : httpd24-tools-2.4.39-1.87.amzn1.x86_64                      3/10 
-  Installing : httpd24-2.4.39-1.87.amzn1.x86_64                            4/10 
-  Installing : php56-cli-5.6.40-1.142.amzn1.x86_64                         5/10 
-  Installing : php56-jsonc-1.3.10-1.20.amzn1.x86_64                        6/10 
-  Installing : php56-process-5.6.40-1.142.amzn1.x86_64                     7/10 
-  Installing : php56-common-5.6.40-1.142.amzn1.x86_64                      8/10 
-  Installing : php56-xml-5.6.40-1.142.amzn1.x86_64                         9/10 
-  Installing : php56-5.6.40-1.142.amzn1.x86_64                            10/10 
-  Verifying  : php56-xml-5.6.40-1.142.amzn1.x86_64                         1/10 
-  Verifying  : php56-cli-5.6.40-1.142.amzn1.x86_64                         2/10 
-  Verifying  : apr-1.5.2-5.13.amzn1.x86_64                                 3/10 
-  Verifying  : httpd24-tools-2.4.39-1.87.amzn1.x86_64                      4/10 
-  Verifying  : php56-jsonc-1.3.10-1.20.amzn1.x86_64                        5/10 
-  Verifying  : php56-process-5.6.40-1.142.amzn1.x86_64                     6/10 
-  Verifying  : php56-5.6.40-1.142.amzn1.x86_64                             7/10 
-  Verifying  : httpd24-2.4.39-1.87.amzn1.x86_64                            8/10 
-  Verifying  : apr-util-1.5.4-6.18.amzn1.x86_64                            9/10 
-  Verifying  : php56-common-5.6.40-1.142.amzn1.x86_64                     10/10 
+  Installing : php56-jsonc-1.3.10-1.20.amzn1.x86_64                        1/10 
+  Installing : php56-process-5.6.40-1.143.amzn1.x86_64                     2/10 
+  Installing : php56-xml-5.6.40-1.143.amzn1.x86_64                         3/10 
+  Installing : php56-cli-5.6.40-1.143.amzn1.x86_64                         4/10 
+  Installing : php56-common-5.6.40-1.143.amzn1.x86_64                      5/10 
+  Installing : apr-1.5.2-5.13.amzn1.x86_64                                 6/10 
+  Installing : apr-util-1.5.4-6.18.amzn1.x86_64                            7/10 
+  Installing : httpd24-tools-2.4.43-1.89.amzn1.x86_64                      8/10 
+  Installing : httpd24-2.4.43-1.89.amzn1.x86_64                            9/10 
+  Installing : php56-5.6.40-1.143.amzn1.x86_64                            10/10 
+  Verifying  : php56-common-5.6.40-1.143.amzn1.x86_64                      1/10 
+  Verifying  : httpd24-tools-2.4.43-1.89.amzn1.x86_64                      2/10 
+  Verifying  : php56-5.6.40-1.143.amzn1.x86_64                             3/10 
+  Verifying  : php56-jsonc-1.3.10-1.20.amzn1.x86_64                        4/10 
+  Verifying  : php56-process-5.6.40-1.143.amzn1.x86_64                     5/10 
+  Verifying  : httpd24-2.4.43-1.89.amzn1.x86_64                            6/10 
+  Verifying  : php56-xml-5.6.40-1.143.amzn1.x86_64                         7/10 
+  Verifying  : php56-cli-5.6.40-1.143.amzn1.x86_64                         8/10 
+  Verifying  : apr-1.5.2-5.13.amzn1.x86_64                                 9/10 
+  Verifying  : apr-util-1.5.4-6.18.amzn1.x86_64                           10/10 
 
 Installed:
-  httpd24.x86_64 0:2.4.39-1.87.amzn1      php56.x86_64 0:5.6.40-1.142.amzn1     
+  httpd24.x86_64 0:2.4.43-1.89.amzn1      php56.x86_64 0:5.6.40-1.143.amzn1     
 
 Dependency Installed:
   apr.x86_64 0:1.5.2-5.13.amzn1                                                 
   apr-util.x86_64 0:1.5.4-6.18.amzn1                                            
-  httpd24-tools.x86_64 0:2.4.39-1.87.amzn1                                      
-  php56-cli.x86_64 0:5.6.40-1.142.amzn1                                         
-  php56-common.x86_64 0:5.6.40-1.142.amzn1                                      
+  httpd24-tools.x86_64 0:2.4.43-1.89.amzn1                                      
+  php56-cli.x86_64 0:5.6.40-1.143.amzn1                                         
+  php56-common.x86_64 0:5.6.40-1.143.amzn1                                      
   php56-jsonc.x86_64 0:1.3.10-1.20.amzn1                                        
-  php56-process.x86_64 0:5.6.40-1.142.amzn1                                     
-  php56-xml.x86_64 0:5.6.40-1.142.amzn1                                         
+  php56-process.x86_64 0:5.6.40-1.143.amzn1                                     
+  php56-xml.x86_64 0:5.6.40-1.143.amzn1                                         
 
 Complete!
 [ec2-user@ip-172-30-0-192 ~]$ sudo service httpd start
-Starting httpd: AH00557: httpd: apr_sockaddr_info_get() failed for ip-172-30-0-192
-AH00558: httpd: Could not reliably determine the server's fully qualified domain name, using 127.0.0.1. Set the 'ServerName' directive globally to suppress this message
-                                                           [  OK  ]
+Starting httpd:                                            [  OK  ]
 [ec2-user@ip-172-30-0-192 ~]$ 
 ```
 
@@ -513,7 +438,7 @@ It is very important that you remember to shut down VMs that you start, unless t
 
 A good idea is to look at the dashboard any time that you expect to stop working with Amazon services, and ensure that only VMs that you expect to be running are running.
 
-In this case, from the EC2 dashboard, I selected the test VM, and selected the menu item "Actions", "Instance State", "Terminate".
+In this case, when I had finished my experimentation with this lab exercise, from the EC2 dashboard, I selected the test VM, and selected the menu item "Actions", "Instance State", "Terminate".
 
 ![](https://i.imgur.com/vIVqnWT.png)
 
