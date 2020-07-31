@@ -1,7 +1,7 @@
 ---
 tags: cosc349
 ---
-# COSC349 Lab 6—Cloud Architecture—2019
+# COSC349 Lab 6—Cloud Architecture—2020
 [Lab 3]: /bi1pAIlXT3O4WezjVtqPrA
 
 ## Lab 6—Additional Vagrant exploration
@@ -13,12 +13,12 @@ This lab has been added to emphasise some information, methods and techniques th
 ## Multiple VMs within one `Vagrantfile`
 
 :::info
-This example was added to the end of the [Lab 3] material, but we will explore it in more detail within this lab.
+Material for running multiple VMs within one `Vagrantfile` was referenced at then ed of [Lab 3], but we will explore it in more detail within this lab.
 :::
 
 An useful capability of Vagrant is to be able to manage multiple VMs within a single `Vagrantfile`. This type of use of Vagrant is likely to be useful for, say, COSC349 assignment work.
 
-The repository at https://altitude.otago.ac.nz/cosc349/vagrant-multivm shows a webserver and a database server interacting. Since the time it was linked from the [Lab 3] page, a large number of comments have been added into the source code, to try to explain what is going on. Just let me know if you want further elaboration of what's covered within those code comments.
+The repository at https://altitude.otago.ac.nz/cosc349/vagrant-multivm shows a webserver and a database server interacting. Let me know if you want further elaboration of what's covered by the code comments contained within the that repository's `Vagrantfile`.
 
 ## My method for building the multi-VM `Vagrantfile`
 
@@ -42,8 +42,8 @@ All hosts with the same network number can reach each other directly, as it's a 
 Network addresses are typically written as a full IP address followed by a /n where 'n' indicates the number of network number bits versus host number bits. By convention all the host bits are set to 0 when describing the network's address as an IP address.
 
 Let's work through an example. Say we have a network 192.168.2.0/24. The slash 24 indicates that the top 24-bits of this IP address are the network number, and the remaining 8-bits are the host number. Thus on this network we have space for 256 host numbers. A given VM might be at 192.168.2.11, for example. There are at least three addresses of the 256 that you shouldn't use, though:
-- the lowest host number, 0, is usually used to identify the network, so allocating a host there would confuse matters, i.e., don't allocate a VM to 192.168.2.0;
-- the highest host number, 255, is usually used for the broadcast address, that transmits to all hosts on that local network, i.e., don't allocate a VM to 192.168.2.255;
+- the lowest host number, 0, is usually used to identify the network, so allocating a host there would confuse matters, i.e., don't allocate a VM to 192.168.2.0 but instead start your numbering higher---I'd typically start at 192.168.2.2;
+- the highest host number, 255, is usually used for the broadcast address, that transmits to all hosts on that local network, i.e., don't allocate a VM to 192.168.2.255, instead 192.168.2.254 should be the highest IP address that you use;
 - for non-private networks there is one address used as a gateway or a router: it is the address to which all traffic not within the current network is sent, and VirtualBox often allocates the second-lowest host number, 1, I think, so don't allocate a VM to 192.168.2.1.
 
 Picking a /24 network simplifies illustrations since the last "octet" of the IP address is the host number. It is entirely possible to have most other /n values, which involves some more binary tinkering. For example, we could instead consider 192.168.2.0/25. Now there are only 128 host numbers, from 192.168.2.0 to 192.168.2.127, since the high-order bit of the last octet belongs to the network number. The address 192.168.2.200 is still valid, but is a host on the nearby network 192.168.2.128/25.
@@ -55,17 +55,17 @@ Finally, there are some ranges of IP addresses that never appear on the Internet
 
 You should avoid using the IP multicast ranges from 224.0.0.0 to 239.255.255.255 as these addresses may be interpreted specially.
 
-Another special address is the localhost address 127.0.0.1, which always refers to yourself. Running a server on the localhost IP address means that server can only be connected to by processes running on that computer itself, and not by other computers on the LAN or the Internet. Note that a VM connecting to a server running on its host VMM would usually _not_ be considered as "yourself" from the perspective of the host VMM. (Weirdly localhost is actually a gigantic network 127.0.0.0/8 giving more than 16 million ways to refer to yourself, but it's only widely safe to use the one particular address, 127.0.0.1. This type of design oddness is partly why we've run out of new IPv4 addresses: the address space is highly fragmented.)
+Another special address is the `localhost` address 127.0.0.1, which always refers to yourself. Running a server on the `localhost` IP address means that server can only be connected to by processes running on that computer itself, and not by other computers on the LAN or the Internet. Note that a VM connecting to a server running on its host VMM would usually _not_ be considered as "yourself" from the perspective of the host VMM. (Weirdly `localhost` is actually a gigantic network 127.0.0.0/8 giving more than 16 million ways to refer to yourself, but it's only widely safe to use the one particular address, 127.0.0.1. This type of design oddness is partly why we've run out of new IPv4 addresses: the address space is highly fragmented.)
 
 Finally, when starting a server, you usually need to specify which IP address to use, but there is a convention of using 0.0.0.0 to mean that all network interfaces should be used: i.e., that the server should accept connections from any IP address, local or not.
 
-Despite having a non-Internet routable IP address, a host (e.g., a VM) with such an address can still interact with the Internet using network address translation (NAT), in which a gateway rewrites a host's requests to appear to come from itself. The gateway needs to have two IP addresses, one on the private network, and one on the Internet.
+Despite having a non-Internet routable IP address, a host (e.g., a VM) with such a non-Internet routable address can still interact with the Internet using network address translation (NAT), in which a gateway rewrites a host's requests to appear to come from itself. The gateway needs to have two IP addresses, one on the private network, and one on the Internet. Domestic Wi-Fi routers typically function as this sort of gateway. You can see the COSC301 lab book if you want more information.
 
 ### Very quick primer on TCP and UDP ports
 
 IP addresses allow computers on the Internet to reach each other, however specifying the purpose of communication involves a higher layer of the networking stack. The IP layer just works in terms of trying to deliver packets of data from one computer to another. TCP and UDP are layered on top of IP in order to build more complete protocols useful to applications. In particular TCP incorporates acknowledgements of data packets, retransmissions of packets and acknowledgements if losses occur, and congestion control, to ensure that the network paths are not overloaded.
 
-IP addresses a computer as a whole, but TCP addresses a service running on that computer. TCP introduces port numbers, so that a given IP address may operate multiple independent network services. Port numbers less than 1024 are privileged, i.e., normal user processes cannot open up services on those ports. 
+An IP address refers to the specific network interface of a specific computer as a whole, but TCP addresses a _service_ running on that computer. TCP introduces port numbers, so that a given IP address may operate multiple independent network services. Port numbers less than 1024 are privileged, i.e., normal user processes cannot open up services on those ports. 
 
 Most operating systems allow you to refer to ports either by number, or by using symbolic names. For example the port for web traffic is port 80, or "http". Secure web traffic uses port 443, or "https". The Secure Shell runs on port 22, or "ssh".
 
@@ -79,12 +79,12 @@ The name `localhost` maps to IP address 127.0.0.1. A name like `google.co.nz` ca
 
 ```
 $ host google.co.nz
-google.co.nz has address 216.58.199.67
-google.co.nz has IPv6 address 2404:6800:4006:806::2003
-google.co.nz mail is handled by 30 alt2.aspmx.l.google.com.
-google.co.nz mail is handled by 20 alt1.aspmx.l.google.com.
+google.co.nz has address 142.250.66.195
+google.co.nz has IPv6 address 2404:6800:4006:80f::2003
 google.co.nz mail is handled by 10 aspmx.l.google.com.
+google.co.nz mail is handled by 20 alt1.aspmx.l.google.com.
 google.co.nz mail is handled by 40 alt3.aspmx.l.google.com.
+google.co.nz mail is handled by 30 alt2.aspmx.l.google.com.
 google.co.nz mail is handled by 50 alt4.aspmx.l.google.com.
 ```
 
@@ -112,7 +112,7 @@ COMMAND  PID  USER   FD   TYPE DEVICE SIZE/OFF NODE NAME
 mysqld  3966 mysql   29u  IPv4  23688      0t0  TCP *:mysql (LISTEN)
 ```
 
-The command `lsof` lists open files, but has the `-i` option to look for open Internet ports instead. (The `-n` option just speeds things up a bit by requesting `lsof` not to look up the DNS names of IP addresses.) We've asked it to search for any address open on the MySQL port, which is numerically 3306 (So `sudo lsof -i :3306` should produce the same output, and the `-P` option would lead `lsof` to tell you the port number in the output instead of the named port number).
+The command `lsof` normally lists open files, but has the `-i` option to look for open Internet ports instead. (The `-n` option just speeds things up a bit by requesting `lsof` not to look up the DNS names of IP addresses.) We've asked it to search for any address open on the MySQL port, which is numerically 3306 (So `sudo lsof -i :3306` should produce the same output, and the `-P` option would lead `lsof` to tell you the port number in the output instead of the named port number).
 
 So at this point it seems that MySQL is running, and that it's open to receive traffic from the Internet (the `*` within `*:mysql`).
 
@@ -385,7 +385,8 @@ If you are running on Windows, it may be useful to add your new scripts' names i
 
 ## Pitfalls
 
+- The `2` in the top of the `Vagrantfile` in the line `Vagrant.configure("2") do |config|` is not the number of VMs, it's the version number of the `Vagrantfile` format itself, so you shouldn't change it.
 - One potential source of confusion is the paths `/home/vagrant` versus `/vagrant`. When you login to your VM, e.g., using the `vagrant ssh` command, you will be in the home directory of the `vagrant` user, namely `/home/vagrant`. However if you want to access the shared folder between the VM and the host, this is at the different folder, `/vagrant`.
-- During provisioning your scripting within your `Vagrantfile` runs as `root`, but `vagrant ssh` takes you to a shell for the `vagrant` user. Thus to run privileged commands as they worked within the Vagrantfile, if you've logged in as the `vagrant` user, you will need to use `sudo` before the privileged command (`sudo` stands for "super-user do", i.e., run the command that follows as the superuser).
+- During provisioning your scripting within your `Vagrantfile` runs as `root`, but `vagrant ssh` takes you to a shell for the `vagrant` user. Thus to run privileged commands as they worked within the Vagrantfile, if you've logged in as the `vagrant` user, you will need to use `sudo` before the privileged command (`sudo` stands for "super-user do", i.e., run the command that follows as the (almost) all powerful superuser).
 - Remember that `/vagrant` is, essentially, a network drive from the perspective of your VM. Exactly how access control and file permissions operate can depend on the host operating system. For example, a Windows host is unlikely to preserve all of the file permissions you might make within the VM using a command such as `chmod`. Also, we saw in the CS Labs what appears to be a difficulty in managing permissions from inside the VM on paths under `/vagrant` when the host's directory (the one containing the `Vagrantfile`) is itself on a network drive (e.g., your CS home directory).
     - Remember that you do not necessarily have to access files at runtime from under `/vagrant`—you can instead have your provisioning script copy content from under `/vagrant` to some other path (e.g., under `/home/vagrant`), where your files will be sitting on a Linux filesystem where `chmod` will work as expected, rather than the network share that VirtualBox is creating to effect paths under `/vagrant`.
