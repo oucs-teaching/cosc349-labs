@@ -43,7 +43,11 @@ cd cosc349-lab05-docker
 vagrant ssh
 ```
 
-Because Vagrant sets up a share between your working directory and `/vagrant` on the VM, it is recommended that you change into the `/vagrant` directory before running Docker commands that could usefully read and write files that your host OS can access.
+:::info
+Because Vagrant sets up a share between your working directory and `/vagrant` on the VM, it is recommended that you change into the `/vagrant` directory before running Docker commands that could usefully read and write files that your host OS can access. 
+
+Also remember that the default home directory of the `vagrant` user is `/home/vagrant`, which is not the same place as `/vagrant`.
+:::
 
 :::warning
 One change that needs to be made in the Docker lesson is that `docker` commands with a form such as `-p 127.0.0.1:4000:4000` will need to be changed to `-p 0.0.0.0:4000:4000`. The `-p` flag is an option to `docker` to set up network port forwarding.
@@ -62,6 +66,15 @@ After setting up port forwarding, let's say localhost 4000 to localhost 4000, a 
 When you have completed the lab exercise, you should `vagrant destroy` the VM that you have used for hosting Docker containers: this will remove the VM itself, as well as the Docker images that were downloaded in the course of the lab exercises.
 
 ### Using the Docker Desktop application
+
+:::info
+There is a one-off configuration step required to have Docker work in the CS Labs: you need to run the following two commands to open up some of your directories' permissions a little (don't do this if you are not comfortable what the implications are) so that Docker can access files it needs:
+
+```bash
+chmod o+x ~/Library
+chmod o+x ~/Library/Containers
+```
+:::
 
 The Docker Desktop is installed under the application name "Docker.app" on macOS. In your menu bar a whale icon will appear—when the square containers within the icon stop animating, then the underlying Linux VM has started up. After that point, `docker` commands in the Terminal will work.
 
