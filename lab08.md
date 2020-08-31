@@ -13,6 +13,7 @@ This lab encourages you to become familiar with Amazon's Simple Storage System (
     - However, note that—to my surprise—the PDF above is written for an older version of the Amazon web console, so I have tried to augment the instructions with screenshots from my working through the exercise.
     - Not all of the steps in the tutorial are relevant or necessary, so I will provide a guide that you should read in parallel, below.
     - Ensure that you are reading the material critically and are thinking through what is being achieved as the exercise progresses.
+    - Some of the screenshots below are from 2019, where there was no apparent value in retaking them. However the lab exercise has been tested for 2020!
 
 ### Page 1:
 - We will not be associating a custom domain with your website. This means that you can choose any bucket name that you wish to use. Otherwise the DNS domain name that you register (and pay for) would dictate the bucket name that you need to use.
@@ -56,7 +57,7 @@ This lab encourages you to become familiar with Amazon's Simple Storage System (
 - Remember to skip step 2 entirely.
 
 ### Page 15:
-- As an additional step, turn off "block all public access". This has been added since the tutorial PDF, in order to try to ensure that developers using S3 don't accidentally release private data.
+- As an additional step, turn off "block all public access". This has been added since the tutorial PDF, in order to try to ensure that developers using S3 don't accidentally release private data. (Unfortunately this has happened a lot!)
 
 ![](https://i.imgur.com/jsPt3by.png)
 ![](https://i.imgur.com/xvOgobH.png)
@@ -77,7 +78,7 @@ This lab encourages you to become familiar with Amazon's Simple Storage System (
 ![](https://i.imgur.com/bNEyz78.png)
 
 ### Page 19:
-- For me I was able to upload files into S3 by dragging and dropping them from Finder to the upload dialogue box—handy.
+- For me I was able to upload files into S3 by dragging and dropping them from macOS Finder windows to the upload dialogue box.
 
 ![](https://i.imgur.com/6tKLuct.png)
 ![](https://i.imgur.com/funf7LN.png)
@@ -119,7 +120,7 @@ Exercise:
 
 :::success
 Exercise:
-- If you want to examine what Amazon S3's logging information looks like, you will likely need to wait for quite a while—possibly hours—before the log writing process deposits data into the bucket you set up for logging. In my case, I left the S3 resources online overnight. I then viewed by logging bucket:
+- If you want to examine what Amazon S3's logging information looks like, you will likely need to wait for quite a while—possibly hours—before the log writing process deposits data into the bucket you set up for logging. In my case, I left the S3 resources online overnight. I then viewed my logging bucket:
 
 ![](https://i.imgur.com/qsOvRSE.png)
 
@@ -135,7 +136,7 @@ Exercise:
 
 ![](https://i.imgur.com/7EqcuFE.png)
 
-- There will likely be next to no cost counted against your Educate account for your S3 use, but it is safer to delete S3 buckets when you are done with them, rather than leaving them online. One reason for that is that the logging bucket will continue to accumulate log records, and these incur standard S3 charges.
+- There will likely be next to no cost counted against your Educate account for your S3 use, but it is safer to delete S3 buckets when you are done with them, rather than leaving them online. One reason for that is that the logging bucket will continue to accumulate log records, and these incur standard S3 charges. Your S3 buckets are, of course, Internet-accessible, although it is not likely that they will attract much web traffic.
 :::
 
 ## Update your S3 resources from code
@@ -154,14 +155,15 @@ Exercise:
 
 - For AWS Educate accounts you instead need to navigate to your "Workbench" page. Mine looks like:
 
-![](https://i.imgur.com/0v534ez.jpg)
+![](https://i.imgur.com/ewFapIu.png)
 
 - Just to the left of the "AWS Console" button is a button entitled "Account Details" that opens a display such as:
 
-![](https://i.imgur.com/SFjROyT.png)
+![](https://i.imgur.com/eX2Uc2X.png)
 
 - If you click on "Show" your AWS API access credentials will be displayed—do not share these with anyone!
 - Copy/paste your access credentials into the file `~/.aws/credentials` on your VM, e.g., using the `nano` editor on your VM.
+- Note also that the under the "AWS Access" heading, the length of your current session is shown: the AWS CLI credentials "roll over" periodically, and I would guess that the session time will indicate when this roll-over occurs.
 
 ### Using the Boto3 library to access AWS from Python
 
@@ -195,8 +197,8 @@ Exercise:
 
 ```
 vagrant@ubuntu-xenial:~$ aws s3 ls
-2019-09-02 11:59:35 dme26-test
-2019-09-02 12:01:36 logs.dme26-test
+2020-08-31 10:17:18 dme26-test
+2020-08-31 10:18:20 logs.dme26-test
 ```
 
 ## Cleaning up
