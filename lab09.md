@@ -1,7 +1,7 @@
 ---
 tags: cosc349
 ---
-# COSC349 Lab 9—Cloud Architecture—2019
+# COSC349 Lab 9—Cloud Architecture—2020
 ## Lab 9—Amazon EC2 via Vagrant
 
 [Lab 8]: /a8wHsmkVTh6-ud_vNAe2Mw
@@ -11,25 +11,34 @@ This lab involves deploying virtual machines into Amazon EC2 using Vagrant. More
 As before, when using Vagrant, in the CS Labs you will need to boot into macOS.
 
 :::warning
-Note that if Vagrant presents error messages such as "Request has expired", then you should check your AWS Educate workbench webpage, since the AWS_SESSION_TOKEN etc. sometimes roll-over. 
+Note that if Vagrant presents error messages such as "Request has expired", then you should check your AWS Educate workbench webpage, since the AWS_SESSION_TOKEN etc. roll-over periodically (there is a countdown timer shown on that page).
 
-Refreshing your credentials will not lose the VMs and other resources that you have already created.
+Refreshing the details to place into your AWS `credentials` file will not cause you to lose access to the VMs and other resources that you have already created.
 :::
 
 ## Prepare your Vagrant environment
 
 :::info
-These steps should only need to be performed once (for a given home directory), even if you subsequently use Vagrant to deploy VMs to EC2.
+These steps should only need to be performed once for a given installation of Vagrant, or for a given user within the CS Lab environment. This should be true even if you subsequently use Vagrant to deploy further VMs to EC2.
+:::
+
+:::danger
+The CS Lab environment requires additional steps due to the sysadmins holding back software updates so as to maximise stability. Unforuntately for many cloud tools, latest is greatest, and dependencies change rapidly. The instructions below divide in a few places between what should work on your own computer running the most recent Vagrant download, and what is necessary on the CS Labs.
 :::
 
 - Vagrant does not come with a built-in capability to deploy VMs to Amazon EC2, but Vagrant does have a plug-in system that allows for such extensions in functionality.
 - Install the AWS plug-in into your Vagrant environment:
+    - In the CS Lab environment ([source of fix](https://github.com/mitchellh/vagrant-aws/issues/539#issuecomment-398100794)):
+     ```shell=-
+     vagrant plugin install --plugin-version 1.0.1 fog-ovirt
+     vagrant plugin install vagrant-aws
+     ```
+    - On recently downloaded or updated Vagrant installations:
+    ```shell=-
+    vagrant plugin install vagrant-aws
+    ```
 
-```shell=-
-vagrant plugin install vagrant-aws
-```
-
-- This will take a while to download, and configure the plug-in. Installation was tested in the CS Lab environments, and should not require super-user privileges.
+- This will take a while to download, and configure the plug-in. Installation should not require super-user privileges.
 
 - The other configuration step required is to download a dummy Vagrant box. Since AWS EC2 provides its own infrastructure for disk images (i.e., AMIs), the Vagrant box facilities are unneeded. (Vagrant boxes can contain AWS configuration parameters, but in this lab we will be also to set these sorts of parameters just as easily, within the `Vagrantfile`.)
 
@@ -63,7 +72,7 @@ chmod 700 .aws
 
 - Rather than putting your AWS API access credentials into your `Vagrantfile`, in this lab you will define shell environment variables for the three authentication-related parameters required.
 
-- Copy the necessary secret values from your `.aws/credentials` file into the right-hand side of each of the first three of these shell environment variables.
+- Copy the necessary secret values from your `.aws/credentials` file into the right-hand side of each of the first three of these shell environment variables. Note that the naming conventions are different. Best to copy-paste both the `export` commands below and the values from your `.aws/credentials` file, to avoid problematic typing (or at least that's what I do to try to protect me from myself!).
 
 ```
 export AWS_ACCESS_KEY_ID=
@@ -71,17 +80,17 @@ export AWS_SECRET_ACCESS_KEY=
 export AWS_SESSION_TOKEN=
 ```
 
-## Prepare a VM that has the `aws` command
+## Prepare a separate VM that can use the `aws` command
 
-- The Vagrant configuration steps below involve information that can be gathered by the `aws` command line interface.
+- The Vagrant configuration steps below for this, Lab 9, involve fetching some information that can be gathered by the `aws` command line interface.
 - Thus, you will need to have access to the `aws` command, and in the instructions here for Lab 9 we suggest how to use the VM from [Lab 8] to achieve this.
 - [Lab 8] describes how to use Vagrant to create a machine into which you set up AWS credentials, and that has the `aws` command installed.
 - Open a terminal window focused on your [Lab 8] VM and a separate terminal window working through this lab.
 - Ensure that you have done the usual `vagrant up`, `vagrant ssh` invocations successfully in your [Lab 8] window, and have tested that the `aws` command works as expected.
 
-- Remember that Vagrant isolates state within each directory, so you are able to use Vagrant VMs in multiple directories at once.
+- Remember that Vagrant isolates state within each directory, so you are able to use multiple independent Vagrant VMs from different directories at the same time.
 
-- In the [Lab 8] VM, test that your credentials are working as expected: (In this case here showing a lack of resource removal following completion of [Lab 8]...)
+- In the [Lab 8] VM, test that your credentials are working as expected: (In this case here showing my lack of removing resources following completion of [Lab 8]...)
 
 ```
 vagrant@ubuntu-xenial:~$ aws s3 ls
@@ -91,7 +100,7 @@ vagrant@ubuntu-xenial:~$ aws s3 ls
 
 
 
-## Create keypair on EC2
+## Create a keypair on EC2
 
 - We will define an AWS keypair with a given name that can be loaded into EC2 instances that you create.
 
@@ -119,7 +128,7 @@ vagrant@ubuntu-xenial:~$ aws s3 ls
 
 - ... but in addition, the private portion of your key-pair will have been downloaded by your web browser. For example, Safari is likely to place your key in a path such as `/Downloads/cosc349.pem.txt` (noting that this filename embeds the key pair's name).
 
-- Keys should be protected in terms of file system permissions, and stored in a consistent, useful place. It is usually ideal for SSH key pairs to be stored in the `.ssh` directory within your home directory, since this is where tools such as OpenSSH (i.e., `ssh`) will default to looking. To address the location and permissions of your file, execute commands similar to the following:
+- Keys should be protected in terms of file system permissions, and stored in a consistent, useful place. It is usually ideal for SSH key pairs to be stored in the `.ssh` directory within your home directory, since this is where tools such as OpenSSH (i.e., `ssh`) will default to looking. To address the location and permissions of your file, execute commands similar to the following (for macOS / Linux):
 
 ```shell=-
 mv ~/Downloads/cosc349.pem.txt ~/.ssh/cosc349.pem
@@ -312,13 +321,29 @@ chmod 700 ~/.ssh/cosc349.pem
 
 ## Start an instance
 
+:::danger
+The CS Lab environments require that you make a change to your `Vagrantfile` to fix a glitch in the installed Vagrant version. Insert the following at line 3 of your `Vagrantfile` (above the comment `All Vagrant configuration is done below`): ([source of fix](https://github.com/mitchellh/vagrant-aws/issues/566#issuecomment-637184574))
+```ruby=-
+class Hash
+  def slice(*keep_keys)
+    h = {}
+    keep_keys.each { |key| h[key] = fetch(key) if has_key?(key) }
+    h
+  end unless Hash.method_defined?(:slice)
+  def except(*less_keys)
+    slice(*keys - less_keys)
+  end unless Hash.method_defined?(:except)
+end
+```
+:::
+
 - You should now be able to use Vagrant to start an EC2 instance on AWS, using:
 
 ```
 vagrant up --provider=aws
 ```
 
-- Note that once you have successfully run the above command, the VM state stored within the hidden `.vagrant` directory means that you do not need to add `--provider=aws` to subsequent command invocations.
+- Note that once you have successfully run the above command, the VM state stored within the hidden `.vagrant` directory means that you do not need to add `--provider=aws` to subsequent Vagrant command invocations within or below that directory.
 
 - Running the above `up` command should produce output such as the following:
 
@@ -395,7 +420,7 @@ Vagrantfile
 Note that the synchronisation of files to EC2 only happens during the `vagrant up` process, and is not dynamically synchronised. This is different behaviour to how shared folders work using Vagrant's VirtualBox provider.
 :::
 
-- You can verify that outgoing network access is permitted, but running commands such as the following on your EC2 instance:
+- You can verify that outgoing network access is permitted, by running commands such as the following on your EC2 instance:
 
 ```
 ubuntu@ip-172-31-22-115:~$ curl --head https://www.cs.otago.ac.nz/
@@ -452,7 +477,7 @@ Exercise:
 
 ![](https://i.imgur.com/WIsBaed.png)
 
-- Select (left-hand box) the EC2 instance that you wish to reassign security groups for, and navigate through the menu options shown. (Actions -> Networking -> Change Security Groups.)
+- Select (left-hand box) the EC2 instance that you wish to reassign security groups for, and navigate through the menu options shown. (Actions → Networking → Change Security Groups.)
 
 ![](https://i.imgur.com/LL81y0X.png)
 
