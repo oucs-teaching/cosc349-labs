@@ -12,107 +12,107 @@ In this lab we will explore AWS Lambda, which is Amazon's Function as a Service 
 
 - In the usual (unusual) AWS Educate way, reach your AWS Management Console.
 
-![](https://i.imgur.com/0kmimS1.png)
+![](https://i.imgur.com/BkG9bzV.png)
 
-- Using "Find Services" or otherwise, click through to AWS Lambda.
+- Using "Find Services" or otherwise, click through to AWS Lambda. A splash page such as the following screen capture used to be presented, but I believe now the web interface takes you straight to the listing of your AWS Lambda functions. (I had already "first entered" Lambda by the time I needed to create these screen captures!)
 
 ![](https://i.imgur.com/b3x26Fs.png)
 
-- As suggested "Get started" by clicking the "Create a function" button. You should reach a form from which you can select "Author from scratch" ...
+- Click the "Create a function" button that should be near the top right of the web interface you see. You should reach a form from which you can select "Author from scratch" ...
 
-![](https://i.imgur.com/6C6BOiX.png)
+![](https://i.imgur.com/Fs1NZwq.png)
 
 - ... and scrolling further down that page, other options that you should set up are shown. In particular
     - You need to name your function
     - In the walk-through here Python 3.7 is used—although of course in your own experimentation feel free to use whatever language you want to.
     - Note that the "Execution role" must be set to the existing role: the AWS Educate accounts do not have sufficient IAM privileges to be able to create roles.
 
-![](https://i.imgur.com/iUVTJZG.png)
+![](https://i.imgur.com/7Q20ZCS.png)
 
 - Click "Create function" and you should be taken to a page dedicated to your function. 
 
-![](https://i.imgur.com/tGWvEKO.png)
+![](https://i.imgur.com/hPSpE1J.png)
 
 - The "Designer" pane shows your AWS Lambda function, and the resources it could interact with. The test function currently does not interact with other AWS services—we will later interact AWS S3.
 - Scroll down and you will find the "Function code" pane.
 - In this case the "hello world" type of message will be sufficient for testing.
 
-![](https://i.imgur.com/Vv73ag4.png)
+![](https://i.imgur.com/qaldfih.png)
 
 - From the button bar at the top of the page, click the "Test" button, and you will be taken to a page on which you should configure a test event.
 
-![](https://i.imgur.com/VvuJGiB.png)
+![](https://i.imgur.com/f96wDUd.png)
 
 - In this case there is no need to fine-tune the test event that you are defining.
 - Lambda maintains the set of test events that you define for each function, so that you can reuse them.
 - Complete the definition of your test event (likely this just involves giving it a name), and you will be returned to the function designer page.
 
-![](https://i.imgur.com/9ltClvw.png)
+![](https://i.imgur.com/ocJV14M.png)
 
 - With the event that you defined selected in the pull-down menu to the left of the "Test" button, click the "Test" button.
 - You should see the following "Execution result" pane appear.
 
-![](https://i.imgur.com/UMSRgDU.png)
+![](https://i.imgur.com/Zhebdm2.png)
 
 - The above execution success includes the data returned from the function, using the HTTP status code 200, to indicate everything is OK, and the body of the request containing the text that was returned by the test function's code.
 - Now, using the "breadcrumbs" in the top-left of the button bar or otherwise, return to the Lambda page and define a new function.
 
-![](https://i.imgur.com/4tMpcFK.png)
+![](https://i.imgur.com/1cMqnn7.png)
 
 - This time select "Use a blueprint".
-- Search the "Blueprints" for "s3-get-object-python" and select that blueprint.
-- Scroll down to the "Basic information" pane to name our function.
+- Search the "Blueprints" for "s3-get-object-python" and select that blueprint. (Click "Configure".)
+- In the "Basic information" pane can can name your function.
 - Ensure that you select the AWS Educate role, or you will likely encounter missing permission errors.
  
-![](https://i.imgur.com/LStLnuA.png)
+![](https://i.imgur.com/iY5iepg.png)
 
 - Note that the above blueprint includes an S3 trigger. Scroll down to see the configuration that I used, as shown below.
 - You will need to specify the S3 bucket to use, and you will not be able to access dme26-test. You can use the instructions in [Lab 8] to create an S3 bucket again, noting that it does not need to contain any files.
 
-![](https://i.imgur.com/XpErLj2.png)
+![](https://i.imgur.com/YJeQuwt.png)
 
 - Scroll down further to see the function's code.
 - Note that the Python function is using the boto3 library, just as we did, in [Lab 8].
 
-![](https://i.imgur.com/eNip8IE.png)
+![](https://i.imgur.com/AUPkh2k.png)
 
 - When you have read through the Python code, click "Create function".
 - You will reach the configuration page of your new test function, just as you did for the hello world example, shown previously.
 - Note that in this case, the S3 trigger is shown.
 
-![](https://i.imgur.com/xUncYsR.png)
+![](https://i.imgur.com/P90FN1r.png)
 
 - First, let's try a test event that will fail.
 - Click "Test" to configure a new test event.
 - Create your event from the "Amazon S3 Put" template, and give your event a name.
 
-![](https://i.imgur.com/oZSTOAf.png)
+![](https://i.imgur.com/is3598M.png)
 
 (The screenshot below is scrolled down from the screenshot shown above.)
 
 - Click the "Create" button to define your test event.
 
-![](https://i.imgur.com/ny2pmgN.png)
+![](https://i.imgur.com/sC0S54p.png)
 
 - Now, back at the function configuration page, select your test event and click the "Test" button.
 
-![](https://i.imgur.com/LpHGEbw.png)
+![](https://i.imgur.com/jL2hbwu.png)
 
 - If you scroll down to the source code pane, you should see an "Execution Result" sub-panel.
 - Note that the stack trace indicates where the problem occurred in the code.
 - The cause is that an invalid S3 bucket was specified in the test event's template, and we did not change it.
 
-![](https://i.imgur.com/vcooUs3.png)
+![](https://i.imgur.com/V6484Ai.png)
 
 - The test selection pull-down menu allows you to "Configure test events" to fix the bucket being referred to.
 
-![](https://i.imgur.com/KOnZIe7.png)
+![](https://i.imgur.com/IvIGVle.png)
 
 - In a separate web browser tab or window, navigate to the S3 bucket that you intend to use.
 - Selecting the bucket from the S3 console should show a pop-up information panel.
 - Click the "Copy Bucket ARN" button, to place the specific Amazon Resource Name into the clipboard.
 
-![](https://i.imgur.com/mWQ6iwi.png)
+![](https://i.imgur.com/EN3SoRg.png)
 
 - In your other browser tab, where you are editing your test event, paste in your ARN as the value of the "arn" key in the test event's JSON.
 - Also change the "name" of your "bucket" to the value that you are using.
@@ -121,7 +121,7 @@ In this lab we will explore AWS Lambda, which is Amazon's Function as a Service 
     - You need to change the value `test/key` to an S3 key of an object that is actually in your bucket.
     - (Also, if you have no objects in your S3 bucket, you will first need to upload one.)
  
-![](https://i.imgur.com/2o22qRF.png)
+![](https://i.imgur.com/T3YuaOK.png)
 
 - Save your updated test event.
 
@@ -135,70 +135,70 @@ Note that we are using fields for the S3 "put" template, despite the function's 
 Recall that [Lab 8] steps through activating website hosting features such as specifying an index file (you will need to first upload such an index file to your S3 bucket).
 :::
 
-![](https://i.imgur.com/DjFMaGV.png)
+![](https://i.imgur.com/5SasYM8.png)
 
 - Further down in the function code pane you should see an execution response that indicates the type of the content that the function retrieved from your S3 bucket.
 
-![](https://i.imgur.com/0sioGjX.png)
+![](https://i.imgur.com/CnaAHnr.png)
 
 - For more information, you can click on the "Monitoring" tab at the top of your function's configuration page.
 - This will display CloudWatch metrics related to the operation of your function. (Note that there is sometimes a delay between a function executing and the CloudWatch metrics updating.)
 
-![](https://i.imgur.com/RxKXDzF.png)
+![](https://i.imgur.com/D0iSvRq.png)
 
 - Scrolling down will show you a "Recent invocations" list, and information about the cost of the function.
 
-![](https://i.imgur.com/d6PqA5m.png)
+![](https://i.imgur.com/QiWPl5f.png)
 
 - So far we have been manually testing the Lambda function.
 - We need to activate the S3 trigger for the function to actually react to S3 events.
 - Return to the "Configuration" tab of your function, and click on the S3 box under and to the left of your function.
 
-![](https://i.imgur.com/sBrlCLy.png)
+![](https://i.imgur.com/DgTa5y5.png)
 
 - Scroll down below the "Designer" pane, and you will see S3 information instead of your function's code.
 - Note that the S3 trigger is disabled.
 
-![](https://i.imgur.com/87nke6v.png)
+![](https://i.imgur.com/GVUOST6.png)
 
-- Enable the S3 trigger so that S3 modifications will cause your function to run.
+- Enable the S3 trigger so that S3 modifications will cause your function to run. (You will be asked for confirmation of enabling the trigger.)
 
-![](https://i.imgur.com/A1V470v.png)
+![](https://i.imgur.com/yBnBJwu.png)
 
 - In a browser window focused on your S3 console, click the "Upload" button.
 
-![](https://i.imgur.com/rUH0Es2.png)
+![](https://i.imgur.com/gy3h1rX.png)
 
 - You should see a panel into which you can drag-and-drop (or otherwise) upload a file.
 - Select a non-sensitive file with a known file-type and drag-and-drop this into the upload panel.
 
-![](https://i.imgur.com/srmPYvC.png)
+![](https://i.imgur.com/m9rvKwB.png)
 
 - You can then click the "Upload" button in the bottom-left.
 
-![](https://i.imgur.com/evCuoY6.png)
+![](https://i.imgur.com/CdRvr4k.png)
 
 - You should be returned to the S3 overview page, and see your new object (`mascot-cosc349.jp2` in this screen-shot).
 
-![](https://i.imgur.com/c3QrWvV.png)
+![](https://i.imgur.com/YXYHtfL.png)
 
 - Back in your browser window examining your function's logs, you should now see another invocation on your "Recent invocations".
 
-![](https://i.imgur.com/cwEFRGZ.png)
+![](https://i.imgur.com/RUtIPKx.png)
 
 - Near the top of the "CloudWatch metrics" tab, in the right-hand-side there is a button labeled "View logs in CloudWatch". Click this button.
 
-![](https://i.imgur.com/R9AUjIa.png)
+![](https://i.imgur.com/QhbhVXx.png)
 
 - You will be taken to the CloudWatch service web pages.
 - You should see some Log Streams.
 - Click on the Log Stream related to the event around the time you modified your S3 bucket.
 
-![](https://i.imgur.com/KKJT1Vu.png)
+![](https://i.imgur.com/XzowMBe.png)
 
 - Within that Log Stream, you should see displayed the console output of your Lambda function.
 
-![](https://i.imgur.com/wmlLS2I.png)
+![](https://i.imgur.com/wybNFt9.png)
 
 - In the case shown above, the content type of the uploaded file is correct—an `image/jp2` is was what I had uploaded.
     - Irrelevant aside: the `jp2` extension is normally used by JPEG-2000 images. As the name suggests JPEG-2000 is a newer file format inspired by JPEG. In general JPEG-2000 files do a much better job than JPEG in creating small file sizes that retain high quality... however the format has not gained widespread adoption.
@@ -213,3 +213,4 @@ Exercise:
 - There is an ImageMagick example in the function templates, but note that it uses Node.js rather than Python, so may not be intuitive to work with, if you are not familiar with JavaScript.
 - It is expected that you will need to read documentation of the API functions used to achieve this task.
 :::
+
