@@ -4,14 +4,6 @@ tags: cosc349
 # COSC349 Lab 12—Cloud Architecture—2019
 ## Lab 12—Work on assignment 2
 
-[gitsurvey]: https://forms.office.com/Pages/ResponsePage.aspx?id=xe8lAv54KEmxV57ySAnpuqui8exv8e1Ps7Lrl2YV1z1UN0wzNVNHWlhLUVJRQzhQQ0kyUUVQNDBHOS4u
-
-:::info
-Please do consider taking a minute to complete the [`git` teaching survey][gitsurvey].
-
-It will take even less than a minute if you don't answer all the questions! :tada:
-:::
-
 This lab time has been set aside for you to work on assignment 2.
 
 Some suggestions regarding techniques and approaches to problems that have been encountered are listed below. Feel free to augment this information.
