@@ -190,6 +190,10 @@ Exercise:
 
 ## Accessing AWS resources using the command line interface
 
+:::warning
+There seems to be a glitch such that running `pip3 install awscli` is necessary in order for the `aws` commands to work.
+:::
+
 - As noted above, the VM for this lab also installs the AWS Command Line Interface (CLI)
 - The setup you did above to install credentials to support use of Boto3 will also work for the AWS CLI.
 - You can consult the Amazon documentation to discover commands, e.g., https://docs.aws.amazon.com/cli/latest/reference/s3api/list-buckets.html
