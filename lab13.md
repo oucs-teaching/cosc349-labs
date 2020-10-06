@@ -1,10 +1,12 @@
 ---
 tags: cosc349
 ---
-# COSC349 Lab 13—Cloud Architecture—2019
+# COSC349 Lab 13—Cloud Architecture—2020
 ## Lab 13—Kubernetes and AWS orchestration with CloudFormation
 
-This purpose of this lab is to provide you with some potentially interesting starting points for your future exploration of cloud technologies beyond COSC349.
+This purpose of this lab is to provide you with potentially interesting starting points for your future exploration of cloud technologies beyond COSC349.
+
+The Kubernetes and CloudFormation parts of this lab are entirely independent so if you get blocked completing one part, you should be able to continue with the other.
 
 ## Kubernetes
 
@@ -21,10 +23,10 @@ This purpose of this lab is to provide you with some potentially interesting sta
 - Start by cloning the repository at: https://altitude.otago.ac.nz/cosc349/lab13-kubernetes
 - Provision the VM using `vagrant up`.
 - `vagrant ssh` into the VM.
-- On the VM, run the following two commands to download and then install minikube within your VM:
+- On the VM, run the following two commands to download and then install Minikube within your VM (note that we're using a specific, old version of Minikube!):
 
 ```
-curl -LO https://storage.googleapis.com/minikube/releases/latest/minikube-linux-amd64
+curl -LO https://github.com/kubernetes/minikube/releases/download/v1.5.1/minikube-linux-amd64
 sudo install minikube-linux-amd64 /usr/local/bin/minikube
 ```
 
@@ -40,15 +42,15 @@ minikube start --vm-driver=none
 sudo minikube start --vm-driver=none
 ```
 
-- You should see the system downloading the Docker images that it uses to drive the components of Kubernetes. (This will take some time to complete. You can potentially read the second section of this lab on AWS CloudFormation while you wait...) After a number of minutes, the output should resemble:
+- You should see the system downloading the Docker images that it uses to drive the components of Kubernetes. (This will take some time to complete.) After a number of minutes, the output should resemble:
 
 ```
-😄  minikube v1.4.0 on Ubuntu 16.04 (vbox/amd64)
+😄  minikube v1.5.1 on Ubuntu 16.04 (vbox/amd64)
 🤹  Running on localhost (CPUs=2, Memory=3951MB, Disk=9861MB) ...
-ℹ️   OS release is Ubuntu 16.04.6 LTS
-🐳  Preparing Kubernetes v1.16.0 on Docker 18.09.7 ...
-💾  Downloading kubeadm v1.16.0
-💾  Downloading kubelet v1.16.0
+ℹ️   OS release is Ubuntu 16.04.5 LTS
+🐳  Preparing Kubernetes v1.16.2 on Docker 18.09.7 ...
+💾  Downloading kubeadm v1.16.2
+💾  Downloading kubelet v1.16.2
 🚜  Pulling images ...
 🚀  Launching Kubernetes ... 
 🤹  Configuring local host environment ...
@@ -64,8 +66,9 @@ sudo minikube start --vm-driver=none
     ▪ sudo chown -R $USER $HOME/.kube $HOME/.minikube
 
 💡  This can also be done automatically by setting the env var CHANGE_MINIKUBE_NONE_USER=true
-⌛  Waiting for: apiserver proxy etcd scheduler controller dns
+⌛  Waiting for: apiserver
 🏄  Done! kubectl is now configured to use "minikube"
+⚠️  /usr/bin/kubectl is version 1.19.2, and is incompatible with Kubernetes 1.16.2. You will need to update /usr/bin/kubectl or use 'minikube kubectl' to connect with this cluster
 ```
 
 - As noted above, some of the directories created will be owned by the wrong user, so repair the permissions by invoking:
@@ -76,6 +79,10 @@ sudo chown -R vagrant ~/.kube ~/.minikube
 ### Looking into your Kubernetes "cluster"
 
 - You can now examine your Kubernetes cluster, using the `kubectl` command.
+- However, since we're using an old version of Minikube, you might want to first run the suggested form of command: (for me this suggests that it downloads an appropriate version of the `kubectl` command, but I haven't tested whether or not you can leave this step out):
+```
+minikube kubectl get nodes
+```
 
 - List the nodes on your cluster (there should only be one):
 ```
@@ -106,25 +113,29 @@ sudo minikube dashboard
 🤔  Verifying dashboard health ...
 🚀  Launching proxy ...
 🤔  Verifying proxy health ...
-http://127.0.0.1:45089/api/v1/namespaces/kubernetes-dashboard/services/http:kubernetes-dashboard:/proxy/
+http://127.0.0.1:46786/api/v1/namespaces/kubernetes-dashboard/services/http:kubernetes-dashboard:/proxy/
 ```
 - The URL will need to be opened on your host computer's web browser, which means that you will need to set up port forwarding. Since this is a dynamically-selected port, it is likely easiest if you open VirtualBox, and add a network forwarding rule from `127.0.0.1` on some port you know (e.g., `8000`) to `127.0.0.1` on whatever port is displayed in the output of the above command.
 
 - After starting VirtualBox, the VM that Vagrant started is visible:
 
-![](https://i.imgur.com/GJGBBDx.png)
+![](https://i.imgur.com/Tqx1ZG6.png)
 
-- ... and from that running VM you can display the network configuration.
+- ... open the "Settings" (e.g., using the toolbar) when focused on that running VM.
 
-![](https://i.imgur.com/N8cutB8.png)
+![](https://i.imgur.com/cGTGqc7.png)
+
+- From there you can select the "Network" tab to display the network configuration.
+
+![](https://i.imgur.com/yRQ7LTp.png)
 
 - Unfold the "Advanced" controls ...
 
-![](https://i.imgur.com/lv8qVHR.png)
+![](https://i.imgur.com/kvZtBAH.png)
 
-- ... and select the "Port Forwarding" button. From which you can add appropriate forwarding rules (note that the ports shown in this screen-capture are inconsistent from those in the console output above, but this matters little given that you need to substitute your specific parameter values anyway).
+- ... and select the "Port Forwarding" button. From which you can add appropriate forwarding rules (note that you need to substitute your specific parameter values).
 
-![](https://i.imgur.com/c0lYELx.png)
+![](https://i.imgur.com/C2jlcyv.png)
 
 - Remember that you need to click "OK" not only on the port forwarding configuration, but also to click "OK" on the underlying networking configuration window before port forwarding rules are applied.
 
@@ -132,12 +143,11 @@ http://127.0.0.1:45089/api/v1/namespaces/kubernetes-dashboard/services/http:kube
 
 - You should see a fully-featured dashboard for your (cut-down) Kubernetes cluster.
 
-![](https://i.imgur.com/iohAwVU.png)
+![](https://i.imgur.com/FbQDIXm.png)
 
 - For example, by clicking on "Nodes" in the left-hand side menu, you can see the information that the `kubectl` command provided previously:
 
-![](https://i.imgur.com/s3DS6rL.png)
-
+![](https://i.imgur.com/subzIpw.png)
 
 :::info
 The dashboard is extremely powerful: do explore it, but for now we will proceed with a specific deployment exercise.
@@ -147,22 +157,24 @@ The dashboard is extremely powerful: do explore it, but for now we will proceed 
 
 - The instructions that follow are adapted from https://kubernetes.io/docs/tutorials/hello-minikube/
 
+- If you are leaving the dashboard running, you will need to open another terminal window and `vagrant ssh` into the VM running Minikube another time.
+
 - First create a deployment of the hello-node application. The command that follows confirms that the deployment has been fetched.
 
 ```
-vagrant@ubuntu-xenial:~$ kubectl create deployment hello-node --image=gcr.io/hello-minikube-zero-install/hello-node
+vagrant@ubuntu-xenial:~$ kubectl create deployment hello-node --image=k8s.gcr.io/echoserver:1.4
 deployment.apps/hello-node created
 vagrant@ubuntu-xenial:~$ kubectl get deployments
 NAME         READY   UP-TO-DATE   AVAILABLE   AGE
 hello-node   0/1     1            0           10s
 ```
-- Looking at the pods will show that the hello-node is being created. 
+- Looking at the pods may show that the hello-node is still being created, so you can try again until the pod is running.
 ```
 vagrant@ubuntu-xenial:~$ kubectl get pods
-NAME                          READY   STATUS              RESTARTS   AGE
-hello-node-7676b5fb8d-m7xc9   0/1     ContainerCreating   0          20s
+NAME                          READY   STATUS    RESTARTS   AGE
+hello-node-7dc7987866-lwps5   1/1     Running   0          47s
 ```
-- You can get a list of recent events:
+- You can get a list of recent events (this event list is out of sync with the lab exercise, but is still indicative):
 ```
 vagrant@ubuntu-xenial:~$ kubectl get events
 LAST SEEN   TYPE     REASON                    OBJECT                             MESSAGE
@@ -187,22 +199,20 @@ service/hello-node exposed
 - Listing the services will now confirm your hello-node service is present.
 ```
 vagrant@ubuntu-xenial:~$ kubectl get services
-NAME         TYPE           CLUSTER-IP       EXTERNAL-IP   PORT(S)          AGE
-hello-node   LoadBalancer   10.108.192.141   <pending>     8080:31762/TCP   66s
-kubernetes   ClusterIP      10.96.0.1        <none>        443/TCP          62m
+NAME         TYPE           CLUSTER-IP     EXTERNAL-IP   PORT(S)          AGE
+hello-node   LoadBalancer   10.96.210.82   <pending>     8080:32626/TCP   30s
+kubernetes   ClusterIP      10.96.0.1      <none>        443/TCP          17m
 ```
 
-- Let's try to connect to the `hello-node`. Although the following command will fail, it will tell you where you want to point your host machine's web browser.
+- Let's try to connect to the `hello-node`. Although the following command won't show the service, it will tell you where you want to point your host machine's web browser.
 
 ```
 vagrant@ubuntu-xenial:~$ minikube service hello-node
 |-----------|------------|-------------|------------------------|
 | NAMESPACE |    NAME    | TARGET PORT |          URL           |
 |-----------|------------|-------------|------------------------|
-| default   | hello-node |             | http://10.0.2.15:31762 |
+| default   | hello-node |             | http://10.0.2.15:32626 |
 |-----------|------------|-------------|------------------------|
-🎉  Opening kubernetes service  default/hello-node in default browser...
-browser failed to open url: exec: "xdg-open": executable file not found in $PATH
 ```
 
 - You can set up port forwarding using VirtualBox in the same manner as above, and navigate your host computer's browser to a port that you have set up to reach the guest's IP and port number as shown in the output above.
@@ -211,8 +221,7 @@ browser failed to open url: exec: "xdg-open": executable file not found in $PATH
 
 - Eventually, you will be able to reach the test page:
 
-![](https://i.imgur.com/eOpMClD.png)
-
+![](https://i.imgur.com/V9quVN4.png)
 
 ### A stateless application using a deployment
 
@@ -233,11 +242,9 @@ deployment.apps/nginx-deployment created
 vagrant@ubuntu-xenial:~$ kubectl describe deployment nginx-deployment
 Name:                   nginx-deployment
 Namespace:              default
-CreationTimestamp:      Fri, 04 Oct 2019 04:12:07 +0000
+CreationTimestamp:      Tue, 06 Oct 2020 10:22:10 +0000
 Labels:                 <none>
 Annotations:            deployment.kubernetes.io/revision: 1
-                        kubectl.kubernetes.io/last-applied-configuration:
-                          {"apiVersion":"apps/v1","kind":"Deployment","metadata":{"annotations":{},"name":"nginx-deployment","namespace":"default"},"spec":{"replica...
 Selector:               app=nginx
 Replicas:               2 desired | 2 updated | 2 total | 0 available | 2 unavailable
 StrategyType:           RollingUpdate
@@ -247,7 +254,7 @@ Pod Template:
   Labels:  app=nginx
   Containers:
    nginx:
-    Image:        nginx:1.7.9
+    Image:        nginx:1.14.2
     Port:         80/TCP
     Host Port:    0/TCP
     Environment:  <none>
@@ -259,18 +266,18 @@ Conditions:
   Available      False   MinimumReplicasUnavailable
   Progressing    True    ReplicaSetUpdated
 OldReplicaSets:  <none>
-NewReplicaSet:   nginx-deployment-54f57cf6bf (2/2 replicas created)
+NewReplicaSet:   nginx-deployment-574b87c764 (2/2 replicas created)
 Events:
   Type    Reason             Age   From                   Message
   ----    ------             ----  ----                   -------
-  Normal  ScalingReplicaSet  18s   deployment-controller  Scaled up replica set nginx-deployment-54f57cf6bf to 2
+  Normal  ScalingReplicaSet  8s    deployment-controller  Scaled up replica set nginx-deployment-574b87c764 to 2
 ```
 - Note the mention of a ScalingReplicaSet. The contests of that set can be viewed using the following command, indicating that it's just a pair of replicas.
 ```
 vagrant@ubuntu-xenial:~$ kubectl get pods -l app=nginx
 NAME                                READY   STATUS    RESTARTS   AGE
-nginx-deployment-54f57cf6bf-bvfrb   1/1     Running   0          48s
-nginx-deployment-54f57cf6bf-qbskn   1/1     Running   0          48s
+nginx-deployment-574b87c764-2hcbd   1/1     Running   0          40s
+nginx-deployment-574b87c764-6chqt   1/1     Running   0          40s
 ```
 
 - If the status column does not show "Running" for all pods, then wait until all pods are "Running".
@@ -287,29 +294,32 @@ while true; do sleep 0.5; kubectl get pods -l app=nginx; done
 - You will need to press <kbd>control</kbd><kbd>c</kbd> to stop this command. Here's an example of edited output:
 
 ```
-vagrant@ubuntu-xenial:~$ kubectl apply -f https://k8s.io/examples/application/deployment-update.yaml; while true; do sleep 0.5; kubectl get pods -l app=nginx; done
+vagrant@ubuntu-xenial:~$ kubectl apply -f https://k8s.io/examples/application/deployment-update.yaml ; while true; do sleep 0.5; kubectl get pods -l app=nginx; done
 deployment.apps/nginx-deployment configured
-NAME                                READY   STATUS    RESTARTS   AGE
-nginx-deployment-54f57cf6bf-bvfrb   1/1     Running   0          4m31s
-nginx-deployment-54f57cf6bf-qbskn   1/1     Running   0          4m31s
-nginx-deployment-9f46bb5-xzp2r      0/1     Pending   0          1s
 NAME                                READY   STATUS              RESTARTS   AGE
-nginx-deployment-54f57cf6bf-bvfrb   1/1     Running             0          4m34s
-nginx-deployment-54f57cf6bf-qbskn   1/1     Running             0          4m34s
-nginx-deployment-9f46bb5-xzp2r      0/1     ContainerCreating   0          4s
+nginx-deployment-574b87c764-2hcbd   1/1     Running             0          78s
+nginx-deployment-574b87c764-6chqt   1/1     Running             0          78s
+nginx-deployment-5d66cc795f-hlv54   0/1     ContainerCreating   0          0s
+...
+NAME                                READY   STATUS              RESTARTS   AGE
+nginx-deployment-574b87c764-2hcbd   1/1     Terminating         0          90s
+nginx-deployment-574b87c764-6chqt   1/1     Running             0          90s
+nginx-deployment-5d66cc795f-hlv54   1/1     Running             0          12s
+nginx-deployment-5d66cc795f-tcjcs   0/1     ContainerCreating   0          1s
+...
+NAME                                READY   STATUS        RESTARTS   AGE
+nginx-deployment-574b87c764-2hcbd   0/1     Terminating   0          91s
+nginx-deployment-574b87c764-6chqt   1/1     Terminating   0          91s
+nginx-deployment-5d66cc795f-hlv54   1/1     Running       0          13s
+nginx-deployment-5d66cc795f-tcjcs   1/1     Running       0          2s
+NAME                                READY   STATUS        RESTARTS   AGE
+nginx-deployment-574b87c764-6chqt   0/1     Terminating   0          92s
+nginx-deployment-5d66cc795f-hlv54   1/1     Running       0          14s
+nginx-deployment-5d66cc795f-tcjcs   1/1     Running       0          3s
 ...
 NAME                                READY   STATUS    RESTARTS   AGE
-nginx-deployment-54f57cf6bf-qbskn   1/1     Running   0          5m53s
-nginx-deployment-9f46bb5-hxqqh      1/1     Running   0          32s
-nginx-deployment-9f46bb5-xzp2r      1/1     Running   0          83s
-NAME                                READY   STATUS        RESTARTS   AGE
-nginx-deployment-54f57cf6bf-qbskn   1/1     Terminating   0          6m
-nginx-deployment-9f46bb5-hxqqh      1/1     Running       0          39s
-nginx-deployment-9f46bb5-xzp2r      1/1     Running       0          90s
-...
-NAME                             READY   STATUS    RESTARTS   AGE
-nginx-deployment-9f46bb5-hxqqh   1/1     Running   0          47s
-nginx-deployment-9f46bb5-xzp2r   1/1     Running   0          98s
+nginx-deployment-5d66cc795f-hlv54   1/1     Running   0          24s
+nginx-deployment-5d66cc795f-tcjcs   1/1     Running   0          13s
 ^C
 ```
 
@@ -320,11 +330,11 @@ nginx-deployment-9f46bb5-xzp2r   1/1     Running   0          98s
 - The above commands have—unsurprisingly—had significant effect in the Kubernetes dashboard.
 - For example, selecting "Workloads" on the left-side menu shows all of the deployments, pods, etc.
 
-![](https://i.imgur.com/47Oi9k0.png)
+![](https://i.imgur.com/lwkDql5.png)
 
 - (The following screen-shot is just content reached by scrolling down from content shown in the preceding screen-capture.)
 
-![](https://i.imgur.com/CzVG451.png)
+![](https://i.imgur.com/59kaoFl.png)
 
 ### Further deployments
 
@@ -344,19 +354,22 @@ Exercise:
 
 - From the AWS Console ...
 
-![](https://i.imgur.com/VqSI9gk.png)
+![](https://i.imgur.com/rSRxfwn.png)
 
 - ... navigate to the CloudFormation console.
-- There you will see an empty list of "stacks". The term "stack" is in the sense of a deployed software stack.
+
+![](https://i.imgur.com/ZkQHuC2.png)
+
+- You might instead see a page showing an empty list of "stacks". The term "stack" is in the sense of a deployed software stack.
 
 ![](https://i.imgur.com/2fuMdkC.png)
 
-- Click on "Create stack", and select "Template is ready", and "Upload a template file".
+- In either case, click on "Create stack", and select "Template is ready", and "Upload a template file".
 - Using your host's web browser download https://raw.githubusercontent.com/awslabs/aws-cloudformation-templates/master/aws/solutions/WordPress_Single_Instance.yaml to a local file.
 - Choose that file under the "Upload a template file" selector.
 - The template file will undergo some preliminary checks, and when they are complete, you can click the "View in Designer" button.
 
-![](https://i.imgur.com/kDyUnj2.png)
+![](https://i.imgur.com/LRS5rje.png)
 
 - The Designer provides a graphical and a YAML / JSON display of your template.
 
@@ -364,81 +377,82 @@ Exercise:
 In this case, if we were to run the template, WordPress wouldn't actually work, as the latest version of WordPress requires a later version of PHP than gets installed. We will use the designer to fix this, although of course could have edited the template file before uploading it to AWS CloudFormation.
 :::
 
-![](https://i.imgur.com/a7s5vON.png)
+![](https://i.imgur.com/GIaS2yt.png)
 
-- Navigate to around line 471, which indicates that `/var/www/html` should be created from `http://wordpress.org/latest.tar.gz`.
+- Navigate to around line 345, which indicates that `/var/www/html` should be created from `http://wordpress.org/latest.tar.gz`.
 
-![](https://i.imgur.com/qMMeE81.png)
+![](https://i.imgur.com/DABV3rN.png)
 
 - Downgrade this URL for the latest version of WordPress to version 5.1, using the URL: `https://wordpress.org/wordpress-5.1.2.tar.gz`
 
-![](https://i.imgur.com/so6ASVB.png)
+![](https://i.imgur.com/cXfBylc.png)
 
 - The graphical display will note that it is out-of-sync, so feel free to click the top-right reload button.
 - Then select the cloud icon with an up-arrow in it, to deploy your template.
 
-![](https://i.imgur.com/mVvyPqB.png)
+![](https://i.imgur.com/yCf5JXy.png)
 
 - You will be returned to the "Create stack" page.
 - Click "Next".
 
-![](https://i.imgur.com/FINyrUN.png)
+![](https://i.imgur.com/fbuC04H.png)
 
 - On the "Specify stack details" page, give your Stack a name.
 - Fill out all of the other details that the template requires to be completed. Note that for parameters such as the database passwords, these are for you to control what gets deployed, so they can be any values that you will remember.
 
-![](https://i.imgur.com/f8O6MKF.png)
+![](https://i.imgur.com/VqzPNbN.png)
 
 - Scrolling down, you will see a "Next" button, which you should click when you have filled in all of the required form fields.
 
-![](https://i.imgur.com/BIq9XNx.png)
+![](https://i.imgur.com/1GBdlFr.png)
 
 - You will reach the "Stack options" page, but none of the defaults should need to be changed.
 
-![](https://i.imgur.com/xBv0EuD.png)
+![](https://i.imgur.com/1u0eeKj.png)
 
 - So scrolling down you will again see a "Next" button that you should click.
 
-![](https://i.imgur.com/1e2HLxY.png)
+![](https://i.imgur.com/ddhRVDb.png)
 
 - You will reach the Review page for your CloudFormation Stack.
 
-![](https://i.imgur.com/UekCBTl.png)
+![](https://i.imgur.com/SjPbrEb.png)
 
 - ... and again scrolling down, you should not need to change any of the parameters.
 - You can click the "Create stack" button.
 
-![](https://i.imgur.com/gqY36gt.png)
+![](https://i.imgur.com/YVVVLto.png)
 
 - This will return you to the "Stack details" page, where you can watch the deployment begin.
 
-![](https://i.imgur.com/JncSDWA.png)
+![](https://i.imgur.com/HRrclTN.png)
 
-- After a short amount of time, more events will appear, until the page announces "CREATE_COMPLETE".
+- After an amount of time (it might be a short time, or might be longer: first time for me was really quick, second time was... not), more events will appear, until the page announces "CREATE_COMPLETE".
 - From looking at the template, you can see that some outputs are specified.
+
+![](https://i.imgur.com/3wU2ZE7.png)
+
 - Click on the "Outputs" tab to see the outputs that were generated.
 
-![](https://i.imgur.com/EZ4y1dc.png)
+![](https://i.imgur.com/It4MJ4r.png)
 
 - In particular, we see the URL of the webserver that has been provisioned and configured, as key "WebsiteURL".
 
-![](https://i.imgur.com/IljCiiU.png)
-
 - Click on that link, and you should reach your EC2 instance's WordPress configuration page.
 
-![](https://i.imgur.com/D7m98ym.png)
+![](https://i.imgur.com/VFmS9p4.png)
 
 - Feel free to experiment with WordPress, but when you are done return to the CloudFormation page and choose "Delete" for your WordPress Stack.
 
-![](https://i.imgur.com/eGXBqzx.png)
+![](https://i.imgur.com/ieEEBQL.png)
 
 - After you confirm your request to "Delete stack" you will be returned to the "Stack details" page, where you can watch your resources being de-provisioned.
 
-![](https://i.imgur.com/hSwC75Z.png)
+![](https://i.imgur.com/JcMDVbg.png)
 
 - You should ensure that the Stacks count returns to 0, so that you are not being charged for services that you are not using.
 
-![](https://i.imgur.com/mEymc4R.png)
+![](https://i.imgur.com/JuCLwSU.png)
 
 :::success
 Exercise:
