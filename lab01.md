@@ -1,7 +1,7 @@
 ---
 tags: cosc349
 ---
-# COSC349 Lab 1—Cloud Architecture—2020
+# COSC349 Lab 1—Cloud Architecture—2021
 ## Lab 1—`git`, CS labs, and the Unix shell
 
 The computers in Lab E and Lab F can be (re)booted into macOS or Linux. Some COSC349 labs will require you to boot into macOS, although for the first part of this lab you can choose whichever operating system suits you better.
@@ -36,7 +36,7 @@ The first lab is available at https://www.cs.otago.ac.nz/cosc241/pdf/01-linux-in
 - The section about **Getting Help** is not relevant: we are not using the `democall` tool, not least since COSC349 labs are not assessed.
 - You can probably ignore the **Changing your password** section, as you have likely already set your account password to something secure.
 - Do note the section discussing the `hex.otago.ac.nz` server and accessing files from off campus.
-- The **Assessed exercises** can be taken as exercises, but they will not be assessed.
+- The **Assessed exercises** can be taken as exercises, but they will not be assessed (in COSC349).
 - Do not perform any of the steps under the **Marking** section.
 
 ### Software Carpentry Shell lesson
