@@ -1,7 +1,7 @@
 ---
 tags: cosc349
 ---
-# COSC349 Lab 2—Cloud Architecture—2020
+# COSC349 Lab 2—Cloud Architecture—2021
 
 [Lab 4]: /DclJIDNxQtO40T8TnOOvEg
 [COSC301 lab book]: https://www.cs.otago.ac.nz/cosc301/student2019.pdf
@@ -20,7 +20,7 @@ Before starting on the material for lab 2, please work through the [preliminarie
 
 The computers in Lab E and Lab F can be (re)booted into macOS or Linux. This lab requires you to boot into macOS, since VirtualBox is not installed on the CS Lab Linux environment.
 
-Note that this lab exercise has a small amount of overlap with part of the COSC301 labs—both use VirtualBox—although key points of difference is that COSC349 labs are self-paced, and not assessed. Some specific references may be made to material from the [COSC301 lab book] and you are of course welcome to browse the rest of the lab book should it be useful to you.
+Note that this lab exercise has a small amount of overlap with part of the COSC301 labs—both use VirtualBox—although key points of difference is that COSC349 labs are self-paced, and not assessed. Some specific references may be made to material from the [COSC301 lab book] and you are of course welcome to browse the rest of the lab book should it be useful to you. (This link is to the 2019 version of the COSC301 lab book, which is sufficiently recent for our neds, although the screen captures may look slightly different.)
 
 Throughout the exercises, "VM" will be used as an abbreviation of "virtual machine".
 
@@ -109,8 +109,11 @@ Note that the rectangles with dashed outlines in the screenshots below are redac
 ![](https://i.imgur.com/a9URTsO.png)
 
 - Select the "Empty" CD-drive.
-- The right-hand pane of the window indicates that the storage device that you clicked is an "Optical Drive" attached to the "IDE Secondary Master".
-- Click the CD icon to the right of the pull-down menu that contains the text "IDE Secondary Master".
+- The right-hand pane of the window indicates that the storage device that you clicked is an "Optical Drive" attached to the "IDE Secondary Master". Note: on newer VirtualBox versions the terminology has been updated to say "IDE Secondary Device 0" and "IDE Secondary Device 1" instead of "IDE Secondary Master" and "IDE Secondary Slave".
+:::info
+Many technology projects have tried to moved away from potentially sensitive terms, and "master"/"slave" have been quite commonly used. There is plenty [you can read online](https://en.wikipedia.org/wiki/Master/slave_(technology)#Terminology_concerns) about this.
+:::
+- Click the CD icon to the right of the pull-down menu that contains the text "IDE Secondary Device 0" (was "IDE Secondary Master").
 
 ![](https://i.imgur.com/ybduxIj.png)
 
@@ -122,7 +125,7 @@ Note that the rectangles with dashed outlines in the screenshots below are redac
 - In the CS Labs, navigate to `/home/cshome/scratch/dme/cosc349/ReactOS-0.4.11-Live.iso`. You can change to an explicit directory by typing <kbd>⌘</kbd><kbd>shift</kbd><kbd>g</kbd> and then typing, or pasting in a pathname.
 
 :::info
-If you are doing these labs on a computer other than a CS lab machine, you can find the ReactOS Live-CD ISO file on their website, and download it from there.
+If you are doing these labs on a computer other than a CS lab machine, you can find the ReactOS Live-CD ISO file on their website, and [download it from there](https://reactos.org/download/). Indeed ReactOS is at version 0.4.13, but this difference won't matter here.
 :::
 
 
@@ -178,7 +181,7 @@ At least once in the lab environment the VM failed to start up correctly for me.
 - ReactOS should then complete starting up, showing you a desktop interface that widely resembles (past versions of) a common commercial operating system.
 
 :::info
-Aside: ReactOS ended up [in the tech news](https://www.theregister.co.uk/2019/07/03/reactos_a_ripoff_of_the_windows_research_kernel_claims_microsoft_kernel_engineer/) soon after I had created the lab exercise last year. While the news item highlights questions regarding the provenance of the source code of ReactOS, the overall mission to create an open-source Win32 operating system is commendable, in my opinion. Such initiatives can extend the life of perfectly functional hardware, despite the need for commercial profits having causing such equipment to be deserted by commercial vendors. (I'm not blaming the vendors, but it would be good for governments and peoples globally to evolve to avoid much of the pointless wastefulness currently embodied within the technology sector...)
+Aside: ReactOS ended up [in the tech news](https://www.theregister.co.uk/2019/07/03/reactos_a_ripoff_of_the_windows_research_kernel_claims_microsoft_kernel_engineer/) soon after I had decided to use it with COSC349 labs. While the news item highlights questions regarding the provenance of the source code of ReactOS, the overall mission to create an open-source Win32 operating system is commendable, in my opinion. Such initiatives can extend the life of perfectly functional hardware, despite the need for commercial profits having causing such equipment to be deserted by commercial vendors. (I'm not blaming the vendors, but it would be good for governments and peoples globally to evolve to avoid much of the pointless wastefulness currently embodied within the technology sector... Your mission, should you choose to accept it...)
 :::
 
 ![](https://i.imgur.com/1Lz2f2A.png)
@@ -201,21 +204,20 @@ VirtualBox provides a rich set of ways to manage virtual networks. VirtualBox [p
 
 - **Not attached**. The guest VM will see a virtual network card (NIC) but it is effectively disconnected from any network.
 - **Network Address Translation (NAT)**. In this mode the guest's outward network traffic will be remapped to appear as requests from the host. This makes the guest invisible from the rest of the Internet: incoming requests toward the guest will simply look like requests to connect to the host. "Port forwarding" can be set up to allow these connections to the host to be forwarded back into the guest's network.
+- **NAT Network**. Extends NAT to allow multiple VMs assigned to the same NAT Network to talk to each other, as well as being able to access the internet, and be accessed from the host or beyond if port forwarding is set up.
 - **Bridged networking**. **Do not use this mode in the CS labs!** In this case, the guest exposes its own MAC address directly to the local-area network—the guest will appear as another computer on the network. Thus the guest can take on its own Internet identity, however this will not work within the UoOtago network, and may cause technical problems.
 - **Internal networking**. Creates a LAN that multiple VMs can connected to, but that is not connected to the Internet.
 - **Host-only networking**. Like internal networking, but the host is also able to send network traffic to and from the virtual network.
 
 ### Setting up a VirtualBox "host only network"
 
-I find host-only networking to be a very useful—allowing me to add VMs to an internal network where they can communicate with each other, but which also has convenient access to the host network interface.
-
 :::danger
-However, at least for me, host-only networking does not function correctly in the CS labs.
+At least for me, host-only networking does not function correctly in the CS labs.
 
-You should thus just skip to the next section, and read about host-only networks if they are useful to you when working on your own computers.
+You should thus just skip to the next section "Let’s import a VM from an OVA file", and read about host-only networks only if you expect to use them on your own computers.
 :::
 
-In any case, you may find it useful to know how to configure the host-only networks, so I leave the documentation here for your interest.
+I have found host-only networking to be useful when working on my laptop, allowing me to add VMs to an internal network where they can communicate with each other, but which also has convenient access to the host network interface. I leave this documentation here largely for your interest.
 
 From the main VirtualBox Manager window, you can select the "File" menu choose "Host Network Manager...". This will bring up a window such as the following (the details will probably be different from mine). Click the "Properties" button in the tool-bar to see the details shown on my screen capture. You will need to click "Create" before you are able to click "Properties" if there are no networks in your list.
 
@@ -244,12 +246,12 @@ We will use an OVA file from the [Bitnami] ecosystem. The [Bitnami application c
 For testing, we will use an instance of a LAMP stack: namely a VM running Linux that provides the Apache web server, MySQL and the PHP language for web development. We will be working with the OVA file that has been cached at:`/home/cshome/scratch/dme/cosc349/bitnami-lampstack-7.2.19-2-r56-linux-debian-9-x86_64.ova`
 
 :::info
-If you are doing this lab exercise somewhere other than the CS Labs, you can visit the [Bitnami application catalog] to download an OVA file similar to that above. (Minor differences in versions should make no significant difference.)
+If you are doing this lab exercise somewhere other than the CS Labs, you can visit the [Bitnami application catalog] to download an OVA file similar to that above. (Minor differences in versions should make no significant difference... although you shouldn't use the old versions for real applicaions, as they probably contain security flaws.)
 :::
 
 ### Examining an OVA file (for your interest)
 
-Before we import from the OVA file, you may be interested to see what is inside this type of file. OVA files are actually just compressed TAR files, so we can use the `tar` command in a shell window to examine the contents of the OVA we are intending to use:
+Before we import from the OVA file, you may be interested to see what is inside this type of file. OVA files are actually just compressed TAR files (If you ask "What's a TAR file?", [Wikipedia explains](https://en.wikipedia.org/wiki/Tar_(computing)), but its usual role is akin to ZIP files), so we can use the `tar` command in a shell window to examine the contents of the OVA we are intending to use:
 
 ```
 $ tar -tf /home/cshome/scratch/dme/cosc349/bitnami-lampstack-7.2.19-2-r56-linux-debian-9-x86_64.ova
@@ -397,10 +399,10 @@ After letting Linux boot, I reached a console page that indicated that the VM's 
 
 ![](https://i.imgur.com/qUoRIUt.png)
 
-The above screen indicates that you can use the web address shown, which is http://10.0.2.15 for me, to access the Bitnami web application.
+The above screen states that you can use the web address shown, which is http://10.0.2.15 for me, to access the Bitnami web application.
 
 :::warning
-However this will not work, as the IP address 10.0.2.15 is internal to behind the NAT mapping, so browsers on your host computer cannot connect to that address. (Originally I tried using a host-only network for this part of the lab, which was straightforward on my laptop, but did not work in the CS Labs for some reason.)
+However this will not work, as the particular IP address 10.0.2.15 here only exists "behind" the NAT mapping, so browsers on your host computer cannot connect to that address. (Originally I tried using a host-only network for this part of the lab, which was straightforward on my laptop, but did not work in the CS Labs.)
 :::
 
 We need to set up "port forwarding" so that some network ports on our host computer get mapped back through to the virtual network that our VM is on, behind the NAT mapping.
@@ -413,7 +415,7 @@ Click on the network icon at the bottom of the console window: it is the third i
 
 ![](https://i.imgur.com/FZATbRQ.png)
 
-—from which you should click "Network Settings...", which will take you back to the network configuration screen. Not all settings can be changed now that the VM is actually running, but port forwarding _can_ be (re-)configured while the VM is "on".
+—from which you should click "Network Settings...", which will take you back to the network configuration screen. Not all settings can be changed now that the VM is actually running, but port forwarding _can_ be (re-)configured while the VM is "powered on".
 
 Click on the "Advanced" spinner, to reveal the "Port Forwarding" button, which you should select.
 
@@ -421,12 +423,16 @@ Click on the "Advanced" spinner, to reveal the "Port Forwarding" button, which y
 
 In the window that appears, you can edit a table that contains a row per port forwarding rule. Each rule will cause a given port on a given IP address on the host, to be mapped back to a given port on a given IP address of your guest.
 
-Enter data to match the screen capture below, but note that you need to insert the IP address in the "Guest IP" column of _your_ VM, which will be shown on the console for `bitnami-lampstack-1`. The Host IP should be entered as shown, as `127.0.0.1` is a special IP address meaning the host itself (if you put the IP address of your host on, say, its LAN connection, this means that computers elsewhere on the internet can potentially connect to that port and reach your VM—which is almost certainly not what you want to do, within this lab exercise!).
+Enter data to match the screen capture below, but note that you need to insert the IP address in the "Guest IP" column of _your_ VM, which will be shown on the console for `bitnami-lampstack-1` on your computer. The Host IP should be entered as shown, as `127.0.0.1` is a special IP address meaning the host itself.
+
+:::info
+Just for your interest, if you enter your host's IP address on its LAN connection, instead of `127.0.0.1`, this means that computers *elsewhere on the internet* can potentially connect to that port and reach your VM—which is almost certainly **not** what you want to do, within this lab exercise, but can be useful in other contexts.
+:::
 
 ![](https://i.imgur.com/bM2SCyH.png)
 
 :::warning
-Note that you need to click "OK" on all the settings windows you've opened before the port forwarding will actually be activated!
+Note that you need to click "OK" on all the settings windows you've opened before the port forwarding will actually be activated! (Clicking "OK" on the window showing the table of NAT rules is not enough.)
 :::
 
 Now if you open http://127.0.0.1:8180 in your web browser (or whatever port you used for the port forwarding configuration), you should see the Bitnami welcome screen.
@@ -463,9 +469,15 @@ You have now achieved creating a web script—even if it is a small one—on a L
 
 ## Using Secure Shell (SSH) to access your virtual machine
 
-Using the VirtualBox console to edit files is not ideal, as you cannot easily copy and paste content, transfer files, and so on. Using Secure Shell (SSH) is much more convenient, but by default the SSH server on the Bitnami VMs is disabled, for security reasons.
+Using the VirtualBox console to edit files is not ideal, as you cannot easily copy and paste content, transfer files, and so on. Although the console of your VM is being shown within a window on your host computer, analogously to a physical computer display monitor, you can't just peel text and imagery off the physical display monitor itself.
+
+Using Secure Shell (SSH) is often a more convenient way to interact with VMs' when using a command line interface, but by default the SSH server on the Bitnami VMs is disabled, for security reasons.
 
 On the VirtualBox console, you can run the commands shown in the following screen-shot to enable the SSH server. (This command sequence is adapted from [Bitnami's documentation](https://docs.bitnami.com/virtual-machine/faq/get-started/enable-ssh/), which may provide additional links that are useful to you.)
+
+:::info
+Just to emphasise, since some people have missed this: you actually need to look at the commands being typed at the shell prompt within the screen capture that follows!
+:::
 
 ![](https://i.imgur.com/GuaFqzf.png)
 
@@ -602,7 +614,7 @@ You shouldn't need to change the IP addresses manually, and I wouldn't expect th
 Remember that your IP addresses are likely to be different from the ones I see, so you will need to replace the values I see with the values on your system.
 :::
 
-Your two VMs should now be able to reach each other, using the virtual network. You can test this by using the `ping` command. I logged into my `bitnami-lampstack-1` VM using its console window and could successfully ping both my own address (10.0.2.15) and that of the other VM (10.0.2.16). 
+Your two VMs should now be able to reach each other, using the virtual network. You can test this by using the `ping` command (`ping` performs a simple network connectivity test between where it is run, and some other point on the internet). I logged into my `bitnami-lampstack-1` VM using its console window and could successfully ping both my own address (10.0.2.15) and that of the other VM (10.0.2.16). 
 
 ![](https://i.imgur.com/9GHOvAl.png)
 
