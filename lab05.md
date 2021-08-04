@@ -1,7 +1,7 @@
 ---
 tags: cosc349
 ---
-# COSC349 Lab 5—Cloud Architecture—2020
+# COSC349 Lab 5—Cloud Architecture—2021
 ## Lab 5—An introduction to Docker
 
 The computers in Lab E and Lab F can be (re)booted into macOS or Linux. This lab requires you to boot into macOS, since the CS Lab Linux environment has not been set up to directly support Docker.
@@ -40,6 +40,7 @@ You can clone a `git` repository containing a `Vagrantfile` that creates Ubuntu 
 ```
 git clone https://altitude.otago.ac.nz/cosc349/lab05-docker cosc349-lab05-docker
 cd cosc349-lab05-docker
+vagrant up
 vagrant ssh
 ```
 
@@ -76,7 +77,13 @@ chmod o+x ~/Library/Containers
 ```
 :::
 
-The Docker Desktop is installed under the application name "Docker.app" on macOS. In your menu bar a whale icon will appear—when the square containers within the icon stop animating, then the underlying Linux VM has started up. After that point, `docker` commands in the Terminal will work.
+The Docker Desktop is installed under the application name "Docker.app" on macOS. 
+
+:::warning
+Getting Docker Desktop to start on the CS Lab computers appears not to be an entirely smooth experience. It is likely to report that it needs to install software and that you need to authenticate. If you do so, and potentially after exiting and starting Docker.app again, eventually it does seem to start working OK.
+:::
+
+In your menu bar a whale icon will appear—when the square containers on top of the whale within the icon stop animating, then the underlying Linux VM has started up. After that point, `docker` commands in the Terminal will work.
 
 You can click the menu bar icon to open up the Docker Desktop dashboard. Explore the GUI to discover what operations and diagnostics you can acquire regarding your Docker containers.
 
@@ -84,4 +91,8 @@ When you have finished with the lab exercise you should delete your containers, 
 
 ### Over to the actual learning material...
 
-Rather than copy the material from that lesson here, please work through his existing [Introduction to Docker](https://dme26.github.io/docker-introduction/) lesson web pages (https://dme26.github.io/docker-introduction/). Comments and pull-requests are most welcome on that material. It has been used for teaching at other institutions, but still is at an early stage of development. Because you all have experience with the Unix shell, and a CS background, it is likely that you will progress through the material more quickly than the suggested time guide.
+Rather than copy the material from that lesson here, please work through this snapshot of the  [Introduction to Docker](https://dme-forks.github.io/2021-07-07-docker-introduction/) material that I used for a workshop I ran in July 2021. It would be good for you to complete the core lesson material, you are of course welcome to complete the extension exercises if you want to.
+
+For your interest, ongoing development of the Docker lesson is continuing collaboratively on the [Carpentries Incubator](https://carpentries-incubator.github.io/docker-introduction/), after I contributed the initial verison of the material.
+
+Comments and pull-requests are most welcome on that material. It has been used for teaching at other institutions, but still is at an early stage of development. Because you all have experience with the Unix shell, and a CS background, it is likely that you will progress through the material more quickly than the suggested time guide.
