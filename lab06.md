@@ -1,7 +1,7 @@
 ---
 tags: cosc349
 ---
-# COSC349 Lab 6—Cloud Architecture—2020
+# COSC349 Lab 6—Cloud Architecture—2021
 [Lab 3]: /bi1pAIlXT3O4WezjVtqPrA
 
 ## Lab 6—Additional Vagrant exploration
@@ -13,7 +13,7 @@ This lab has been added to emphasise some information, methods and techniques th
 ## Multiple VMs within one `Vagrantfile`
 
 :::info
-Material for running multiple VMs within one `Vagrantfile` was referenced at then ed of [Lab 3], but we will explore it in more detail within this lab.
+Material for running multiple VMs within one `Vagrantfile` was referenced at the end of [Lab 3], but we will explore it in more detail within this lab.
 :::
 
 An useful capability of Vagrant is to be able to manage multiple VMs within a single `Vagrantfile`. This type of use of Vagrant is likely to be useful for, say, COSC349 assignment work.
@@ -37,12 +37,12 @@ IP addresses are 32-bit numbers, although for additional readability they're sho
 
 IP addresses are not all globally usable and reachable though. IP addresses are split at some bit position such that the high-order bits give the network number, and the low-order bits give the host number on that particular network. 
 
-All hosts with the same network number can reach each other directly, as it's a local area network. To reach hosts on other network numbers, traffic is set to one particular address on the same network number: that of the gateway or router, which is responsible for interconnecting different network numbers together.
+All hosts with the same network number can reach each other directly, as having the same network number indicates being on the same local area network, i.e., LAN (in effect). To reach hosts on other network numbers, traffic is set to one particular address on the same network number: that of the gateway or router, which is responsible for interconnecting different network numbers together.
 
 Network addresses are typically written as a full IP address followed by a /n where 'n' indicates the number of network number bits versus host number bits. By convention all the host bits are set to 0 when describing the network's address as an IP address.
 
 Let's work through an example. Say we have a network 192.168.2.0/24. The slash 24 indicates that the top 24-bits of this IP address are the network number, and the remaining 8-bits are the host number. Thus on this network we have space for 256 host numbers. A given VM might be at 192.168.2.11, for example. There are at least three addresses of the 256 that you shouldn't use, though:
-- the lowest host number, 0, is usually used to identify the network, so allocating a host there would confuse matters, i.e., don't allocate a VM to 192.168.2.0 but instead start your numbering higher---I'd typically start at 192.168.2.2;
+- the lowest host number, 0, is usually used to identify the network itself, so allocating a host there would confuse matters, i.e., don't allocate a VM to 192.168.2.0 but instead start your numbering higher---I'd typically start at 192.168.2.2;
 - the highest host number, 255, is usually used for the broadcast address, that transmits to all hosts on that local network, i.e., don't allocate a VM to 192.168.2.255, instead 192.168.2.254 should be the highest IP address that you use;
 - for non-private networks there is one address used as a gateway or a router: it is the address to which all traffic not within the current network is sent, and VirtualBox often allocates the second-lowest host number, 1, I think, so don't allocate a VM to 192.168.2.1.
 
@@ -71,7 +71,9 @@ Most operating systems allow you to refer to ports either by number, or by using
 
 ### Very quick primer on DNS
 
-Basically, the domain name service (DNS) provides a way to give computers human-readable names that can be discovered from a distributed database built from intercommunicating DNS servers.
+Basically, the domain name service (DNS) provides a way to give computers human-readable names that can be discovered from a distributed database built from intercommunicating DNS servers. 
+
+The typical use for DNS is to allow users' software to take DNS names and discover IP addresses that those DNS names map to. It is then possible to make connections to the computers that the DNS names refer to. For example, when given a URL to "go to" your web browser will use DNS to discover the IP address of the web server to connect to, from the DNS name contained within the URL.
 
 For many of the examples we've seen in COSC349 labs, we have used IP addresses instead of DNS names for VMs. This is almost always acceptable.
 
@@ -112,7 +114,7 @@ COMMAND  PID  USER   FD   TYPE DEVICE SIZE/OFF NODE NAME
 mysqld  3966 mysql   29u  IPv4  23688      0t0  TCP *:mysql (LISTEN)
 ```
 
-The command `lsof` normally lists open files, but has the `-i` option to look for open Internet ports instead. (The `-n` option just speeds things up a bit by requesting `lsof` not to look up the DNS names of IP addresses.) We've asked it to search for any address open on the MySQL port, which is numerically 3306 (So `sudo lsof -i :3306` should produce the same output, and the `-P` option would lead `lsof` to tell you the port number in the output instead of the named port number).
+The command `lsof` normally lists open files, but has the `-i` option to look for open Internet ports instead. (The `-n` option just speeds things up a bit by requesting `lsof` not to look up the DNS names of IP addresses.) We've asked it to search for any address open on the MySQL port (i.e., the TCP port usually used by MySQL servers), which is numerically 3306 (So `sudo lsof -i :3306` should produce the same output, and the `-P` option would lead `lsof` to tell you the port number in the output instead of the named port number).
 
 So at this point it seems that MySQL is running, and that it's open to receive traffic from the Internet (the `*` within `*:mysql`).
 
@@ -381,12 +383,12 @@ Try to factor out two scripts, `build-webserver-vm.sh` and `build-dbserver-vm.sh
 
 Note that if you are making changes to a `Vagrantfile`, it may be advisable to `vagrant destroy` all the VMs before you make major changes to the `Vagrantfile`.
 
-If you are running on Windows, it may be useful to add your new scripts' names into the .gitattributes file, to tell `git` to use Unix line endings. Looking inside the existing .gitattributes files, you can see the two lines that specify Unix line endings (LF) for the scripts `setup-database.sql` and `test-website.conf`.
+If you are running on Windows, it may be useful to add your new scripts' names into the `.gitattributes` file, to tell `git` to use Unix line endings. Looking inside the existing `.gitattributes` files, you can see the two lines that specify Unix line endings (LF) for the scripts `setup-database.sql` and `test-website.conf`.
 
 ## Pitfalls
 
 - The `2` in the top of the `Vagrantfile` in the line `Vagrant.configure("2") do |config|` is not the number of VMs, it's the version number of the `Vagrantfile` format itself, so you shouldn't change it.
 - One potential source of confusion is the paths `/home/vagrant` versus `/vagrant`. When you login to your VM, e.g., using the `vagrant ssh` command, you will be in the home directory of the `vagrant` user, namely `/home/vagrant`. However if you want to access the shared folder between the VM and the host, this is at the different folder, `/vagrant`.
-- During provisioning your scripting within your `Vagrantfile` runs as `root`, but `vagrant ssh` takes you to a shell for the `vagrant` user. Thus to run privileged commands as they worked within the Vagrantfile, if you've logged in as the `vagrant` user, you will need to use `sudo` before the privileged command (`sudo` stands for "super-user do", i.e., run the command that follows as the (almost) all powerful superuser).
+- During provisioning your scripting within your `Vagrantfile` runs as `root`, but `vagrant ssh` takes you to a shell for the `vagrant` user. Thus to run privileged commands as they worked within the `Vagrantfile`, if you've logged in as the `vagrant` user, you will need to use `sudo` before the privileged command (`sudo` stands for "super-user do", i.e., run the command that follows as the (almost) all powerful superuser).
 - Remember that `/vagrant` is, essentially, a network drive from the perspective of your VM. Exactly how access control and file permissions operate can depend on the host operating system. For example, a Windows host is unlikely to preserve all of the file permissions you might make within the VM using a command such as `chmod`. Also, we saw in the CS Labs what appears to be a difficulty in managing permissions from inside the VM on paths under `/vagrant` when the host's directory (the one containing the `Vagrantfile`) is itself on a network drive (e.g., your CS home directory).
     - Remember that you do not necessarily have to access files at runtime from under `/vagrant`—you can instead have your provisioning script copy content from under `/vagrant` to some other path (e.g., under `/home/vagrant`), where your files will be sitting on a Linux filesystem where `chmod` will work as expected, rather than the network share that VirtualBox is creating to effect paths under `/vagrant`.
