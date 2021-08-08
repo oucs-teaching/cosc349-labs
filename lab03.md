@@ -748,4 +748,6 @@ It may be difficult to convert your provisioning steps into a scripted version i
 
 It is very important to check that you have not broken the functionality of automatic provisioning if you modify your scripts at all. However leaving your computer to re-run a clean checkout of the containing repository and building of your Vagrant VM should not require your attention before provisioning is completed. 
 
-After a development session I typically `git clone` and `vagrant up` in a terminal window that I hide while my attention is elsewhere. I periodically check back to see whether the Vagrant provisioning is complete, and then do any application testing required to be sure that I have a clean build process that creates a working application.
+After a development session I typically `git clone` and `vagrant up` in a terminal window that I hide while my a
+
+, and thus can be tested to work while you proceed to progress other work.
