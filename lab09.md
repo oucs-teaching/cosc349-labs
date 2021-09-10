@@ -109,6 +109,11 @@ vagrant@ubuntu-xenial:~$ aws s3 ls
 
 ## Create a keypair on EC2
 
+:::info
+:confused: 
+For some reason, I have described the process here for creating a new key pair as if you have never done so... but you probably created a key pair back in lab 4! You can use the key pair from lab 4, and skip creating another one, although having multiple key pairs will not break anything---provided that you match up the name of the key pair (used by AWS to look it up) with the private key file that you specify (used by your local software to prove to AWS that it's your key).
+:::
+
 - We will define an AWS key pair with a given name that can be loaded into EC2 instances that you create.
 - Navigate your web browser to your AWS console:
 
