@@ -6,9 +6,9 @@ tags: cosc349
 
 [Lab 8]: /a8wHsmkVTh6-ud_vNAe2Mw
 
-:::warning
+:::info
 :warning: 
-This lab has been tested in 2021, however not yet on the CS lab computers. If you do the lab early, and run into problems when working on the CS lab computers, please let the teaching team know.
+This lab has been tested in 2021, on my laptop, and on the CS labs to the extent to which your user account will behave like mine does. If you do the lab early, and run into problems when working on the CS lab computers, please let the teaching team know.
 :::
 
 This lab involves deploying virtual machines into Amazon EC2 using Vagrant. More detailed use of SSH is also explored.
@@ -40,12 +40,14 @@ Vagrant is not likely to be widely used for AWS resource management. However giv
 It would be much more common to use a cloud-focused orchestration tool such as Terraform (by the same developers that wrote Vagrant), or possibly just custom scripting built over the `aws` command line tool. (Note that as from 2021 the `aws` command line tool should be installed within the CS lab macOS environment.)
 :::
 - Install the AWS plug-in into your Vagrant environment:
-    - In the CS Labs ([source of fix](https://github.com/mitchellh/vagrant-aws/issues/539#issuecomment-398100794)):
+    - In the CS Labs ([source of fix](https://github.com/mitchellh/vagrant-aws/issues/539#issuecomment-398100794), augmented by my/Dave's further tinkering):
      ```shell=-
-     vagrant plugin install --plugin-version 1.0.1 fog-ovirt
-     vagrant plugin install vagrant-aws
+    vagrant plugin install --plugin-version 1.5.11 nokogiri
+    vagrant plugin install --plugin-version 1.0.1 fog-ovirt
+    vagrant plugin install --plugin-version 0.2.0 dry-inflector
+    vagrant plugin install vagrant-aws
      ```
-    - On recently downloaded or updated Vagrant installations:
+    - On recently downloaded or updated Vagrant installations you should be able to install the plugin directly:
     ```shell=-
     vagrant plugin install vagrant-aws
     ```
@@ -111,7 +113,7 @@ vagrant@ubuntu-xenial:~$ aws s3 ls
 
 :::info
 :confused: 
-For some reason, I have described the process here for creating a new key pair as if you have never done so... but you probably created a key pair back in lab 4! You can use the key pair from lab 4, and skip creating another one, although having multiple key pairs will not break anything---provided that you match up the name of the key pair (used by AWS to look it up) with the private key file that you specify (used by your local software to prove to AWS that it's your key).
+For some reason, I have described the process here in lab 8 for creating a new key pair as if you have never done so... but you probably created a key pair back in lab 4! You can use the key pair you created back in lab 4, and skip creating another one, although having multiple key pairs will not break anything---provided that you match up the name of the key pair (used by AWS to look it up) with the private key file that you specify (used by your local software to prove to AWS that it's your key).
 :::
 
 - We will define an AWS key pair with a given name that can be loaded into EC2 instances that you create.
