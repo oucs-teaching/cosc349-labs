@@ -1,7 +1,7 @@
 ---
 tags: cosc349
 ---
-# COSC349 Lab 12—Cloud Architecture—2019
+# COSC349 Lab 12—Cloud Architecture—2021
 ## Lab 12—Work on assignment 2
 
 This lab time has been set aside for you to work on assignment 2.
@@ -12,13 +12,11 @@ Some suggestions regarding techniques and approaches to problems that have been 
 
 Note that there is documentation about the services supported (or not) by AWS Educate Starter Accounts (although apparenty accessing some of the database APIs don't behave as expected).
 
-https://s3.amazonaws.com/awseducate-starter-account-services/AWS_Educate_Starter_Accounts_and_AWS_Services.pdf
-
 ## Apache error handling
 
 When Apache presents error pages, it writes additional information into its log files. For example a 403 error (access denied) can be due, for example, to the Apache user (e.g., `www-data`) not being able to read files owned by `root`.
 
-When SSHed into your Apache VM, you can show the end of th error log using `sudo tail /var/log/apache2/error.log` (this is the location where Debian and Ubuntu Linux put their Apache log files: if you're using a different variant of Linux, you should check the its documentation for details).
+When SSHed into your Apache VM, you can show the end of the error log using `sudo tail /var/log/apache2/error.log` (this is the location where Debian and Ubuntu Linux put their Apache log files: if you're using a different variant of Linux, you should check the its documentation for details).
 
 As far as I can tell there is not an easy way to cause Apache to present this detailed information on the error pages themselves. In general this would be a very bad idea in terms of computer security, which is why I suspect that the facility is not provided.
 
@@ -33,7 +31,7 @@ Lab 1's shell material links to COSC241's first lab, which covers use of relevan
 ## Facilitating VMs finding out about each other's addresses
 
 :::info
-This section discusses mechanisms for automating the setup of sets of VMs. However please remember that automated deployment is **not** a requirement of assignment two! You are free to manually `ssh` into your instances to give them the details required to get your application running in the cloud. Having said that, automation is more convenient, but you don't want to get stuck on it.
+This section discusses mechanisms for automating the setup of sets of VMs. However please remember that automated deployment is **not** a requirement of assignment two! You are free to manually `ssh` into your instances to give them the details required to get your application running in the cloud. Having said that, automation is more convenient when it works smoothly, but you don't want to get stuck on it.
 :::
 
 - It's a common problem that a set of VMs need to find out each other's addresses so that they can interlink.
@@ -50,7 +48,7 @@ For example, I've applied this type of approach running `vagrant up --provider=a
 
 ### Use a shared resource to coordinate configuration
 
-If you're using an approach such as `vagrant` to copy files to your VM, you can set up `.aws/credentials` to be copied, so that the provisioning script can run `aws` commands as "you".
+If you're using an approach such as `vagrant` to copy files to your VM, you can set up `.aws/credentials` to be made available, so that the provisioning script can run `aws` commands as "you".
 
 You can set up a resource that all of your VMs can access, such as an S3 bucket that contains a set of objects giving the addresses of your VMs.
 
@@ -61,14 +59,14 @@ There will be other ways to scan for AWS resources: although I have not used the
 ## Permissions if using Vagrant for deployment
 
 :::info
-Note that it is absolutely not required that you use Vagrant to deploy your application to the cloud.
+:bulb: Note that it is absolutely **not required** that you use Vagrant to deploy your application to the cloud.
 :::
 
 However, if you do use Vagrant to deploy your application to the cloud remember that your provisioning script will be running as `root` whereas if you `ssh` into an EC2 instance that you've provisioned, then you will be running as `ubuntu` or whatever the default user is for the operating system AMI that you're deploying.
 
 One useful approach is to run scripts as user `ubuntu` from your Vagrant provisioning scripting. The `su` command can be used to do this.
 
-Looking at Vagrantfiles I've used in the past for research work, I see lines such as—
+Looking at `Vagrantfile`s I've used in the past for research work, I see lines such as—
 ```
 su -c "echo 'run some shell script'; ./some-shell-script.sh" ubuntu
 ```
@@ -76,7 +74,7 @@ su -c "echo 'run some shell script'; ./some-shell-script.sh" ubuntu
 
 ## Expiry of the AWS Educate sessions
 
-The validity of the "role" that allows you to use AWS Educate is set to be one hour by default.
+The validity of the "role" that allows you to use AWS Educate seems to be set to be around one hour, by default.
 
 Keep this in mind when deploying your applications to the cloud, since it means that you should check that after an hour or so, your application still works. In particular, just passing your `.aws/credentials` to your cloud scripting means it will only work until your role refreshes.
 
