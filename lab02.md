@@ -1,7 +1,7 @@
 ---
 tags: cosc349
 ---
-# COSC349 Lab 2—Cloud Architecture—2021
+# COSC349 Lab 2—Cloud Architecture—2022
 
 [Lab 4]: /DclJIDNxQtO40T8TnOOvEg
 [COSC301 lab book]: https://www.cs.otago.ac.nz/cosc301/student2019.pdf
@@ -10,11 +10,13 @@ tags: cosc349
 
 ### Dynamically updating lab exercises...
 
-When we discover bugs, typos, or areas that need elaboration in any of the lab exercises, I may well be fixing things _in_ the lab class. If you log in to https://hackmd.io you will be able to edit the lab exercises yourself, and will have any changes anyone makes to this page pushed to your web browser dynamically. If you do not log in, before seeking help, try reloading the web page to receive any updates to its content.
+When we discover bugs, typos, or areas that need elaboration in any of the lab exercises, Dave or Pradeesh may well be fixing things _in_ the lab class. If you log in to https://hackmd.io you will be able to edit the lab exercises yourself, and will have any changes anyone makes to this page pushed to your web browser dynamically. If you do not log in, before seeking help, try reloading the web page to receive any updates to its content.
 
 ### Before starting lab 2... please register for AWS Educate
 
-Before starting on the material for lab 2, please work through the [preliminaries section at the start of lab 4][Lab 4]. The reason for doing so is that approval of your application for AWS Educate access on the Amazon Cloud is partly manual, so you want that process to progress asynchronously to your work in the preceding weeks. A few business days should be sufficient, but two weeks is even safer...
+Before starting on the material for lab 2, please work through the sign up process for AWS Academy. You will need to have completed the COSC349 "test" on Blackboard that gices me (Dave) permission to upload your student email address to AWS Academy for use of AWS cloud resources.
+
+Joining AWS Academy may require some manual approval on the AWS side, so you want to be doing this ahead of when you need to use AWS cloud resources in labs and assignments.
 
 ## Lab 2—Virtualisation with VirtualBox
 
@@ -26,7 +28,7 @@ Throughout the exercises, "VM" will be used as an abbreviation of "virtual machi
 
 ### Lab objectives
 
-1. Initiate AWS Educate account access for lab 4.
+1. Initiate AWS Academy account access for lab 4.
 2. Learn how to create and manage virtual machines using VirtualBox.
 3. Understand at a high-level what an OVA file contains, and how to import VMs into VirtualBox.
 4. Add a new web page on a LAMP stack running within a VirtualBox VM that you import.
@@ -34,7 +36,7 @@ Throughout the exercises, "VM" will be used as an abbreviation of "virtual machi
 
 ## Caution: VirtualBox creates large files
 
-As is typical with most virtualisation systems, working with VirtualBox will involve working with large files. You should keep an eye on where these large files accumulate, regardless of whether you are using your own computer, or using CS Lab computers. The typical sources of large files are:
+As is typical with most (full / hardware) virtualisation systems, working with VirtualBox will involve working with large files. You should keep an eye on where these large files accumulate, regardless of whether you are using your own computer, or using CS Lab computers. The typical sources of large files are:
 - VMs' hard disk image files
 - Files that record snapshots of VM state (e.g., memory), or facilitate rolling-back changes to VMs' hard disk image files
 - Snapshots or clones of VMs
@@ -55,11 +57,11 @@ We recommend that you follow the same guidance as in the [COSC301 lab book] for 
 > 3. Under the General section, use the pull down menu at the right-hand side of the "Default Machine Folder:", choose "Other...", and then select the "myvms" folder that you created. For me, the resulting value is `/home/cshome/d/dme/Desktop/myvms`, and you can type in the equivalent for your user account directly.
 
 :::info
-VirtualBox on the lab machine I used is version 6.1.2. When you first start up VirtualBox, you may need to click "Details" on the welcome window that is shown on the right-hand part of the VirtualBox Manager window, so that you see the same sort of display that I do.
+The CS Labs are running version 6.1.16. When you first start up VirtualBox, you may need to click "Details" on the welcome window that is shown on the right-hand part of the VirtualBox Manager window, so that you see the same sort of display that I do.
 
 If you are running VirtualBox on your own computer, I assume that you will be using something in the version 6 series, from which the screen captures in this lab were recorded.
 
-Note that previous screen captures will sometimes be reused, assuming that you are comfortable to make up for small differences in the user interface.
+Note that previous screen captures will sometimes be reused (e.g., some are from version 6.1.2), assuming that you are comfortable to make up for small differences in the user interface.
 :::
 
 :::danger
@@ -125,7 +127,7 @@ Many technology projects have tried to moved away from potentially sensitive ter
 - In the CS Labs, navigate to `/home/cshome/scratch/dme/cosc349/ReactOS-0.4.11-Live.iso`. You can change to an explicit directory by typing <kbd>⌘</kbd><kbd>shift</kbd><kbd>g</kbd> and then typing, or pasting in a pathname.
 
 :::info
-If you are doing these labs on a computer other than a CS lab machine, you can find the ReactOS Live-CD ISO file on their website, and [download it from there](https://reactos.org/download/). Indeed ReactOS is at version 0.4.13, but this difference won't matter here.
+If you are doing these labs on a computer other than a CS lab machine, you can find the ReactOS Live-CD ISO file on their website, and [download it from there](https://reactos.org/download/). Indeed ReactOS is at version 0.4.14, but this difference won't matter here.
 :::
 
 
@@ -141,11 +143,12 @@ If you are doing these labs on a computer other than a CS lab machine, you can f
 ![](https://i.imgur.com/ECeulXU.png)
 
 - A new window should appear that is the "monitor" of your VM, which I will also refer to as the "console window".
-- On Macs with retina displays, VirtualBox may present a microscopic window. You can change the window size by clicking on he little picture of a screen in the bottom toolbar of the VM's window (i.e., the one with title "ReactOS test [Running]"). You can choose "Virtual Screen 1" and a setting like "Scale to 200%".
+- On Apple Macs with retina displays, VirtualBox may present a microscopic window. You can change the window size by clicking on he little picture of a screen in the bottom toolbar of the VM's window (i.e., the one with title "ReactOS test [Running]"). You can choose "Virtual Screen 1" and a setting like "Scale to 200%".
 - Note that VirtualBox may pop up some prompts over the top of the console window. You can dismiss them once or permanently by clicking on the icons at the right-hand side of the pop-ups.
 
 :::warning
-Note that the VirtualBox "monitor" or "console windows" will potentially "capture" your mouse and/or keyboard. This is because it is trying to pass as much data as possible to the VM. However, this can be surprising if your mouse pointer vanishes, or you can't use your keyboard to switch windows anymore.
+:warning: 
+Note that the VirtualBox "monitor" or "console windows" will potentially "capture" your mouse and/or keyboard. This is because it is trying to pass as much data as possible to the VM. However, this can be surprising if your mouse pointer vanishes, or you can't use your keyboard to switch windows anymore!
 
 To release your keyboard and mouse, you need to press the VirtualBox "host key", which is shown at the bottom-right of the console window. It's the left-<kbd>command</kbd> key on my system: i.e., pressing that key once will "release" my keyboard and mouse.
 
@@ -181,7 +184,8 @@ At least once in the lab environment the VM failed to start up correctly for me.
 - ReactOS should then complete starting up, showing you a desktop interface that widely resembles (past versions of) a common commercial operating system.
 
 :::info
-Aside: ReactOS ended up [in the tech news](https://www.theregister.co.uk/2019/07/03/reactos_a_ripoff_of_the_windows_research_kernel_claims_microsoft_kernel_engineer/) soon after I had decided to use it with COSC349 labs. While the news item highlights questions regarding the provenance of the source code of ReactOS, the overall mission to create an open-source Win32 operating system is commendable, in my opinion. Such initiatives can extend the life of perfectly functional hardware, despite the need for commercial profits having causing such equipment to be deserted by commercial vendors. (I'm not blaming the vendors, but it would be good for governments and peoples globally to evolve to avoid much of the pointless wastefulness currently embodied within the technology sector... Your mission, should you choose to accept it...)
+:bulb: 
+Aside: ReactOS ended up [in the tech news](https://www.theregister.co.uk/2019/07/03/reactos_a_ripoff_of_the_windows_research_kernel_claims_microsoft_kernel_engineer/) soon after I had first decided to use it with COSC349 labs. While the news item highlights questions regarding the provenance of the source code of ReactOS, the overall mission to create an open-source Win32 operating system is commendable, in my opinion. Such initiatives can extend the life of perfectly functional hardware, despite the need for commercial profits having causing such equipment to be deserted by commercial vendors. (I'm not blaming the vendors, but it would be good for governments and peoples globally to evolve to avoid much of the pointless wastefulness currently embodied within the technology sector... Your mission, should you choose to accept it...)
 :::
 
 ![](https://i.imgur.com/1Lz2f2A.png)
@@ -193,6 +197,7 @@ Aside: ReactOS ended up [in the tech news](https://www.theregister.co.uk/2019/07
 - From the pane that appears, you can click "Power off the machine" to effectively yank the power-plug out of the virtual computer.
 
 :::success
+:heavy_check_mark: 
 What have we achieved so far in this lab?
 
 You have now shown that you can start up and interact with a virtual machine—in this case running an experimental operating system—without interference to your host operating system.
@@ -212,6 +217,7 @@ VirtualBox provides a rich set of ways to manage virtual networks. VirtualBox [p
 ### Setting up a VirtualBox "host only network"
 
 :::danger
+:warning: 
 At least for me, host-only networking does not function correctly in the CS labs.
 
 You should thus just skip to the next section "Let’s import a VM from an OVA file", and read about host-only networks only if you expect to use them on your own computers.
@@ -246,6 +252,7 @@ We will use an OVA file from the [Bitnami] ecosystem. The [Bitnami application c
 For testing, we will use an instance of a LAMP stack: namely a VM running Linux that provides the Apache web server, MySQL and the PHP language for web development. We will be working with the OVA file that has been cached at:`/home/cshome/scratch/dme/cosc349/bitnami-lampstack-7.2.19-2-r56-linux-debian-9-x86_64.ova`
 
 :::info
+:bulb: 
 If you are doing this lab exercise somewhere other than the CS Labs, you can visit the [Bitnami application catalog] to download an OVA file similar to that above. (Minor differences in versions should make no significant difference... although you shouldn't use the old versions for real applicaions, as they probably contain security flaws.)
 :::
 
@@ -402,6 +409,7 @@ After letting Linux boot, I reached a console page that indicated that the VM's 
 The above screen states that you can use the web address shown, which is http://10.0.2.15 for me, to access the Bitnami web application.
 
 :::warning
+:warning: 
 However this will not work, as the particular IP address 10.0.2.15 here only exists "behind" the NAT mapping, so browsers on your host computer cannot connect to that address. (Originally I tried using a host-only network for this part of the lab, which was straightforward on my laptop, but did not work in the CS Labs.)
 :::
 
@@ -426,12 +434,14 @@ In the window that appears, you can edit a table that contains a row per port fo
 Enter data to match the screen capture below, but note that you need to insert the IP address in the "Guest IP" column of _your_ VM, which will be shown on the console for `bitnami-lampstack-1` on your computer. The Host IP should be entered as shown, as `127.0.0.1` is a special IP address meaning the host itself.
 
 :::info
+:bulb: 
 Just for your interest, if you enter your host's IP address on its LAN connection, instead of `127.0.0.1`, this means that computers *elsewhere on the internet* can potentially connect to that port and reach your VM—which is almost certainly **not** what you want to do, within this lab exercise, but can be useful in other contexts.
 :::
 
 ![](https://i.imgur.com/bM2SCyH.png)
 
 :::warning
+:warning: 
 Note that you need to click "OK" on all the settings windows you've opened before the port forwarding will actually be activated! (Clicking "OK" on the window showing the table of NAT rules is not enough.)
 :::
 
@@ -442,12 +452,16 @@ Now if you open http://127.0.0.1:8180 in your web browser (or whatever port you 
 The preceding page is generated by the Apache web server running on the Linux VM that you imported.
 
 :::warning
-Please let me know if you have absolutely no experience or comfort with web technology such as HTML. While we will be using web technologies in the lab exercises, we will not focus on best practice in using these web technologies, so a prerequisite of COSC212, or even COMP112, would have been overkill. You can access the materials for those papers should you need reference material, and there is also a vast amount of high quality learning material available on the web.
+:loudspeaker: 
+Please let me know if you have absolutely no experience or comfort with web technology such as HTML. While we will be using web technologies in the lab exercises, we will not focus on best practice in using these web technologies, so a prerequisite of COSC212, or even COMP112, would have been overkill. You can access the materials for those papers should you need reference material, and there is also a vast amount of high quality learning material available on the web. 
+
+Computer Science is also this year (2022) in the process of launching our new 200-level papers, which are intended to eventually provide the authoritative information source about web technologies and networking.
 :::
 
 Now let's login to the console of the VM (follow its instructions in terms of the initial password, required changes to the password, etc.).
 
 :::info
+:cloud: 
 In my case, I fumbled entering the existing, default password, and thus the first-login requirement to change password didn't actually successfully change my password! You can always later change your password within your VM by using the `passwd` command within a shell running on the VM.
 :::
 
@@ -464,6 +478,7 @@ What you have achieved is creation of a new PHP script that runs the `phpinfo()`
 ![](https://i.imgur.com/TQ3aZGo.png)
 
 :::success
+:heavy_check_mark: 
 You have now achieved creating a web script—even if it is a small one—on a LAMP stack virtual machine.
 :::
 
@@ -476,7 +491,8 @@ Using Secure Shell (SSH) is often a more convenient way to interact with VMs' wh
 On the VirtualBox console, you can run the commands shown in the following screen-shot to enable the SSH server. (This command sequence is adapted from [Bitnami's documentation](https://docs.bitnami.com/virtual-machine/faq/get-started/enable-ssh/), which may provide additional links that are useful to you.)
 
 :::info
-Just to emphasise, since some people have missed this: you actually need to look at the commands being typed at the shell prompt within the screen capture that follows!
+:eyes: 
+Just to emphasise, since some students have missed this in the past: you actually need to look at the commands being typed at the shell prompt within the screen capture that follows!
 :::
 
 ![](https://i.imgur.com/GuaFqzf.png)
@@ -600,17 +616,20 @@ You should then be able to restart your first VM and check that it is using a di
 ![](https://i.imgur.com/b9gKHoW.png)
 
 :::info
-if you want to temporarily change the IP address of your VM (the change won't survive reboots), you can instead use the `ifconfig` command to find out the name of your network interface (my VM used an interface named `enp0s3` so yours probably will too), then run a command to remove the old address `sudo ip addr del 192.168.56.201/24 dev enp0s3` and add the new address that you want, such as `sudo ip addr add 192.168.56.202/24 dev enp0s3`.
+:bulb:
+If you want to temporarily change the IP address of your VM (the change won't survive reboots), you can instead use the `ifconfig` command to find out the name of your network interface (my VM used an interface named `enp0s3` so yours probably will too), then run a command to remove the old address `sudo ip addr del 192.168.56.201/24 dev enp0s3` and add the new address that you want, such as `sudo ip addr add 192.168.56.202/24 dev enp0s3`.
 :::
 
 
 :::warning
+:warning:
 You shouldn't need to change the IP addresses manually, and I wouldn't expect that you would be entirely comfortable with this process. Future tools that we use should make the whole process easier. If things seem to break for you, just continue with the suggested exercises in the next section.
 :::
 
 ### DHCP worked to give your VMs different IP addresses
 
 :::warning
+:warning:
 Remember that your IP addresses are likely to be different from the ones I see, so you will need to replace the values I see with the values on your system.
 :::
 
