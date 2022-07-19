@@ -6,6 +6,10 @@ tags: cosc349
 
 The computers in Lab E and Lab F can be (re)booted into macOS or Linux. Some COSC349 labs will require you to boot into macOS, although for the first part of this lab you can choose whichever operating system suits you better.
 
+:::info
+Note that the COSC349 was launched back in 2019 with the expectation of an updated CS 200-level set of papers. These are first being run this year in 2022. For the next few years there will be students who have taken different paths through the CS (and InfoSci) 200-level papers, and this may affect your experience in COSC349. Please just let the COSC349 teaching team know where the pace is too fast (or too slow).
+:::
+
 ### Lab objectives
 
 1. To ensure all students understand how to gain basic proficiency with the Unix shell and the Department of Computer Science (CS) teaching lab environment. The majority of students in COSC349 will already have this proficiency, and can skip [Lab 1(a)][].
@@ -38,6 +42,7 @@ The first COSC241 lab is still available at https://www.cs.otago.ac.nz/cosc241/p
     - **Getting Help**
     - **Changing your password**
 - Do note the section discussing the `hex.otago.ac.nz` server and accessing files from off campus, although how you access your files in the CS environment is something that ITS are progressively changing.
+- Use `hextreme.otago.ac.nz` instead of `hex.otago.ac.nz`
 - The **Assessed exercises** can be taken as exercises, but they will not be assessed (in COSC349).
 - Do not perform any of the steps under the **Marking** section.
 
