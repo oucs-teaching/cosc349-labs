@@ -1,6 +1,8 @@
 ---
 tags: cosc349
 ---
+%hackmd theme-dark %
+
 # COSC349 Lab 2—Cloud Architecture—2022
 
 [Lab 4]: /DclJIDNxQtO40T8TnOOvEg
@@ -50,7 +52,8 @@ In some circumstances, these large files may remain on your computer even if you
 
 We recommend that you follow the same guidance as in the [COSC301 lab book] for setting up VirtualBox in the CS labs, as quoted below (with minor tweaks) from procedure 1.1 in section 1.4. This is not a strict requirement, but doing so means that you may be able to follow advice and documentation within the [COSC301 lab book] in addition to the instructions within this lab class.
 
-> Creating a “myvms” folder on your Desktop is a reasonable place to store your virtual machines.
+> Creating a “myvms” 
+on your Desktop is a reasonable place to store your virtual machines.
 > You must first configure VirtualBox appropriately such that the location of the virtual machine files will be stored in the "myvms" folder
 > 1. Start VirtualBox, which you will find in the Applications folder or the Dock on your macOS machine.
 > 2. From the menu, choose VirtualBox→Preferences....
@@ -110,6 +113,12 @@ Note that the rectangles with dashed outlines in the screenshots below are redac
 
 ![](https://i.imgur.com/a9URTsO.png)
 
+- In the CS Labs, first run the following commands to mount the directory
+```
+$ mkdir ~/Desktop/cosc349 && mount -t nfs nebula.otago.ac.nz:/cspool/cshome/scratch/dme/cosc349 ~/Desktop/cosc349
+
+``` 
+
 - Select the "Empty" CD-drive.
 - The right-hand pane of the window indicates that the storage device that you clicked is an "Optical Drive" attached to the "IDE Secondary Master". Note: on newer VirtualBox versions the terminology has been updated to say "IDE Secondary Device 0" and "IDE Secondary Device 1" instead of "IDE Secondary Master" and "IDE Secondary Slave".
 :::info
@@ -124,9 +133,13 @@ Many technology projects have tried to moved away from potentially sensitive ter
 ![](https://i.imgur.com/XVUGKB1.png)
 
 - You can choose a virtual "CD" to insert into your VM's virtual CD drive. Select "Choose Virtual Optical Disk File..." and the standard file selector panel should appear.
-- In the CS Labs, navigate to `/home/cshome/scratch/dme/cosc349/ReactOS-0.4.11-Live.iso`. You can change to an explicit directory by typing <kbd>⌘</kbd><kbd>shift</kbd><kbd>g</kbd> and then typing, or pasting in a pathname.
+
+
+- In the prompt, select **Add*. Then navigate to **Desktop** and then to the **cosc349** folder to select `ReactOS-0.4.11-Live.iso`. You can change to an explicit directory by typing <kbd>⌘</kbd><kbd>shift</kbd><kbd>g</kbd> and then typing, or pasting in a pathname.
 
 :::info
+
+
 If you are doing these labs on a computer other than a CS lab machine, you can find the ReactOS Live-CD ISO file on their website, and [download it from there](https://reactos.org/download/). Indeed ReactOS is at version 0.4.14, but this difference won't matter here.
 :::
 
@@ -248,12 +261,16 @@ We will use an OVA file from the [Bitnami] ecosystem. The [Bitnami application c
 
 [Bitnami]: https://bitnami.com
 [Bitnami application catalog]: https://bitnami.com/stacks
+[Bitnami 7.2.19-2-r56]: https://otagouni.sharepoint.com/:u:/s/COSC3492022/Eb7S04AkgptCqjHfBSHQtyYBE_CwpRwXbf6Dj3qyNjKWiA?e=FGpnGT
 
-For testing, we will use an instance of a LAMP stack: namely a VM running Linux that provides the Apache web server, MySQL and the PHP language for web development. We will be working with the OVA file that has been cached at:`/home/cshome/scratch/dme/cosc349/bitnami-lampstack-7.2.19-2-r56-linux-debian-9-x86_64.ova`
+For testing, we will use an instance of a LAMP stack: namely a VM running Linux that provides the Apache web server, MySQL and the PHP language for web development. We will be working with the OVA file that has been cached at:`~/Desktop/cosc349/bitnami-lampstack-7.2.19-2-r56-linux-debian-9-x86_64.ova`
 
 :::info
 :bulb: 
-If you are doing this lab exercise somewhere other than the CS Labs, you can visit the [Bitnami application catalog] to download an OVA file similar to that above. (Minor differences in versions should make no significant difference... although you shouldn't use the old versions for real applicaions, as they probably contain security flaws.)
+If you are doing this lab exercise somewhere other than the CS Labs, you can visit the [Bitnami application catalog] to download the OVA or alternatively you can download the image directly from [Bitnami 7.2.19-2-r56].(Minor differences in versions should make no significant difference... although you shouldn't use the old versions for real applicaions, as they probably contain security flaws.)
+
+
+Please ensure that you are running version 7.2.x, version 8 does not allow password login via SSH. You may run into some strange errors
 :::
 
 ### Examining an OVA file (for your interest)
@@ -261,11 +278,12 @@ If you are doing this lab exercise somewhere other than the CS Labs, you can vis
 Before we import from the OVA file, you may be interested to see what is inside this type of file. OVA files are actually just compressed TAR files (If you ask "What's a TAR file?", [Wikipedia explains](https://en.wikipedia.org/wiki/Tar_(computing)), but its usual role is akin to ZIP files), so we can use the `tar` command in a shell window to examine the contents of the OVA we are intending to use:
 
 ```
-$ tar -tf /home/cshome/scratch/dme/cosc349/bitnami-lampstack-7.2.19-2-r56-linux-debian-9-x86_64.ova
+$ tar -tf ~/Desktop/osc349/bitnami-lampstack-7.2.19-2-r56-linux-debian-9-x86_64.ova
 bitnami-lampstack-7.2.19-2-r56-linux-debian-9-x86_64.ovf
 bitnami-lampstack-7.2.19-2-r56-linux-debian-9-x86_64.mf
 bitnami-lampstack-7.2.19-2-r56-linux-debian-9-x86_64-disk1.vmdk
 ```
+
 
 You can add the `v` flag if you want to see the filesizes of these compressed files: you will discover that the vast bulk of the OVA file is made up from the single VMDK file within the archive. [VMDK files][VMDK] are the file format that VMware developed for virtual hard-disk files. The [VMDK file][VMDK] format is now an open standard.
 
@@ -274,7 +292,7 @@ You can add the `v` flag if you want to see the filesizes of these compressed fi
 The OVF file describes the type of information that we manually selected when we created a new VM manually in the previous part of this lab exercise. We can view its content by decompressing just the OVF file from the OVA file:
 
 ```
-$ tar -xOf /home/cshome/scratch/dme/cosc349/bitnami-lampstack-7.2.19-2-r56-linux-debian-9-x86_64.ova bitnami-lampstack-7.2.19-2-r56-linux-debian-9-x86_64.ovf
+$ tar -xOf ~/Desktop/cosc349/bitnami-lampstack-7.2.19-2-r56-linux-debian-9-x86_64.ova bitnami-lampstack-7.2.19-2-r56-linux-debian-9-x86_64.ovf
 ```
 
 The above command will produce a pile of XML, which isn't particularly human-readable, but does contain some recognisable configuration parameters regarding the virtual hard-disk, the network configuration required, etc.
@@ -368,7 +386,7 @@ The above command will produce a pile of XML, which isn't particularly human-rea
 
 VirtualBox knows how to create VMs from OVAs.
 
-From the main VirtualBox Manager window select the menu item `File` → `Import Appliance...` and in the file selection box that appears, navigate to `/home/cshome/scratch/dme/cosc349/bitnami-lampstack-7.2.19-2-r56-linux-debian-9-x86_64.ova` (or wherever you downloaded the OVA file to, if you are not using a CS Lab computer). Note that when you select the file a panel will appear similar to the following one, that has initialised the VM configuration from the OVF file. Note that your pathname at the top will be different. 
+From the main VirtualBox Manager window select the menu item `File` → `Import Appliance...` and in the file selection box that appears, navigate to `~/Desktop/cosc349/bitnami-lampstack-7.2.19-2-r56-linux-debian-9-x86_64.ova` (or wherever you downloaded the OVA file to, if you are not using a CS Lab computer). Note that when you select the file a panel will appear similar to the following one, that has initialised the VM configuration from the OVF file. Note that your pathname at the top will be different. 
 
 Note also that I double-clicked the "Name" field to add the number `1` at the end, as in `bitnami-lampstack-1` so that I could experiment with adding multiple VM instances from the same OVA.
 
