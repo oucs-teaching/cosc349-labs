@@ -67,7 +67,11 @@ AWS are currently still the world's leading public cloud provider. You may then 
 
 :::danger
 :bomb:
+If you are running this lab on CS machines, please use Firefox instead of Safari or Chrome.
+
 When I was trying to use the Learner Lab module from Safari (version 15.6, on a relatively old version of macOS 10.15.7), I did not see any of the lab controls. I switched to using Chrome (version 103.0.5060.134), and everything began to work as expected. Your mileage may vary, as the saying goes...
+
+
 :::
 
 ### Log into AWS Academy
