@@ -1,7 +1,7 @@
 ---
 tags: cosc349
 ---
-# COSC349 Lab 6—Cloud Architecture—2021
+# COSC349 Lab 6—Cloud Architecture—2022
 [Lab 3]: /bi1pAIlXT3O4WezjVtqPrA
 
 ## Lab 6—Additional Vagrant exploration
@@ -22,7 +22,7 @@ The repository at https://altitude.otago.ac.nz/cosc349/vagrant-multivm shows a w
 
 ## My method for building the multi-VM `Vagrantfile`
 
-- The `git` commits on the repository give a lot of information about how I built up the multi-VM `Vagrantfile`. This type of `git` commit structure is what should be present in the `git` repositories that you submit for assignment 1.
+- The Git commits on the repository give a lot of information about how I built up the multi-VM `Vagrantfile`. This type of Git commit structure is what should be present in the Git repositories that you submit for assignment 1.
 - What you'll see if you look through the changes in the repository commit by commit, is that I actually first set up a `Vagrantfile` that set up a VM running the web server and the database server on the same VM. I ensured that I could get that working, committed that version, and then moved to separate out the configuration into two separate VMs. I try always to apply this sort of task decomposition and progressive work when I can: over time I've (surprisingly slowly) learnt that it really is faster for me to make small steps and test them as I go, rather than assuming to make big leaps with occasional testing.
 
 ## Network configuration and testing
@@ -103,6 +103,7 @@ After running `vagrant up`, check that there are no unexpected error messages, a
 Let's connect to the database server: `vagrant ssh dbserver`. Note that if this command works, you have already tested that port forwarding to your VM's SSH server is working, since this is how Vagrant does its SSH connection. (You can request to see the OpenSSH configuration that Vagrant uses by running the `vagrant ssh-config` command instead of `vagrant ssh`.)
 
 :::info
+:eyes: 
 Note that the testing of MySQL here is unlikely to generalise usefully to other database engines: you will need to find equivalent commands in other databases' documentation or support communities.
 :::
 
@@ -320,7 +321,7 @@ th, td {
 <table border="1">
 <tr><th>Paper code</th><th>Paper name</th></tr>
 
-<tr><td>COSC326</td><td>Effective Programming</td></tr>
+<tr><td>COSC326</td><td>Computational Problem Solving</td></tr>
 <tr><td>COSC349</td><td>Cloud Computing Architecture</td></tr>
 </table>
 </body>
@@ -378,8 +379,6 @@ Note that you can use the VirtualBox GUI to open a console window for a Vagrant 
 As mentioned in [Lab 3], when provisioning VMs, I recommend trying to take lots of small steps, repeatedly testing the complete VM building process (i.e. `vagrant destroy`, `vagrant up`).
 
 In the multi-VM `Vagrantfile` we have been discussing in this lab, we have used internal provisioning scripts. You may find it more convenient to work with stand-alone scripts that can be edited independently of the `Vagrantfile`, and called upon from the shell purposes.
-
-Try to factor out two scripts, `build-webserver-vm.sh` and `build-dbserver-vm.sh` from the multi-VM example `Vagrantfile` that we've been working with. You may want to examine the relevant [Vagrant documentation](https://www.vagrantup.com/docs/provisioning/shell.html). You will need to change the `inline` attribute to a `path` attribute that specifies your provisioning script as a relative path from the `Vagrantfile`.
 
 Note that if you are making changes to a `Vagrantfile`, it may be advisable to `vagrant destroy` all the VMs before you make major changes to the `Vagrantfile`.
 
