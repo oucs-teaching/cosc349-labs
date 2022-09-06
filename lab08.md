@@ -128,21 +128,21 @@ Exercise:
 :::success
 :pencil: 
 Exercise:
-- If you want to examine what Amazon S3's logging information looks like, you will likely need to wait for quite a while—possibly hours—before the log writing process deposits data into the bucket you set up for logging. In my case, I left the S3 resources online overnight. I then viewed my logging bucket: (Apologies for the screen captures coming from a previous version of the user interface!)
+- If you want to examine what Amazon S3's logging information looks like, you will likely need to wait for quite a while—possibly hours—before the log writing process deposits data into the bucket you set up for logging. In my case, I left the S3 resources online for an hour or so. I then viewed my logging bucket, which contained numerous objects:
 
-![](https://i.imgur.com/qsOvRSE.png)
-
-- ... which contained numerous objects:
-
-![](https://i.imgur.com/J31G0Pw.png)
+![](https://i.imgur.com/E9qwywL.png)
 
 - ... with details such as:
 
-![](https://i.imgur.com/59gdYls.png)
+![](https://i.imgur.com/qx1B4bL.png)
 
-- ... and content (clicking the Object URL) such as:
+- ... and content (that I downloaded) such as:
 
-![](https://i.imgur.com/7EqcuFE.png)
+```
+2928aba2ae0c838794f7f9dc65b86f0c024b3ab549ace83861e66b8501a357b2 dme26-2022-test [05/Sep/2022:23:52:50 +0000] 119.224.98.119 arn:aws:sts::409523232788:assumed-role/voclabs/user2053053=Test_Student H87M41FGTXHB1ATY REST.GET.ACL - "GET /?acl HTTP/1.1" 200 - 590 - 24 - "-" "S3Console/0.4, aws-internal/3 aws-sdk-java/1.11.1030 Linux/5.4.207-126.363.amzn2int.x86_64 OpenJDK_64-Bit_Server_VM/25.302-b08 java/1.8.0_302 vendor/Oracle_Corporation cfg/retry-mode/standard" - l95tYk6lH7MbyWiuiACv5r1A99AXdlYrg/FFp6HsFWpS/irysR+jaKIux0S2TNGwbjfIfHAhPwQ= SigV4 ECDHE-RSA-AES128-GCM-SHA256 AuthHeader dme26-2022-test.s3.us-east-1.amazonaws.com TLSv1.2 -
+2928aba2ae0c838794f7f9dc65b86f0c024b3ab549ace83861e66b8501a357b2 dme26-2022-test [05/Sep/2022:23:52:50 +0000] 119.224.98.119 arn:aws:sts::409523232788:assumed-role/voclabs/user2053053=Test_Student H87NFXWK7MWFNTMC REST.GET.POLICY_STATUS - "GET /?policyStatus HTTP/1.1" 200 - 141 - 14 - "-" "S3Console/0.4, aws-internal/3 aws-sdk-java/1.11.1030 Linux/5.4.207-126.363.amzn2int.x86_64 OpenJDK_64-Bit_Server_VM/25.302-b08 java/1.8.0_302 vendor/Oracle_Corporation cfg/retry-mode/standard" - AV2cp0t76QdiZuVvODGO9wwo5k4ETIs9AOLhNDch8lW1SjEANEGlJVIEcjGAwVXul8iO8gDm0Qk= SigV4 ECDHE-RSA-AES128-GCM-SHA256 AuthHeader dme26-2022-test.s3.us-east-1.amazonaws.com TLSv1.2 -
+2928aba2ae0c838794f7f9dc65b86f0c024b3ab549ace83861e66b8501a357b2 dme26-2022-test [05/Sep/2022:23:52:50 +0000] 119.224.98.119 arn:aws:sts::409523232788:assumed-role/voclabs/user2053053=Test_Student H87ZTKV64XS135N6 REST.GET.PUBLIC_ACCESS_BLOCK - "GET /?publicAccessBlock HTTP/1.1" 404 NoSuchPublicAccessBlockConfiguration 345 - 37 - "-" "S3Console/0.4, aws-internal/3 aws-sdk-java/1.11.1030 Linux/5.4.207-126.363.amzn2int.x86_64 OpenJDK_64-Bit_Server_VM/25.302-b08 java/1.8.0_302 vendor/Oracle_Corporation cfg/retry-mode/standard" - k8BlDBVdJ0H71J7+RERE2Gx9ZtRTGrRpCJJRdpWf3Ir+lhW80NRHJrWrXrlyn21oKRBtlxpKFQc= SigV4 ECDHE-RSA-AES128-GCM-SHA256 AuthHeader dme26-2022-test.s3.us-east-1.amazonaws.com TLSv1.2 -
+```
 
 - There will likely be next to no cost counted against your AWS Academy Learner Lab account for your S3 use, but it is safer to delete S3 buckets when you are done with them, rather than leaving them online. One reason for that is that the logging bucket will continue to accumulate log records, and these incur standard S3 charges. Your S3 buckets are, of course, Internet-accessible, although it is not likely that they will attract much web traffic.
 :::
@@ -168,8 +168,7 @@ Exercise:
 ![](https://i.imgur.com/iuqmCbn.png)
 - From there you can reveal your AWS CLI credentials (these will keep changing every few hours!).
 - Copy/paste your access credentials into the appropriate file, for the AWS tools you are using:
-    - e.g. under `~/.aws/credentials` on your CS Lab macOS environment, or the aforementioned VM, e.g., using the `nano` editor on your VM.
-    - In the VM I needed to run `pip3 install --upgrade awscli` to fix the AWS CLI
+    - e.g., under `~/.aws/credentials` on your CS Lab macOS environment, or the aforementioned VM, e.g., using the `nano` editor on your VM.
 
 ### Using the Boto3 library to access AWS from Python
 
