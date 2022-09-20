@@ -1,16 +1,16 @@
 ---
 tags: cosc349
 ---
-# COSC349 Lab 12—Cloud Architecture—2021
+# COSC349 Lab 12—Cloud Architecture—2022
 ## Lab 12—Work on assignment 2
 
 This lab time has been set aside for you to work on assignment 2.
 
 Some suggestions regarding techniques and approaches to problems that have been encountered are listed below. Feel free to augment this information.
 
-## AWS Educate facilities
+## AWS Academy Learner Lab facilities
 
-Note that there is documentation about the services supported (or not) by AWS Educate Starter Accounts (although apparenty accessing some of the database APIs don't behave as expected).
+Note that there is documentation about the services supported (or not) by AWS Academy Learner Lab accounts (although apparenty accessing some of the database APIs don't behave as expected). https://awseducate-starter-account-services.s3.amazonaws.com/AWS_Educate_Starter_Account_Services_Supported.pdf
 
 ## Apache error handling
 
@@ -26,11 +26,12 @@ When using the AWS provider in `vagrant` your local repository's files get copie
 
 Thus, you are likely to need to change permissions and/or Unix user and/or group, so that your web server is able to read the files that have been transferred into `/vagrant`.
 
-Lab 1's shell material links to COSC241's first lab, which covers use of relevant commands, such as `chmod` (change the permissions on a set of file), `chgrp` (change the Unix group of a set of files), and `chown` (change the Unix owner (and optionally also the group) of a set of files).
+Lab 1's shell material covers use of relevant commands, such as `chmod` (change the permissions on a set of file), `chgrp` (change the Unix group of a set of files), and `chown` (change the Unix owner (and optionally also the group) of a set of files).
 
 ## Facilitating VMs finding out about each other's addresses
 
 :::info
+:thought_balloon: 
 This section discusses mechanisms for automating the setup of sets of VMs. However please remember that automated deployment is **not** a requirement of assignment two! You are free to manually `ssh` into your instances to give them the details required to get your application running in the cloud. Having said that, automation is more convenient when it works smoothly, but you don't want to get stuck on it.
 :::
 
@@ -72,10 +73,8 @@ su -c "echo 'run some shell script'; ./some-shell-script.sh" ubuntu
 ```
 —which will run run a shell as user `ubuntu` and execute the scripting that's in quotes. Note that in this case, the shell that's run as `ubuntu` goes and runs another script, namely `./some-shell-script.sh`.
 
-## Expiry of the AWS Educate sessions
+## Expiry of the AWS Academy Learner Lab sessions
 
-The validity of the "role" that allows you to use AWS Educate seems to be set to be around one hour, by default.
+The validity of the "role" that allows you to use AWS Academy seems to be set to be around one hour, by default.
 
-Keep this in mind when deploying your applications to the cloud, since it means that you should check that after an hour or so, your application still works. In particular, just passing your `.aws/credentials` to your cloud scripting means it will only work until your role refreshes.
-
-It may be that you need to organise ways to access resources that leave them more open than you would do in production.
+Keep this in mind when deploying your applications to the cloud, since it means that you should check that after an hour or so, your application still works. In particular, just passing your AWS credentials to your cloud scripting means it will only work until your role refreshes. (It may be that you need to organise ways to access resources that leave them more open than you would do in production.)
