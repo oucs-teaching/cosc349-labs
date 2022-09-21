@@ -1,7 +1,7 @@
 ---
 tags: cosc349
 ---
-# COSC349 Lab 13—Cloud Architecture—2021
+# COSC349 Lab 13—Cloud Architecture—2022
 ## Lab 13—Kubernetes and AWS orchestration with CloudFormation
 
 This purpose of this lab is to provide you with potentially interesting starting points for your future exploration of cloud technologies beyond COSC349.
@@ -13,7 +13,7 @@ The Kubernetes and CloudFormation parts of this lab are entirely independent so 
 ### Installing Kubernetes
 
 - There are many ways to run Kubernetes infrastructure on AWS, as discussed in lectures...
-- ... however most of the more convenient approaches will not work using AWS Educate, due to missing permissions.
+- ... however most of the more convenient approaches will not work using AWS Academy Learner Labs, due to missing management of permissions through IAM.
 - It is, of course, possible create a complete Kubernetes infrastructure just using EC2 nodes, but this is not how developers would typically build such a system.
 
 ### Minikube
@@ -68,7 +68,7 @@ sudo minikube start --vm-driver=none
 💡  This can also be done automatically by setting the env var CHANGE_MINIKUBE_NONE_USER=true
 ⌛  Waiting for: apiserver
 🏄  Done! kubectl is now configured to use "minikube"
-⚠️  /usr/bin/kubectl is version 1.22.2, and is incompatible with Kubernetes 1.16.2. You will need to update /usr/bin/kubectl or use 'minikube kubectl' to connect with this cluster
+⚠️  /usr/bin/kubectl is version 1.25.1, and is incompatible with Kubernetes 1.16.2. You will need to update /usr/bin/kubectl or use 'minikube kubectl' to connect with this cluster
 ```
 
 - As noted above, some of the directories created will be owned by the wrong user, so repair the permissions by invoking:
@@ -238,11 +238,11 @@ deployment.apps/nginx-deployment created
 vagrant@ubuntu-xenial:~$ kubectl describe deployment nginx-deployment
 Name:                   nginx-deployment
 Namespace:              default
-CreationTimestamp:      Fri, 24 Sep 2021 04:41:11 +0000
+CreationTimestamp:      Wed, 21 Sep 2022 11:45:05 +0000
 Labels:                 <none>
 Annotations:            deployment.kubernetes.io/revision: 1
 Selector:               app=nginx
-Replicas:               2 desired | 2 updated | 2 total | 0 available | 2 unavailable
+Replicas:               2 desired | 2 updated | 2 total | 1 available | 1 unavailable
 StrategyType:           RollingUpdate
 MinReadySeconds:        0
 RollingUpdateStrategy:  25% max unavailable, 25% max surge
@@ -266,7 +266,7 @@ NewReplicaSet:   nginx-deployment-574b87c764 (2/2 replicas created)
 Events:
   Type    Reason             Age   From                   Message
   ----    ------             ----  ----                   -------
-  Normal  ScalingReplicaSet  11s   deployment-controller  Scaled up replica set nginx-deployment-574b87c764 to 2
+  Normal  ScalingReplicaSet  15s   deployment-controller  Scaled up replica set nginx-deployment-574b87c764 to 2
 ```
 - Note the mention of a ScalingReplicaSet. The contents of that set can be viewed using the following command, indicating that it's just a pair of replicas.
 ```
@@ -335,7 +335,8 @@ nginx-deployment-5d66cc795f-fbk9v   1/1     Running   0          27s
 ### Further deployments
 
 :::success
-Exercise:
+:pencil: 
+Suggested exercise:
 - Using the dashboard or the command line, experiment with installing other Kubernetes deployments that you locate on the web.
 - You may want to continue with the cloud orchestration section below, and return to this exercise.
 :::
@@ -349,22 +350,22 @@ Exercise:
 - We will use a template to deploy the WordPress content management system on EC2 using AWS CloudFormation, which is Amazon's cloud orchestration tool.
 - From the AWS Console ...
 
-![](https://i.imgur.com/TIfT12Q.png)
+![](https://i.imgur.com/REI7haU.png)
 
 - ... navigate to the CloudFormation console.
 
-![](https://i.imgur.com/pic1zX0.png)
+![](https://i.imgur.com/7ZfPfgk.png)
 
-- You might instead see a page showing an empty list of "stacks". The term "stack" is in the sense of a deployed software stack.
+- You might instead see a page showing a list of "stacks" (possibly an empty list). The term "stack" is in the sense of a deployed software stack.
 
-![](https://i.imgur.com/cy7lSQO.png)
+![](https://i.imgur.com/0jL5Rnu.png)
 
 - In either case, click on "Create stack", and select "Template is ready", and "Upload a template file".
 - Using your host's web browser download https://raw.githubusercontent.com/awslabs/aws-cloudformation-templates/master/aws/solutions/WordPress_Single_Instance.yaml to a local file.
 - Choose that file under the "Upload a template file" selector.
 - The template file will undergo some preliminary checks, and when they are complete, you can click the "View in Designer" button.
 
-![](https://i.imgur.com/dllB4yf.png)
+![](https://i.imgur.com/uVsn8SC.png)
 
 - The Designer provides a graphical and a YAML / JSON display of your template.
 
@@ -373,86 +374,86 @@ Exercise:
 In this case, if we were to run the template, WordPress wouldn't actually work, as the latest version of WordPress requires a later version of PHP than gets installed. We will use the designer to fix this, although of course could have edited the template file before uploading it to AWS CloudFormation.
 :::
 
-![](https://i.imgur.com/eHXHuov.png)
+![](https://i.imgur.com/Qt0tMym.png)
 
 - Navigate to around line 345, which indicates that `/var/www/html` should be created from `http://wordpress.org/latest.tar.gz`.
 
-![](https://i.imgur.com/T8ilQ3Y.png)
+![](https://i.imgur.com/KI7Ifse.png)
 
 - Downgrade this URL for the latest version of WordPress to version 5.1, using the URL: `https://wordpress.org/wordpress-5.1.2.tar.gz`
 
-![](https://i.imgur.com/3W6XSYf.png)
+![](https://i.imgur.com/phuulnD.png)
 
 - The graphical display will note that it is out-of-sync, so feel free to click the top-right reload button.
 
-![](https://i.imgur.com/XGgzJZi.png)
+![](https://i.imgur.com/9TVPDLN.png)
 
 - Then select the cloud icon with an up-arrow in it, to deploy your template.
 - You will be returned to the "Create stack" page.
 - Click "Next".
 
-![](https://i.imgur.com/llJsXoi.png)
+![](https://i.imgur.com/Bf1qGO1.png)
 
 - On the "Specify stack details" page, give your Stack a name.
 - Fill out all of the other details that the template requires to be completed. Note that for parameters such as the database passwords, these are for you to control what gets deployed, so they can be any values that you will remember.
 
-![](https://i.imgur.com/2QDKJlZ.png)
+![](https://i.imgur.com/rmJC82e.png)
 
 - Scrolling down, you will see a "Next" button, which you should click when you have filled in all of the required form fields.
 
-![](https://i.imgur.com/YhICz8K.png)
+![](https://i.imgur.com/NNDHYhm.png)
 
-- You will reach the "Stack options" page, but none of the defaults should need to be changed.
+- You will reach the "Configure stack options" page, but none of the defaults should need to be changed.
 
-![](https://i.imgur.com/8hY8K3u.png)
+![](https://i.imgur.com/N7uuxnw.png)
 
 - So scrolling down you will again see a "Next" button that you should click.
 
-![](https://i.imgur.com/ga7L3V1.png)
+![](https://i.imgur.com/bZPpgTn.png)
 
 - You will reach the Review page for your CloudFormation Stack.
 
-![](https://i.imgur.com/fYoaVCw.png)
+![](https://i.imgur.com/4iyllsp.png)
 
 - ... and again scrolling down, you should not need to change any of the parameters.
 - You can click the "Create stack" button.
 
-![](https://i.imgur.com/Svwb9hS.png)
+![](https://i.imgur.com/9f7U21D.png)
 
 - This will return you to the "Stack details" page, where you can watch the deployment begin.
 
-![](https://i.imgur.com/AvpTUkg.png)
+![](https://i.imgur.com/h44BR02.png)
 
 - After an amount of time (it might be a short time, or might be longer: first time for me was really quick, second time was... not), more events will appear, until the page announces "CREATE_COMPLETE".
 - From looking at the template, you can see that some outputs are specified.
 
-![](https://i.imgur.com/MOZZu44.png)
+![](https://i.imgur.com/tKl5Nvm.png)
 
 - Click on the "Outputs" tab to see the outputs that were generated. (Your Stack will need to have completed its deployment for these Outputs to be available.)
 
-![](https://i.imgur.com/QPv2xgP.png)
+![](https://i.imgur.com/k0WA1D2.png)
 
 - In particular, we see the URL of the webserver that has been provisioned and configured, as key "WebsiteURL".
 - Click on that link, and you should reach your EC2 instance's WordPress configuration page.
 
-![](https://i.imgur.com/QJSKr5y.png)
+![](https://i.imgur.com/K6LqLZV.png)
 
 - Feel free to experiment with setting up and then using WordPress.
 - When you have interacted with WordPress to your satisfaction, return to the CloudFormation page and choose "Delete" for your WordPress Stack.
 
-![](https://i.imgur.com/PjXlVZQ.png)
+![](https://i.imgur.com/igWbfEJ.png)
 
 - After you confirm your request to "Delete stack" you will be returned to the "Stack details" page, where you can watch your resources being de-provisioned.
 
-![](https://i.imgur.com/eKPb2wR.png)
+![](https://i.imgur.com/miQB5lG.png)
 
-- You should ensure that the Stacks count returns to 0, so that you are not being charged for services that you are not using.
+- You should ensure that the Stacks count returns to what it was before you started (1 for me, possibly 0 for you?), so that you are not being charged for services that you are not using.
 
-![](https://i.imgur.com/IMQDNGr.png)
+![](https://i.imgur.com/l3D3D6P.png)
 
 :::success
 :pencil: 
-Exercise:
+Suggested exercise:
 - Experiment with deploying other CloudFormation templates.
 - Make sure that you delete the "stack" after you have installed it, however, or services that you orchestrate will continue to run.
 :::
