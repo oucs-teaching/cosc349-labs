@@ -1,13 +1,29 @@
 ---
 tags: cosc349
 ---
-# COSC349 Lab 1—Cloud Architecture—2022
 ## Lab 1—Git, CS labs, and the Unix shell
 
-The computers in Lab E and Lab F can be (re)booted into macOS or Linux. Some COSC349 labs will require you to boot into macOS, although for the first part of this lab you can choose whichever operating system suits you better.
+This week, the computers in Lab E and Lab F are iMacs but are running Microsoft Windows. Apparently soon the machines will change to non-Apple hardware running Windows. Linux and macOS are Unix-based operating systems, so have ready access to a Unix shell, e.g., if you are using your own computer.
+
+On Windows computers at the University of Otago there are many ways to get access to a Unix terminal, and each option below should also already have Git installed:
+- Use Unix functionality on the computer in front of you.
+- Connect to the Otago Student Desktop, e.g., I just used the light version by starting a web browser (I used Google Chrome) and navigating to https://www.otago.ac.nz/studentdesktop
+- (In the past, you could SSH to computers such as hextreme.otago.ac.nz but it was not turned back on after last week's power cut to the Owheo building.)
+
+On Owheo Lab Computers running Windows, or the Otago Student Desktop I was able to reach a Unix shell by:
+- Searching for `Git bash` and running the program that was found (it's under the "Git" folder in the Start menu). Note that the home directory location does not seem to be set up correctly on the CS lab computers, but was OK on the (remote) student desktop. See below for a fix.
+On the Student Desktop I was also able to access a Unix shell by:
+- Searching for and running the `bash` application. Note that the home directory location does not seem to be set up correctly. See below for a fix.
+
+Fixing the home directory location on the Otago Student Desktop or the CS lab computers.
+- It seems that the environment is sometimes not entirely set up as expected regarsding where your home directory is, etc.
+- To fix this I found the following to work:
+    - For `Git bash` try running the command `export HOME=/c/users/$USERNAME`
+    - for `bash` try running the command `export HOME=/cygdrive/c/users/$USERNAME`
+- After applying that fix, subsequent commands within that same terminal window such as `cd` or `cd ~` placed me where I expected to be---i.e., the same directory as where the "My Documents" shortcut on the Student Desktop desktop gets to.
 
 :::info
-Note that the COSC349 was launched back in 2019 with the expectation of an updated CS 200-level set of papers. These are first being run this year in 2022. For the next few years there will be students who have taken different paths through the CS (and InfoSci) 200-level papers, and this may affect your experience in COSC349. Please just let the COSC349 teaching team know where the pace is too fast (or too slow).
+Note that the COSC349 was launched back in 2019 with the expectation of an updated CS 200-level set of papers. These were first run in 2022. For the next few years there will be students who have taken different paths through the CS (and InfoSci) 200-level papers, and this may affect your experience in COSC349. Please just let the COSC349 teaching team know where the pace is too fast (or too slow).
 :::
 
 ### Lab objectives
