@@ -1,36 +1,41 @@
 ---
 tags: cosc349
 ---
-%hackmd theme-dark %
-
-# COSC349 Lab 2—Cloud Architecture—2022
-
 [Lab 4]: /DclJIDNxQtO40T8TnOOvEg
 [COSC301 lab book]: https://www.cs.otago.ac.nz/cosc301/student2019.pdf
+[ReactOS Live CD ZIP file]: https://downloads.sourceforge.net/reactos/ReactOS-0.4.14-release-77-gf6507c2-live.zip
 
 ## Preliminaries
 
-### Dynamically updating lab exercises...
+:::info
+:information_source: 
+Dynamically updating lab exercises...
 
 When we discover bugs, typos, or areas that need elaboration in any of the lab exercises, Dave or Pradeesh may well be fixing things _in_ the lab class. If you log in to https://hackmd.io you will be able to edit the lab exercises yourself, and will have any changes anyone makes to this page pushed to your web browser dynamically. If you do not log in, before seeking help, try reloading the web page to receive any updates to its content.
+:::
 
-### Before starting lab 2... please register for AWS Educate
+:::warning
+:warning: Before starting lab 2... please register for AWS Academy
 
-Before starting on the material for lab 2, please work through the sign up process for AWS Academy. You will need to have completed the COSC349 "test" on Blackboard that gices me (Dave) permission to upload your student email address to AWS Academy for use of AWS cloud resources.
+Before starting on the material for lab 2, please work through the sign up process for AWS Academy. You will need to have completed the COSC349 "test" on Blackboard that gices me (Dave) permission to upload your student email address to AWS Academy for use of AWS cloud resources---so do that as soon as practical, if you haven't already.
 
 Joining AWS Academy may require some manual approval on the AWS side, so you want to be doing this ahead of when you need to use AWS cloud resources in labs and assignments.
+:::
 
 ## Lab 2—Virtualisation with VirtualBox
 
-The computers in Lab E and Lab F can be (re)booted into macOS or Linux. This lab requires you to boot into macOS, since VirtualBox is not installed on the CS Lab Linux environment.
+:::warning
+:warning: 
+From this year, the computers in Lab E and Lab F are running Microsoft Windows (even if on Apple hardware). Thus there may be some transitional bumps.
+:::
 
-Note that this lab exercise has a small amount of overlap with part of the COSC301 labs—both use VirtualBox—although key points of difference is that COSC349 labs are self-paced, and not assessed. Some specific references may be made to material from the [COSC301 lab book] and you are of course welcome to browse the rest of the lab book should it be useful to you. (This link is to the 2019 version of the COSC301 lab book, which is sufficiently recent for our neds, although the screen captures may look slightly different.)
+(Note that this lab exercise has a small amount of overlap with part of the COSC301 labs—both use VirtualBox—although key points of difference include that COSC349 labs are self-paced, and not assessed... We may try to refer to some material from the COSC301 Lab Bok where it is relevant and useful.)
 
 Throughout the exercises, "VM" will be used as an abbreviation of "virtual machine".
 
 ### Lab objectives
 
-1. Initiate AWS Academy account access for lab 4.
+1. Initiate AWS Academy account access so that you are ready for lab 4 and beyond.
 2. Learn how to create and manage virtual machines using VirtualBox.
 3. Understand at a high-level what an OVA file contains, and how to import VMs into VirtualBox.
 4. Add a new web page on a LAMP stack running within a VirtualBox VM that you import.
@@ -38,123 +43,89 @@ Throughout the exercises, "VM" will be used as an abbreviation of "virtual machi
 
 ## Caution: VirtualBox creates large files
 
-As is typical with most (full / hardware) virtualisation systems, working with VirtualBox will involve working with large files. You should keep an eye on where these large files accumulate, regardless of whether you are using your own computer, or using CS Lab computers. The typical sources of large files are:
-- VMs' hard disk image files
-- Files that record snapshots of VM state (e.g., memory), or facilitate rolling-back changes to VMs' hard disk image files
-- Snapshots or clones of VMs
-- ISO images used to boot virtual machines
+As is typical with most (full / hardware) virtualisation systems, working with VirtualBox will involve working with large files. You should keep an eye on where these large files accumulate, regardless of whether you are using your own computer, or using CS Lab computers. The typical sources of large files include:
+- VMs' hard disk image files;
+- Files that record snapshots of VM state (e.g., memory), or facilitate rolling-back changes to VMs' hard disk image files;
+- Snapshots or clones of VMs; or
+- ISO images used to boot virtual machines.
 
 :::warning
+:warning: 
 In some circumstances, these large files may remain on your computer even if you uninstall VirtualBox.
 :::
 
-## Initial configuration of VirtualBox in the CS labs
+## Initial configuration of VirtualBox in the Owheo CS Labs
 
-We recommend that you follow the same guidance as in the [COSC301 lab book] for setting up VirtualBox in the CS labs, as quoted below (with minor tweaks) from procedure 1.1 in section 1.4. This is not a strict requirement, but doing so means that you may be able to follow advice and documentation within the [COSC301 lab book] in addition to the instructions within this lab class.
-
-> Creating a “myvms” 
-on your Desktop is a reasonable place to store your virtual machines.
-> You must first configure VirtualBox appropriately such that the location of the virtual machine files will be stored in the "myvms" folder
-> 1. Start VirtualBox, which you will find in the Applications folder or the Dock on your macOS machine.
-> 2. From the menu, choose VirtualBox→Preferences....
-> 3. Under the General section, use the pull down menu at the right-hand side of the "Default Machine Folder:", choose "Other...", and then select the "myvms" folder that you created. For me, the resulting value is `/home/cshome/d/dme/Desktop/myvms`, and you can type in the equivalent for your user account directly.
+I have been told that as of early in week one of semester, the VirtualBox application configuration within the CS Labs is now set up to default to a place that allows for fast storage of large files. Like your home directory, this "J" drive should migrate to different computers in the labs that you log into. However, unlike your home directory, you cannot access the "J" drive easily from the remote Otago Student Desktop (but that's just for information, as VirtualBox, Docker, etc., won't run on the Otago Student Desktop anyway).
 
 :::info
-The CS Labs are running version 6.1.16. When you first start up VirtualBox, you may need to click "Details" on the welcome window that is shown on the right-hand part of the VirtualBox Manager window, so that you see the same sort of display that I do.
-
-If you are running VirtualBox on your own computer, I assume that you will be using something in the version 6 series, from which the screen captures in this lab were recorded.
-
-Note that previous screen captures will sometimes be reused (e.g., some are from version 6.1.2), assuming that you are comfortable to make up for small differences in the user interface.
+:pencil: Note that I am showing screen captures from my laptop, which is a macOS device running a recent version of VirtualBox 7. The CS Lab environment may be slightly behind my version. Just let me know if you encounter any problems that my testing of the CS Lab environment has not uncovered.
 :::
 
 :::danger
-Note that the backups for your Computer Science network home will **not** include your virtual machine disk images. Thus, you should be careful to ensure that you can easily restore the content of any VM disks that you create.
+:warning:
+The backups for your Computer Science network home may not include your virtual machine disk images. Thus, you should be careful to ensure that you can easily restore the content of any VM disks that you create.
 :::
 
 ## Let's create a new VirtualBox VM
 
 The instructions below lead you to create a new VM running ReactOS.
 
+- Download the [ReactOS Live CD ZIP file] (about 80MB) to a location on your lab/home computer where you can find it later. (I just used the usual macOS 'Downloads' folder.)
+- Decompress the ZIP file you downloaded to extract the ~265MB ISO file (ISO files are serialisations of the contents of a CD/DVD).
+
 :::info
-Note that the rectangles with dashed outlines in the screenshots below are redacted content, given that all this imagery is publicly available in the cloud, and releasing the screenshots verbatim might accidentally expose sensitive information.
+Note that any rectangles with dashed outlines in the screenshots below are redacted content, given that all this imagery is publicly available in the cloud, and releasing the screenshots verbatim might accidentally expose sensitive information.
 :::
 
 - Start VirtualBox and you should be greeted with the welcome screen shown, or something that looks similar.
 
-![](https://i.imgur.com/Dvm679c.png)
+![](https://hackmd.io/_uploads/HJrHblgq2.png)
 
 - Select the "New" button and the following pane should appear.
 
-![](https://i.imgur.com/nPqO0Uu.png)
+![](https://hackmd.io/_uploads/SJnwbxl9n.png)
 
-- When you type in the name "ReactOS test", VirtualBox will probably guess that the type of the machine should be "Microsoft Windows", specifically version "Windows 2003 (32-bit)". Otherwise select these options from the pull-down menus. Note that your "Machine Folder" will be different from what's shown in the above screenshot.
-- Select "Continue".
+- When you fill in the name "ReactOS test", VirtualBox should guess that the type of the machine should be "Microsoft Windows", specifically version "Windows 2003 (32-bit)". Otherwise select these options from the pull-down menus. Note that your "Machine Folder" will be different from what's shown in the above screenshot.
+- In the "ISO Image" section, select the ISO file you extracted previously: use the right-hand-side pull-down, choose "Other..." and then navigate to the ISO file.
 
-![](https://i.imgur.com/cMr7jmm.png)
+![](https://hackmd.io/_uploads/HyP2Nle52.png)
 
-- The default memory size is OK, so you can click "Continue" again.
+- Select "Next", and you will see the RAM memory and CPU options.
 
-![](https://i.imgur.com/YfvWxsP.png)
+![](https://hackmd.io/_uploads/HyHlrgxch.png)
 
-- For the virtual hard disk, I have elected not to add a virtual hard disk at all. This means that the VM will have no conventional device for persistent storage, but this is not a problem for our initial test.
-- Click "Create", and you will be shown the following alert.
+- The default memory size and CPU allocation is OK, so you can click "Next" again.
 
-![](https://i.imgur.com/imKCKIC.png)
+![](https://hackmd.io/_uploads/rkyBSexcn.png)
 
-- ... but you can just click "Continue"
+- For the virtual hard disk, you will see from the above that I have elected not to add a virtual hard disk at all. This means that the VM will have no conventional device for persistent storage, but this is not a problem for our initial test.
+- Click "Next", and you will be shown a summary.
 
-![](https://i.imgur.com/vSwTja5.png)
+![](https://hackmd.io/_uploads/BkovHeec2.png)
+
+- You can select "Finish".
+
+![](https://hackmd.io/_uploads/H1IFBlgq2.png)
+
+- You may need to dismiss a warning message about not having a hard disk in your new (virtual) computer.
+
+![](https://hackmd.io/_uploads/ByjMLee5h.png)
+
+- You will be returned to the main VirtualBox window.
+
+![](https://hackmd.io/_uploads/BytSUxl52.png)
 
 - You can now see your newly created VM on the left-most list of VMs. Note that it is "Powered Off".
-- You need to change the configuration of the VM before you can do anything useful with it, since at the moment it has no configured way to boot an operating system.
-- Click on the VM in the left-hand-side list.
-- Click on the "Settings" button in the toolbar.
-- In the settings window that appears, click the "Storage" tab to show the following window.
-
-![](https://i.imgur.com/a9URTsO.png)
-
-- In the CS Labs, first run the following commands to mount the directory
-```
-$ mkdir ~/Desktop/cosc349 && mount -t nfs nebula.otago.ac.nz:/cspool/cshome/scratch/dme/cosc349 ~/Desktop/cosc349
-
-``` 
-
-- Select the "Empty" CD-drive.
-- The right-hand pane of the window indicates that the storage device that you clicked is an "Optical Drive" attached to the "IDE Secondary Master". Note: on newer VirtualBox versions the terminology has been updated to say "IDE Secondary Device 0" and "IDE Secondary Device 1" instead of "IDE Secondary Master" and "IDE Secondary Slave".
-:::info
-Many technology projects have tried to moved away from potentially sensitive terms, and "master"/"slave" have been quite commonly used. There is plenty [you can read online](https://en.wikipedia.org/wiki/Master/slave_(technology)#Terminology_concerns) about this.
-:::
-- Click the CD icon to the right of the pull-down menu that contains the text "IDE Secondary Device 0" (was "IDE Secondary Master").
-
-![](https://i.imgur.com/ybduxIj.png)
-
-- A pop up will appear showing recently used virtual CDs (your list will most likely be empty, compared to mine).
-
-![](https://i.imgur.com/XVUGKB1.png)
-
-- You can choose a virtual "CD" to insert into your VM's virtual CD drive. Select "Choose Virtual Optical Disk File..." and the standard file selector panel should appear.
-
-
-- In the prompt, select **Add*. Then navigate to **Desktop** and then to the **cosc349** folder to select `ReactOS-0.4.11-Live.iso`. You can change to an explicit directory by typing <kbd>⌘</kbd><kbd>shift</kbd><kbd>g</kbd> and then typing, or pasting in a pathname.
 
 :::info
+:confused: This note is presently waiting a more logical home position within the document. It's not wrong, so is lingering, but involved steps no longer required in newer VirtualBox versions.
 
-
-If you are doing these labs on a computer other than a CS lab machine, you can find the ReactOS Live-CD ISO file on their website, and [download it from there](https://reactos.org/download/). Indeed ReactOS is at version 0.4.14, but this difference won't matter here.
+:information_source: 
+Many technology projects have tried to move away from potentially sensitive terms, such as "master"/"slave" that have been quite commonly used in the past. There is plenty [you can read online](https://en.wikipedia.org/wiki/Master/slave_(technology)#Terminology_concerns) about this.
 :::
-
-
-![](https://i.imgur.com/wvWnKPC.png)
-
-- Then click open, and you should see in the resulting window that the "CD drive" is now no longer "empty".
-- Click "OK", and you will be returned to the main VirtualBox screen.
-
-![](https://i.imgur.com/5AZ9sJ6.png)
 
 - Select your VM and click the "Start" button in the top toolbar.
-
-![](https://i.imgur.com/ECeulXU.png)
-
 - A new window should appear that is the "monitor" of your VM, which I will also refer to as the "console window".
 - On Apple Macs with retina displays, VirtualBox may present a microscopic window. You can change the window size by clicking on he little picture of a screen in the bottom toolbar of the VM's window (i.e., the one with title "ReactOS test [Running]"). You can choose "Virtual Screen 1" and a setting like "Scale to 200%".
 - Note that VirtualBox may pop up some prompts over the top of the console window. You can dismiss them once or permanently by clicking on the icons at the right-hand side of the pop-ups.
@@ -170,28 +141,29 @@ If you are using an operating system such as ReactOS that understands that it is
 
 - You should see VirtualBox's power-on self-test proceed (in as much as it makes sense for such a thing, in a VM!), and then the "CD" drive should boot.
 
-![](https://i.imgur.com/d4XOjpD.png)
+![](https://hackmd.io/_uploads/S1QX_gg53.png)
 
 - I selected the normal "LiveCD" option and pressed <kbd>enter</kbd>.
 - You should see ReactOS load its protected mode components...
 
 :::warning
+:warning: 
 At least once in the lab environment the VM failed to start up correctly for me. This might have been a network gremlin, but closing the console window (and powering off the VM) then starting it again fixed it for me.
 :::
 
-![](https://i.imgur.com/l3opyVZ.png)
+![](https://hackmd.io/_uploads/rkZ8_xx53.png)
 
 - ... and then detect the (virtual) devices attached to the VM.
 
-![](https://i.imgur.com/45K4zQE.png)
+![](https://hackmd.io/_uploads/Hkg1POgl53.png)
 
 - When this process completes, you will be greeted with the welcome screen that checks your language choice (the US defaults are OK).
 
-![](https://i.imgur.com/sfvLvYs.png)
+![](https://hackmd.io/_uploads/r1Qqdxlc3.png)
 
-- Click "OK".
+- Click "Next".
 
-![](https://i.imgur.com/TRWnFVC.png)
+![](https://hackmd.io/_uploads/rkChuelq2.png)
 
 - You can then select the "Run ReactOS Live CD" button.
 - ReactOS should then complete starting up, showing you a desktop interface that widely resembles (past versions of) a common commercial operating system.
@@ -201,11 +173,11 @@ At least once in the lab environment the VM failed to start up correctly for me.
 Aside: ReactOS ended up [in the tech news](https://www.theregister.co.uk/2019/07/03/reactos_a_ripoff_of_the_windows_research_kernel_claims_microsoft_kernel_engineer/) soon after I had first decided to use it with COSC349 labs. While the news item highlights questions regarding the provenance of the source code of ReactOS, the overall mission to create an open-source Win32 operating system is commendable, in my opinion. Such initiatives can extend the life of perfectly functional hardware, despite the need for commercial profits having causing such equipment to be deserted by commercial vendors. (I'm not blaming the vendors, but it would be good for governments and peoples globally to evolve to avoid much of the pointless wastefulness currently embodied within the technology sector... Your mission, should you choose to accept it...)
 :::
 
-![](https://i.imgur.com/1Lz2f2A.png)
+![](https://hackmd.io/_uploads/rkIXYeg5n.png)
 
 - When you are finished experimenting with ReactOS, you can click the top-left close button in the macOS window that contains the VM's monitor.
 
-![](https://i.imgur.com/o98ACdX.png)
+![](https://hackmd.io/_uploads/BklrYgl5h.png)
 
 - From the pane that appears, you can click "Power off the machine" to effectively yank the power-plug out of the virtual computer.
 
@@ -221,9 +193,9 @@ You have now shown that you can start up and interact with a virtual machine—i
 VirtualBox provides a rich set of ways to manage virtual networks. VirtualBox [provides good documentation](https://www.virtualbox.org/manual/ch06.html) that you can consult, but for a quick summary of the main types:
 
 - **Not attached**. The guest VM will see a virtual network card (NIC) but it is effectively disconnected from any network.
-- **Network Address Translation (NAT)**. In this mode the guest's outward network traffic will be remapped to appear as requests from the host. This makes the guest invisible from the rest of the Internet: incoming requests toward the guest will simply look like requests to connect to the host. "Port forwarding" can be set up to allow these connections to the host to be forwarded back into the guest's network.
+- **Network Address Translation (NAT)**. In this mode the guest's outward network traffic will be remapped to appear as requests from the host. This makes the guest invisible (kind of) from the rest of the Internet: incoming requests toward the guest will simply look like requests to connect to the host. "Port forwarding" can be set up to allow these connections to the host to be forwarded back into the guest's network.
 - **NAT Network**. Extends NAT to allow multiple VMs assigned to the same NAT Network to talk to each other, as well as being able to access the internet, and be accessed from the host or beyond if port forwarding is set up.
-- **Bridged networking**. **Do not use this mode in the CS labs!** In this case, the guest exposes its own MAC address directly to the local-area network—the guest will appear as another computer on the network. Thus the guest can take on its own Internet identity, however this will not work within the UoOtago network, and may cause technical problems.
+- **Bridged networking**. **Do not use this mode in the CS labs!** In this case, the guest exposes its own Ethernet MAC address directly to the local-area network—the guest will appear as another computer on the network. Thus the guest can take on its own Internet identity, however this will not work within the UoOtago network, and may cause technical problems (as well as possibly leading to staff in ITS to wail and gnash their teeth).
 - **Internal networking**. Creates a LAN that multiple VMs can connected to, but that is not connected to the Internet.
 - **Host-only networking**. Like internal networking, but the host is also able to send network traffic to and from the virtual network.
 
@@ -231,18 +203,22 @@ VirtualBox provides a rich set of ways to manage virtual networks. VirtualBox [p
 
 :::danger
 :warning: 
-At least for me, host-only networking does not function correctly in the CS labs.
+At least for me, host-only networking does not function correctly in the CS Labs.
 
 You should thus just skip to the next section "Let’s import a VM from an OVA file", and read about host-only networks only if you expect to use them on your own computers.
 :::
 
-I have found host-only networking to be useful when working on my laptop, allowing me to add VMs to an internal network where they can communicate with each other, but which also has convenient access to the host network interface. I leave this documentation here largely for your interest.
+This section is a bit historical: these days I believe the "NAT Network" option should cover most of the cases that used to suit "host only network" configurations. Thus, perhaps skip this section and return to it only if you cannot get NAT Networks to work for you.
 
-From the main VirtualBox Manager window, you can select the "File" menu choose "Host Network Manager...". This will bring up a window such as the following (the details will probably be different from mine). Click the "Properties" button in the tool-bar to see the details shown on my screen capture. You will need to click "Create" before you are able to click "Properties" if there are no networks in your list.
+In the past, I have found host-only networking to be useful when working on my laptop, allowing me to add VMs to an internal network where they can communicate with each other, but which also has convenient access to the host network interface. I leave this documentation here largely for your interest.
 
-![](https://i.imgur.com/Bmywb9H.png)
+From the main VirtualBox Manager window, you can select the "File" menu choose "Tools" and "Network Manager", then naviagate to the Host-only Networks tab. In previous VirtualBox versions, "Host Network Manager..." was in the file menu. This will bring up a window such as the following (the details will probably be different from mine). Click the "Properties" button in the tool-bar to see the details shown on my screen capture. You will need to click "Create" before you are able to click "Properties" if there are no networks in your list.
 
-It is usually best to use a network (e.g., vboxnet0) that has a tick in the "DHCP Server" column. I have shown a host-only network configuration that was useful to me, on my laptop. You can click the "Create" button to add a network if your list is blank. 
+![](https://hackmd.io/_uploads/S1x1yWg53.png)
+
+In present VirtualBox versions, note the term "Legacy" in my migrated settings: Host-only Networks are likely going to be deprecated, I'd guess.
+
+For older VirtualBox versions you can change more settings and see more configuration options. You should ensure that you use a network (e.g., vboxnet0) that has a tick in the "DHCP Server" column. I have shown a host-only network configuration that was useful to me, on my laptop. You can click the "Create" button to add a network if your list is blank. 
 
 On the lower configuration panel, where there is a "Configure Adapter Manually" selected on my system, I have shown settings that should work. You need to click the "Apply" button to cause changes to remain in effect.
 
@@ -263,25 +239,17 @@ We will use an OVA file from the [Bitnami] ecosystem. The [Bitnami application c
 [Bitnami application catalog]: https://bitnami.com/stacks
 [Bitnami 7.2.19-2-r56]: https://otagouni.sharepoint.com/:u:/s/COSC3492022/Eb7S04AkgptCqjHfBSHQtyYBE_CwpRwXbf6Dj3qyNjKWiA?e=FGpnGT
 
-For testing, we will use an instance of a LAMP stack: namely a VM running Linux that provides the Apache web server, MySQL and the PHP language for web development. We will be working with the OVA file that has been cached at:`~/Desktop/cosc349/bitnami-lampstack-7.2.19-2-r56-linux-debian-9-x86_64.ova`
-
-:::info
-:bulb: 
-If you are doing this lab exercise somewhere other than the CS Labs, you can visit the [Bitnami application catalog] to download the OVA or alternatively you can download the image directly from [Bitnami 7.2.19-2-r56].(Minor differences in versions should make no significant difference... although you shouldn't use the old versions for real applicaions, as they probably contain security flaws.)
-
-
-Please ensure that you are running version 7.2.x, version 8 does not allow password login via SSH. You may run into some strange errors
-:::
+For testing, we will use an instance of a LAMP stack: namely a VM running Linux that provides the Apache web server, MySQL and the PHP language for web development. (In the Bitnami application catalog, you can navigate to their LMAP offering by typing "LAMP" in the search bar.) Here is a [direct link to a recent Bitnami LAMP stack OVA file](https://bitnami.com/redirect/to/2334779/bitnami-lamp-8.2.8-r0-debian-11-amd64.ova) (about 500MB) that you should download.
 
 ### Examining an OVA file (for your interest)
 
-Before we import from the OVA file, you may be interested to see what is inside this type of file. OVA files are actually just compressed TAR files (If you ask "What's a TAR file?", [Wikipedia explains](https://en.wikipedia.org/wiki/Tar_(computing)), but its usual role is akin to ZIP files), so we can use the `tar` command in a shell window to examine the contents of the OVA we are intending to use:
+Before we import from the OVA file, you may be interested to see what is inside this type of file. OVA files are actually just compressed TAR files (If you ask "What's a TAR file?", [Wikipedia explains](https://en.wikipedia.org/wiki/Tar_(computing)), but its usual role is akin to ZIP files), so we can use the `tar` command in a Unix shell window to examine the contents of the OVA we are intending to use. For example:
 
 ```
-$ tar -tf ~/Desktop/osc349/bitnami-lampstack-7.2.19-2-r56-linux-debian-9-x86_64.ova
-bitnami-lampstack-7.2.19-2-r56-linux-debian-9-x86_64.ovf
-bitnami-lampstack-7.2.19-2-r56-linux-debian-9-x86_64.mf
-bitnami-lampstack-7.2.19-2-r56-linux-debian-9-x86_64-disk1.vmdk
+$ tar -tf ~/Downloads/bitnami-lamp-8.2.8-r0-debian-11-amd64.ova
+bitnami-lamp-8.2-8.2.8-r0-debian-11-amd64.ovf
+bitnami-lamp-8.2-8.2.8-r0-debian-11-amd64.mf
+bitnami-lamp-8.2-8.2.8-r0-debian-11-amd64-disk-0.vmdk
 ```
 
 
@@ -292,7 +260,7 @@ You can add the `v` flag if you want to see the filesizes of these compressed fi
 The OVF file describes the type of information that we manually selected when we created a new VM manually in the previous part of this lab exercise. We can view its content by decompressing just the OVF file from the OVA file:
 
 ```
-$ tar -xOf ~/Desktop/cosc349/bitnami-lampstack-7.2.19-2-r56-linux-debian-9-x86_64.ova bitnami-lampstack-7.2.19-2-r56-linux-debian-9-x86_64.ovf
+$ tar -xOf ~/Downloads/bitnami-lamp-8.2.8-r0-debian-11-amd64.ova bitnami-lamp-8.2-8.2.8-r0-debian-11-amd64.ovf
 ```
 
 The above command will produce a pile of XML, which isn't particularly human-readable, but does contain some recognisable configuration parameters regarding the virtual hard-disk, the network configuration required, etc.
@@ -301,35 +269,38 @@ The above command will produce a pile of XML, which isn't particularly human-rea
 <summary>Lump of XML from the OVF file that you can expand—personally, I feel that nobody should have to look at long XML listings without prior warning...</summary>
 
 ```xml
-<?xml version="1.0" encoding="UTF-8"?>
-<!--Generated by VMware ovftool 2.1.0 (build-467744), UTC time: 2019-06-19T11:18:18.779912Z-->
-<Envelope vmw:buildId="build-467744" xmlns="http://schemas.dmtf.org/ovf/envelope/1" xmlns:cim="http://schemas.dmtf.org/wbem/wscim/1/common" xmlns:ovf="http://schemas.dmtf.org/ovf/envelope/1" xmlns:rasd="http://schemas.dmtf.org/wbem/wscim/1/cim-schema/2/CIM_ResourceAllocationSettingData" xmlns:vmw="http://www.vmware.com/schema/ovf" xmlns:vssd="http://schemas.dmtf.org/wbem/wscim/1/cim-schema/2/CIM_VirtualSystemSettingData" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><!--Generated by VMware VirtualCenter Server, User: VMC.LOCAL\cloudadmin, UTC time: 2023-07-04T23:56:52.761982Z--><Envelope xmlns="http://schemas.dmtf.org/ovf/envelope/1" xmlns:cim="http://schemas.dmtf.org/wbem/wscim/1/common" xmlns:ovf="http://schemas.dmtf.org/ovf/envelope/1" xmlns:rasd="http://schemas.dmtf.org/wbem/wscim/1/cim-schema/2/CIM_ResourceAllocationSettingData" xmlns:vmw="http://www.vmware.com/schema/ovf" xmlns:vssd="http://schemas.dmtf.org/wbem/wscim/1/cim-schema/2/CIM_VirtualSystemSettingData" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" vmw:buildId="build-21560480">
   <References>
-    <File ovf:href="bitnami-lampstack-7.2.19-2-r56-linux-debian-9-x86_64-disk1.vmdk" ovf:id="file1" ovf:size="702942208"/>
+    <File ovf:href="bitnami-lamp-8.2-8.2.8-r0-debian-11-amd64-disk-0.vmdk" ovf:id="file1" ovf:size="559767040"/>
   </References>
   <DiskSection>
     <Info>Virtual disk information</Info>
-    <Disk ovf:capacity="16000000000" ovf:capacityAllocationUnits="byte" ovf:diskId="vmdisk1" ovf:fileRef="file1" ovf:format="http://www.vmware.com/interfaces/specifications/vmdk.html#streamOptimized" ovf:populatedSize="2148663296"/>
+    <Disk ovf:capacity="10" ovf:capacityAllocationUnits="byte * 2^30" ovf:diskId="vmdisk1" ovf:fileRef="file1" ovf:format="http://www.vmware.com/interfaces/specifications/vmdk.html#streamOptimized"/>
   </DiskSection>
   <NetworkSection>
     <Info>The list of logical networks</Info>
-    <Network ovf:name="bridged">
-      <Description>The bridged network</Description>
+    <Network ovf:name="sddc-cgw-network-1">
+      <Description>The sddc-cgw-network-1 network</Description>
     </Network>
   </NetworkSection>
-  <VirtualSystem ovf:id="bitnami-lampstack">
+  <vmw:StorageGroupSection ovf:required="false" vmw:id="group1" vmw:name="VMC Workload Storage Policy - Cluster-1">
+    <Info>Storage policy for group of disks</Info>
+    <vmw:Description>VMC Workload Storage Policy - Cluster-1 storagepolicy group</vmw:Description>
+  </vmw:StorageGroupSection>
+  <VirtualSystem ovf:id="bitnami-lamp-8.2-8.2.8-r0-debian-11-amd64">
     <Info>A virtual machine</Info>
-    <Name>bitnami-lampstack-7.2.19-2-r56-linux-debian-9-x86_64</Name>
-    <OperatingSystemSection ovf:id="102" vmw:osType="otherGuest">
+    <Name>bitnami-lamp-8.2-8.2.8-r0-debian-11-amd64</Name>
+    <OperatingSystemSection ovf:id="96" ovf:version="10" vmw:osType="debian10_64Guest">
       <Info>The kind of installed guest operating system</Info>
+      <Description>Debian GNU/Linux 10 (64-bit)</Description>
     </OperatingSystemSection>
-    <VirtualHardwareSection>
+    <VirtualHardwareSection ovf:transport="com.vmware.guestInfo">
       <Info>Virtual hardware requirements</Info>
       <System>
         <vssd:ElementName>Virtual Hardware Family</vssd:ElementName>
         <vssd:InstanceID>0</vssd:InstanceID>
-        <vssd:VirtualSystemIdentifier>bitnami-lampstack-7.2.19-2-r56-linux-debian-9-x86_64</vssd:VirtualSystemIdentifier>
-        <vssd:VirtualSystemType>vmx-08</vssd:VirtualSystemType>
+        <vssd:VirtualSystemIdentifier>bitnami-lamp-8.2-8.2.8-r0-debian-11-amd64</vssd:VirtualSystemIdentifier>
+        <vssd:VirtualSystemType>vmx-14</vssd:VirtualSystemType>
       </System>
       <Item>
         <rasd:AllocationUnits>hertz * 10^6</rasd:AllocationUnits>
@@ -338,46 +309,190 @@ The above command will produce a pile of XML, which isn't particularly human-rea
         <rasd:InstanceID>1</rasd:InstanceID>
         <rasd:ResourceType>3</rasd:ResourceType>
         <rasd:VirtualQuantity>1</rasd:VirtualQuantity>
+        <vmw:CoresPerSocket ovf:required="false">1</vmw:CoresPerSocket>
       </Item>
       <Item>
         <rasd:AllocationUnits>byte * 2^20</rasd:AllocationUnits>
         <rasd:Description>Memory Size</rasd:Description>
-        <rasd:ElementName>512MB of memory</rasd:ElementName>
+        <rasd:ElementName>1024MB of memory</rasd:ElementName>
         <rasd:InstanceID>2</rasd:InstanceID>
+        <rasd:Reservation>1024</rasd:Reservation>
         <rasd:ResourceType>4</rasd:ResourceType>
-        <rasd:VirtualQuantity>512</rasd:VirtualQuantity>
+        <rasd:VirtualQuantity>1024</rasd:VirtualQuantity>
+        <vmw:CoresPerSocket ovf:required="false">1</vmw:CoresPerSocket>
       </Item>
       <Item>
         <rasd:Address>0</rasd:Address>
         <rasd:Description>SCSI Controller</rasd:Description>
-        <rasd:ElementName>scsiController0</rasd:ElementName>
+        <rasd:ElementName>SCSI controller 0</rasd:ElementName>
         <rasd:InstanceID>3</rasd:InstanceID>
-        <rasd:ResourceSubType>lsilogic</rasd:ResourceSubType>
+        <rasd:ResourceSubType>VirtualSCSI</rasd:ResourceSubType>
         <rasd:ResourceType>6</rasd:ResourceType>
+        <vmw:Config ovf:required="false" vmw:key="slotInfo.pciSlotNumber" vmw:value="160"/>
+        <vmw:CoresPerSocket ovf:required="false">1</vmw:CoresPerSocket>
+      </Item>
+      <Item>
+        <rasd:Address>1</rasd:Address>
+        <rasd:Description>IDE Controller</rasd:Description>
+        <rasd:ElementName>IDE 1</rasd:ElementName>
+        <rasd:InstanceID>4</rasd:InstanceID>
+        <rasd:ResourceType>5</rasd:ResourceType>
+        <vmw:CoresPerSocket ovf:required="false">1</vmw:CoresPerSocket>
+      </Item>
+      <Item>
+        <rasd:Address>0</rasd:Address>
+        <rasd:Description>IDE Controller</rasd:Description>
+        <rasd:ElementName>IDE 0</rasd:ElementName>
+        <rasd:InstanceID>5</rasd:InstanceID>
+        <rasd:ResourceType>5</rasd:ResourceType>
+        <vmw:CoresPerSocket ovf:required="false">1</vmw:CoresPerSocket>
+      </Item>
+      <Item ovf:required="false">
+        <rasd:AutomaticAllocation>false</rasd:AutomaticAllocation>
+        <rasd:ElementName>Video card</rasd:ElementName>
+        <rasd:InstanceID>6</rasd:InstanceID>
+        <rasd:ResourceType>24</rasd:ResourceType>
+        <vmw:Config ovf:required="false" vmw:key="useAutoDetect" vmw:value="false"/>
+        <vmw:Config ovf:required="false" vmw:key="videoRamSizeInKB" vmw:value="4096"/>
+        <vmw:Config ovf:required="false" vmw:key="enable3DSupport" vmw:value="false"/>
+        <vmw:Config ovf:required="false" vmw:key="use3dRenderer" vmw:value="automatic"/>
+        <vmw:Config ovf:required="false" vmw:key="graphicsMemorySizeInKB" vmw:value="262144"/>
+        <vmw:CoresPerSocket ovf:required="false">1</vmw:CoresPerSocket>
+      </Item>
+      <Item ovf:required="false">
+        <rasd:AutomaticAllocation>false</rasd:AutomaticAllocation>
+        <rasd:ElementName>VMCI device</rasd:ElementName>
+        <rasd:InstanceID>7</rasd:InstanceID>
+        <rasd:ResourceSubType>vmware.vmci</rasd:ResourceSubType>
+        <rasd:ResourceType>1</rasd:ResourceType>
+        <vmw:Config ovf:required="false" vmw:key="allowUnrestrictedCommunication" vmw:value="false"/>
+        <vmw:CoresPerSocket ovf:required="false">1</vmw:CoresPerSocket>
       </Item>
       <Item>
         <rasd:AddressOnParent>0</rasd:AddressOnParent>
-        <rasd:ElementName>disk1</rasd:ElementName>
+        <rasd:ElementName>Hard disk 1</rasd:ElementName>
         <rasd:HostResource>ovf:/disk/vmdisk1</rasd:HostResource>
-        <rasd:InstanceID>4</rasd:InstanceID>
+        <rasd:InstanceID>8</rasd:InstanceID>
         <rasd:Parent>3</rasd:Parent>
         <rasd:ResourceType>17</rasd:ResourceType>
+        <vmw:Config ovf:required="false" vmw:key="backing.writeThrough" vmw:value="false"/>
+        <vmw:CoresPerSocket ovf:required="false">1</vmw:CoresPerSocket>
+        <vmw:StorageGroup ovf:required="false">group1</vmw:StorageGroup>
       </Item>
       <Item>
-        <rasd:AddressOnParent>2</rasd:AddressOnParent>
+        <rasd:AddressOnParent>7</rasd:AddressOnParent>
         <rasd:AutomaticAllocation>true</rasd:AutomaticAllocation>
-        <rasd:Connection>bridged</rasd:Connection>
-        <rasd:Description>PCNet32 ethernet adapter on &quot;bridged&quot;</rasd:Description>
-        <rasd:ElementName>ethernet0</rasd:ElementName>
-        <rasd:InstanceID>5</rasd:InstanceID>
-        <rasd:ResourceSubType>PCNet32</rasd:ResourceSubType>
+        <rasd:Connection>sddc-cgw-network-1</rasd:Connection>
+        <rasd:Description>VmxNet3 ethernet adapter on "sddc-cgw-network-1"</rasd:Description>
+        <rasd:ElementName>Network adapter 1</rasd:ElementName>
+        <rasd:InstanceID>9</rasd:InstanceID>
+        <rasd:ResourceSubType>VmxNet3</rasd:ResourceSubType>
         <rasd:ResourceType>10</rasd:ResourceType>
+        <vmw:Config ovf:required="false" vmw:key="slotInfo.pciSlotNumber" vmw:value="192"/>
+        <vmw:Config ovf:required="false" vmw:key="wakeOnLanEnabled" vmw:value="true"/>
+        <vmw:Config ovf:required="false" vmw:key="connectable.allowGuestControl" vmw:value="true"/>
+        <vmw:Config ovf:required="false" vmw:key="uptCompatibilityEnabled" vmw:value="true"/>
+        <vmw:Config ovf:required="false" vmw:key="uptv2Enabled" vmw:value="false"/>
+        <vmw:CoresPerSocket ovf:required="false">1</vmw:CoresPerSocket>
+      </Item>
+      <Item ovf:required="false">
+        <rasd:AddressOnParent>0</rasd:AddressOnParent>
+        <rasd:AutomaticAllocation>false</rasd:AutomaticAllocation>
+        <rasd:ElementName>CD/DVD drive 1</rasd:ElementName>
+        <rasd:InstanceID>10</rasd:InstanceID>
+        <rasd:Parent>5</rasd:Parent>
+        <rasd:ResourceSubType>vmware.cdrom.remotepassthrough</rasd:ResourceSubType>
+        <rasd:ResourceType>15</rasd:ResourceType>
+        <vmw:Config ovf:required="false" vmw:key="backing.exclusive" vmw:value="false"/>
+        <vmw:Config ovf:required="false" vmw:key="connectable.allowGuestControl" vmw:value="false"/>
+        <vmw:CoresPerSocket ovf:required="false">1</vmw:CoresPerSocket>
+      </Item>
+      <Item ovf:required="false">
+        <rasd:AddressOnParent>1</rasd:AddressOnParent>
+        <rasd:AutomaticAllocation>false</rasd:AutomaticAllocation>
+        <rasd:ElementName>CD/DVD drive 2</rasd:ElementName>
+        <rasd:InstanceID>11</rasd:InstanceID>
+        <rasd:Parent>5</rasd:Parent>
+        <rasd:ResourceSubType>vmware.cdrom.remotepassthrough</rasd:ResourceSubType>
+        <rasd:ResourceType>15</rasd:ResourceType>
+        <vmw:Config ovf:required="false" vmw:key="backing.exclusive" vmw:value="false"/>
+        <vmw:Config ovf:required="false" vmw:key="connectable.allowGuestControl" vmw:value="false"/>
+        <vmw:CoresPerSocket ovf:required="false">1</vmw:CoresPerSocket>
       </Item>
       <vmw:Config ovf:required="false" vmw:key="cpuHotAddEnabled" vmw:value="false"/>
+      <vmw:Config ovf:required="false" vmw:key="cpuHotRemoveEnabled" vmw:value="false"/>
       <vmw:Config ovf:required="false" vmw:key="memoryHotAddEnabled" vmw:value="false"/>
+      <vmw:Config ovf:required="false" vmw:key="firmware" vmw:value="bios"/>
+      <vmw:Config ovf:required="false" vmw:key="cpuAllocation.shares.shares" vmw:value="1000"/>
+      <vmw:Config ovf:required="false" vmw:key="cpuAllocation.shares.level" vmw:value="normal"/>
+      <vmw:Config ovf:required="false" vmw:key="simultaneousThreads" vmw:value="1"/>
       <vmw:Config ovf:required="false" vmw:key="tools.syncTimeWithHost" vmw:value="false"/>
+      <vmw:Config ovf:required="false" vmw:key="tools.syncTimeWithHostAllowed" vmw:value="true"/>
+      <vmw:Config ovf:required="false" vmw:key="tools.afterPowerOn" vmw:value="true"/>
+      <vmw:Config ovf:required="false" vmw:key="tools.afterResume" vmw:value="true"/>
+      <vmw:Config ovf:required="false" vmw:key="tools.beforeGuestShutdown" vmw:value="true"/>
+      <vmw:Config ovf:required="false" vmw:key="tools.beforeGuestStandby" vmw:value="true"/>
+      <vmw:Config ovf:required="false" vmw:key="tools.toolsUpgradePolicy" vmw:value="manual"/>
+      <vmw:Config ovf:required="false" vmw:key="fixedPassthruHotPlugEnabled" vmw:value="false"/>
+      <vmw:Config ovf:required="false" vmw:key="powerOpInfo.powerOffType" vmw:value="soft"/>
+      <vmw:Config ovf:required="false" vmw:key="powerOpInfo.resetType" vmw:value="soft"/>
+      <vmw:Config ovf:required="false" vmw:key="powerOpInfo.suspendType" vmw:value="hard"/>
+      <vmw:Config ovf:required="false" vmw:key="nestedHVEnabled" vmw:value="false"/>
+      <vmw:Config ovf:required="false" vmw:key="vPMCEnabled" vmw:value="false"/>
+      <vmw:Config ovf:required="false" vmw:key="virtualICH7MPresent" vmw:value="false"/>
+      <vmw:Config ovf:required="false" vmw:key="virtualSMCPresent" vmw:value="false"/>
+      <vmw:Config ovf:required="false" vmw:key="flags.vvtdEnabled" vmw:value="false"/>
+      <vmw:Config ovf:required="false" vmw:key="flags.vbsEnabled" vmw:value="false"/>
+      <vmw:Config ovf:required="false" vmw:key="bootOptions.efiSecureBootEnabled" vmw:value="false"/>
+      <vmw:Config ovf:required="false" vmw:key="powerOpInfo.standbyAction" vmw:value="checkpoint"/>
+      <vmw:ExtraConfig ovf:required="false" vmw:key="nvram" vmw:value="bitnami-lamp-8.2-8.2.8-r0-debian-11-amd64.nvram"/>
     </VirtualHardwareSection>
-  </VirtualSystem>
+    <vmw:BootOrderSection vmw:instanceId="8" vmw:type="disk">
+      <Info>Virtual hardware device boot order</Info>
+    </vmw:BootOrderSection>
+    <vmw:StorageSection ovf:required="false" vmw:group="group1">
+      <Info>Storage policy group reference</Info>
+    </vmw:StorageSection>
+  
+  <EulaSection>
+    <Info>End User License Agreement</Info>
+    <License>Please read the terms and conditions at:
+https://bitnami.com/agreement</License>
+  </EulaSection>
+  <ProductSection>
+    <Info>VM Arguments</Info>
+    <Category>VM Properties</Category>
+    <Property ovf:key="va-ssh-public-key" ovf:type="string" ovf:userConfigurable="true" ovf:value="">
+      <Label>Set the SSH public key allowed to access the appliance</Label>
+      <Description>This will enable the SSHD service and configure the specified public key for the user 'bitnami'</Description>
+    </Property>
+    <Property ovf:key="user-data" ovf:type="string" ovf:userConfigurable="true" ovf:value="">
+      <Label>User data to be made available inside the instance</Label>
+      <Description>This allows to pass any text to the appliance. It will be executed if it starts with a shebang ("#!"). The value should be encoded in base64</Description>
+    </Property>
+    <Category>Networking Properties</Category>
+    <Property ovf:key="network.ip0" ovf:type="string" ovf:userConfigurable="true" ovf:value="">
+      <Label>Network 1 IP Address</Label>
+      <Description>The IP address for the interface (IP/netmask, e.g.: 192.168.1.10/32). Leave blank to enable DHCP.</Description>
+    </Property>
+    <Property ovf:key="network.gateway" ovf:type="string" ovf:userConfigurable="true" ovf:value="">
+      <Label>Default Gateway</Label>
+      <Description>The default network gateway address. Leave blank to enable DHCP.</Description>
+    </Property>
+    <Property ovf:key="network.dns" ovf:type="string" ovf:userConfigurable="true" ovf:value="">
+      <Label>Domain Name Servers</Label>
+      <Description>Comma-separated list of IP addresses to DNS servers.</Description>
+    </Property>
+    <Property ovf:key="network.domain" ovf:type="string" ovf:userConfigurable="true" ovf:value="">
+      <Label>Domain Name</Label>
+      <Description>The fully-qualified domain name.</Description>
+    </Property>
+    <Property ovf:key="network.searchpath" ovf:type="string" ovf:userConfigurable="true" ovf:value="">
+      <Label>DNS Search Path</Label>
+      <Description>Comma-separated list of domains to add to the DNS search path.</Description>
+    </Property>
+  </ProductSection>
+</VirtualSystem>
 </Envelope>
 ```
 </details>
@@ -386,49 +501,43 @@ The above command will produce a pile of XML, which isn't particularly human-rea
 
 VirtualBox knows how to create VMs from OVAs.
 
-From the main VirtualBox Manager window select the menu item `File` → `Import Appliance...` and in the file selection box that appears, navigate to `~/Desktop/cosc349/bitnami-lampstack-7.2.19-2-r56-linux-debian-9-x86_64.ova` (or wherever you downloaded the OVA file to, if you are not using a CS Lab computer). Note that when you select the file a panel will appear similar to the following one, that has initialised the VM configuration from the OVF file. Note that your pathname at the top will be different. 
+From the main VirtualBox Manager window select the menu item `File` → `Import Appliance...` and in the file selection box that appears, navigate to wherever you saved the Bitnami OVA file. Note that when you select the file a panel will appear similar to the following one, that has initialised the VM configuration from the OVF file. Note that your pathname at the top will be different. 
 
-Note also that I double-clicked the "Name" field to add the number `1` at the end, as in `bitnami-lampstack-1` so that I could experiment with adding multiple VM instances from the same OVA.
+Note also that I double-clicked the "Name" field to shorten it a bit, and to add the number `1` at the end, as in `bitnami-lamp-1` so that I could experiment with adding multiple VM instances from the same OVA later.
 
-![](https://i.imgur.com/HCkzUv0.png)
+![](https://hackmd.io/_uploads/B1vPzWx5h.png)
 
-Click the "Import" button, and VirtualBox will create the VM specification and extract the hard-disk file.
+Click the "Finish" button, read and assuming you accept the terms and conditions, VirtualBox will create the VM specification and extract the hard-disk file.
 
-![](https://i.imgur.com/Gf7i1Nn.png)
+![](https://hackmd.io/_uploads/ryQpMbl52.png)
 
 When the import is complete, you will be returned to the VirtualBox main window, where you will now see your new VM listed.
 
 However before starting this VM, we need to reconfigure the network. Scroll the right hand pane down so that you see the "Network" section, and note that it is "Bridged Adaptor", which is the type of VirtualBox network that we should not use within the CS labs.
 
-![](https://i.imgur.com/GXAMEl4.png)
+![](https://hackmd.io/_uploads/SkEGQ-gch.png)
 
 Click on the "Network" heading to reveal the following panel.
 
-![](https://i.imgur.com/FRh5OOS.png)
+![](https://hackmd.io/_uploads/HJPXm-lq2.png)
 
 Change the "Bridged Adapter" pull-down menu to "NAT".
 
-![](https://i.imgur.com/EVFrRId.png)
+![](https://hackmd.io/_uploads/SJWHQZx9n.png)
 
 When you see something similar to the above you can click "OK". Note that the "Invalid settings detected" warning relates to the graphics card, but I didn't run into any problems just ignoring the warning...
 
 Now from the VirtualBox main screen, select your Bitnami VM and click the "Start" button. A window should appear showing Bitnami starting up (as viewed from the "monitor" of your VM).
 
-![](https://i.imgur.com/SAgYpOz.png)
+After letting Linux boot, you may reach a console page that indicates that the VM's networking was not configured correctly ... but usually after waiting a minute or so, the network should sort itself out and the display updated to what follows. Note that in this instance including the password in the screen-shot is not a problem, as the VM here is on a NAT connection, so is not accessible from the Internet.
 
-After letting Linux boot, I reached a console page that indicated that the VM's networking was not configured correctly...
-
-![](https://i.imgur.com/EfhbRfl.png)
-
-...but after waiting a few seconds the network sorted itself out and the display updated to what follows. Note that in this instance including the password in the screen-shot is not a problem, as the VM here is on a NAT connection, so is not accessible from the Internet.
-
-![](https://i.imgur.com/qUoRIUt.png)
+![](https://hackmd.io/_uploads/H1PlV-g52.png)
 
 The above screen states that you can use the web address shown, which is http://10.0.2.15 for me, to access the Bitnami web application.
 
 :::warning
 :warning: 
-However this will not work, as the particular IP address 10.0.2.15 here only exists "behind" the NAT mapping, so browsers on your host computer cannot connect to that address. (Originally I tried using a host-only network for this part of the lab, which was straightforward on my laptop, but did not work in the CS Labs.)
+However this will not work, as the particular IP address 10.0.2.15 here only exists "behind" the NAT mapping, so browsers on your host computer cannot connect to that address. (Originally I tried using a host-only network for this part of the lab, which was reasonably straightforward on my laptop, but did not work in the CS Labs.)
 :::
 
 We need to set up "port forwarding" so that some network ports on our host computer get mapped back through to the virtual network that our VM is on, behind the NAT mapping.
@@ -439,13 +548,13 @@ We need to set up "port forwarding" to cause some of your host's network ports t
 
 Click on the network icon at the bottom of the console window: it is the third icon from the left on the previous screen capture. A drop-down menu should appear—
 
-![](https://i.imgur.com/FZATbRQ.png)
+![](https://hackmd.io/_uploads/S1iVN-g52.png)
 
 —from which you should click "Network Settings...", which will take you back to the network configuration screen. Not all settings can be changed now that the VM is actually running, but port forwarding _can_ be (re-)configured while the VM is "powered on".
 
 Click on the "Advanced" spinner, to reveal the "Port Forwarding" button, which you should select.
 
-![](https://i.imgur.com/ZvHmeoI.png)
+![](https://hackmd.io/_uploads/BJNFVZxc2.png)
 
 In the window that appears, you can edit a table that contains a row per port forwarding rule. Each rule will cause a given port on a given IP address on the host, to be mapped back to a given port on a given IP address of your guest.
 
@@ -456,7 +565,7 @@ Enter data to match the screen capture below, but note that you need to insert t
 Just for your interest, if you enter your host's IP address on its LAN connection, instead of `127.0.0.1`, this means that computers *elsewhere on the internet* can potentially connect to that port and reach your VM—which is almost certainly **not** what you want to do, within this lab exercise, but can be useful in other contexts.
 :::
 
-![](https://i.imgur.com/bM2SCyH.png)
+![](https://hackmd.io/_uploads/SJe1r-e93.png)
 
 :::warning
 :warning: 
@@ -465,7 +574,7 @@ Note that you need to click "OK" on all the settings windows you've opened befor
 
 Now if you open http://127.0.0.1:8180 in your web browser (or whatever port you used for the port forwarding configuration), you should see the Bitnami welcome screen.
 
-![](https://i.imgur.com/nlLM2I1.png)
+![](https://hackmd.io/_uploads/S17HSWl92.png)
 
 The preceding page is generated by the Apache web server running on the Linux VM that you imported.
 
@@ -473,7 +582,7 @@ The preceding page is generated by the Apache web server running on the Linux VM
 :loudspeaker: 
 Please let me know if you have absolutely no experience or comfort with web technology such as HTML. While we will be using web technologies in the lab exercises, we will not focus on best practice in using these web technologies, so a prerequisite of COSC212, or even COMP112, would have been overkill. You can access the materials for those papers should you need reference material, and there is also a vast amount of high quality learning material available on the web. 
 
-Computer Science is also this year (2022) in the process of launching our new 200-level papers, which are intended to eventually provide the authoritative information source about web technologies and networking.
+Computer Science is also this year (2022) in the process of launching our new 200-level papers, which are intended to eventually provide the authoritative information source about web technologies and networking. Seeking COSC203's material should help!
 :::
 
 Now let's login to the console of the VM (follow its instructions in terms of the initial password, required changes to the password, etc.).
@@ -483,17 +592,15 @@ Now let's login to the console of the VM (follow its instructions in terms of th
 In my case, I fumbled entering the existing, default password, and thus the first-login requirement to change password didn't actually successfully change my password! You can always later change your password within your VM by using the `passwd` command within a shell running on the VM.
 :::
 
-![](https://i.imgur.com/572EX1i.png)
-
-Copy the shell commands on the following screen-shot into your VM, taking care to match the syntax precisely.
+Copy the shell commands on the following screen capture into your VM, taking care to match the syntax precisely.
 
 Note that the `cat` command is just being used to check that the contents of the file `t.php` are as expected.
 
-![](https://i.imgur.com/fzUtTxe.png)
+![](https://hackmd.io/_uploads/HJZa8Wlc2.png)
 
 What you have achieved is creation of a new PHP script that runs the `phpinfo()` function. You should be able to see the output of this script by modifying the URL you visited to show your Bitnami web application above, to have a `t.php` at the end of it. I get output that includes the following.
 
-![](https://i.imgur.com/TQ3aZGo.png)
+![](https://hackmd.io/_uploads/rysAU-lq3.png)
 
 :::success
 :heavy_check_mark: 
@@ -513,13 +620,13 @@ On the VirtualBox console, you can run the commands shown in the following scree
 Just to emphasise, since some students have missed this in the past: you actually need to look at the commands being typed at the shell prompt within the screen capture that follows!
 :::
 
-![](https://i.imgur.com/GuaFqzf.png)
+![](https://hackmd.io/_uploads/S1oa9Wgcn.png)
 
 After doing so, you can use `ssh` from your host computer to connect to your VM. The IP address you connect to on the host is what you set up in the port forwarding to map to the VM's port 22 (where SSH runs), and the `-p` switch is used to select the port number on the host to connect to (8122 here).
 
 If you try to run the `ssh` command and get the message "Connection refused", or "Connection closed by remote host" then this usually means there isn't a server running on the network port that you're trying to connect to.
 
-![](https://i.imgur.com/7mAL4l6.png)
+![](https://hackmd.io/_uploads/H1FIjZlq3.png)
 
 You can see from the `cat` command invocation that I have been able to access the files on the VM, from the convenience of a Terminal.app window on my macOS host.
 
@@ -527,39 +634,39 @@ You can see from the `cat` command invocation that I have been able to access th
 
 Your VirtualBox Manager window should look similar to this:
 
-![](https://i.imgur.com/l1FxL9P.png)
+![](https://hackmd.io/_uploads/SkhjoZx5n.png)
 
-Meanwhile your VM `bitnami-lampstack-1` should have console output similar to (you may need to "wake up" the console by typing a key):
+Meanwhile your VM `bitnami-lamp-1` should have console output similar to (you may need to "wake up" the console by typing a key):
 
-![](https://i.imgur.com/q24selZ.png)
+![](https://hackmd.io/_uploads/ryWTsWl93.png)
 
-Let's now import the Bitnami LAMP stack again, but to a second VM, while the first continues to run. We will call `bitnami-lampstack-2`, which requires that you double-click, change then press <kbd>enter</kbd>, so that your import page looks like:
+Let's now import the Bitnami LAMP stack again, but to a second VM, while the first continues to run. We will name it `bitnami-lamp-2`, which requires that you double-click, change then press <kbd>enter</kbd>, so that your import page looks like:
 
-![](https://i.imgur.com/I5P2X0Z.png)
+![](https://hackmd.io/_uploads/SksX3be52.png)
 
 Returning to the VirtualBox Manager window should now look similar to:
 
-![](https://i.imgur.com/clv7TSL.png)
+![](https://hackmd.io/_uploads/BkZI3Zlc2.png)
 
 We need to change the networking options for the new VM, and again we will chose "NAT" for the type of network that the NIC (Adapter 1) is attached to. Click on the "Network" heading and change the network type to NAT:
 
-![](https://i.imgur.com/YNdxsFu.png)
+![](https://hackmd.io/_uploads/SyLD3Zlc2.png)
 
 So now the Manager page should look like:
 
-![](https://i.imgur.com/S2XmmHv.png)
+![](https://hackmd.io/_uploads/rJz_hWlqh.png)
 
 Start your VM, and wait for the console to show functioning networking details (this can take a minute or so). For example:
 
-![](https://i.imgur.com/emyq1uc.png)
+![](https://hackmd.io/_uploads/Hyb62blq2.png)
 
-Note that the IP address is exactly the same as for the first VM! This is possible because the internal networks the two VMs are on are independent.
+Note that the IP address is exactly the same as for the first VM! This is possible because the internal networks the two VMs are on are completely independent from each other.
 
 You can repeat the port forwarding setup, but this time use ports 8280 and 8222. (I'm actually using an explicit pattern for these port numbers, although this is just for my convenience. The pattern is 8MPP where M is the virtual machine number (1 or 2) and PP is the target port on the VM for the port forwarding.)
 
 Now try to view the web server on your second VM.
 
-![](https://i.imgur.com/wI9dwy9.png)
+![](https://hackmd.io/_uploads/ryLNaWg5n.png)
 
 Were you to try to show `t.php` as for `bitnami-lampstack-1`, though,, you should find that that file isn't present.
 
@@ -567,8 +674,13 @@ You will need to again use the steps you went through above to enable SSH on you
 
 ```
 $ ssh -p 8222 bitnami@127.0.0.1
-bitnami@127.0.0.1's password: 
-Linux debian 4.9.0-9-amd64 #1 SMP Debian 4.9.168-1+deb9u3 (2019-06-16) x86_64
+The authenticity of host '[127.0.0.1]:8222 ([127.0.0.1]:8222)' can't be established.
+ED25519 key fingerprint is SHA256:YWggZf0wlZHeX8CaisZFLz9dTrkDDIUNGwNNMeQjJ9I.
+This key is not known by any other names
+Are you sure you want to continue connecting (yes/no/[fingerprint])? yes
+Warning: Permanently added '[127.0.0.1]:8222' (ED25519) to the list of known hosts.
+bitnami@127.0.0.1's password:
+Linux debian 5.10.0-23-amd64 #1 SMP Debian 5.10.179-1 (2023-05-12) x86_64
 
 The programs included with the Debian GNU/Linux system are free software;
 the exact distribution terms for each program are described in the
@@ -581,19 +693,32 @@ permitted by applicable law.
       | _ \ |  _| ' \/ _` | '  \| |
       |___/_|\__|_|_|\__,_|_|_|_|_|
 
-  *** Welcome to the Bitnami LAMP 7.2.19-2 ***
-  *** Documentation:  https://docs.bitnami.com/virtual-machine/infrastructure/lamp/ ***
-  ***                 https://docs.bitnami.com/virtual-machine/ ***
-  *** Bitnami Forums: https://community.bitnami.com/ ***
-Last login: Tue Jul 16 13:11:30 2019 from 10.0.2.2
-bitnami@debian:~$ echo 'This is bitnami-lampstack-2' >test.txt
-bitnami@debian:~$ cat test.txt
-This is bitnami-lampstack-2
-bitnami@debian:~$ logout
+  -> Welcome to LAMP packaged by Bitnami 8.2.8
+  -> Documentation:   https://docs.bitnami.com/virtual-machine/infrastructure/lamp/
+  -> Bitnami Support: https://github.com/bitnami/vms/issues
+Last login: Sun Jul 16 00:12:56 2023
+_____________________________________________________________________
+WARNING! Your environment specifies an invalid locale.
+ The unknown environment variables are:
+   LC_CTYPE=en_NZ.UTF-8 LC_ALL=
+ This can affect your user experience significantly, including the
+ ability to manage packages. You may install the locales by running:
+
+ sudo dpkg-reconfigure locales
+
+ and select the missing language. Alternatively, you can install the
+ locales-all package:
+
+ sudo apt-get install locales-all
+
+To disable this message for all users, run:
+   sudo touch /var/lib/cloud/instance/locale-check.skip
+_____________________________________________________________________
+
+bitnami@debian:~$
+logout
 Connection to 127.0.0.1 closed.
 ```
-
-Note that in the above listing, a command was included to create a file `test.txt`, which you should execute within your VM, also.
 
 ## Connect your VMs together
 
@@ -603,23 +728,24 @@ A more complicated approach—that we will not use today—is to give each of yo
 
 However, we will try a different way to get the two VMs connected, that was introduced in VirtualBox version 5 (I think): a NAT Network. This may fail to work for you in the CS labs, and if it does, just continue with the exercises in the next section. It did work for me when I tested it.
 
-We need to create a new NAT Network. To do so, from the VirtualBox Manager window, select the "VirtualBox" menu, and "Preferences...". Choose the "Network" tab.
+We need to create a new NAT Network. To do so, from the VirtualBox Manager window, select the "File", "Tools", "Network Manager" (in previous versions, instead in "VirtualBox" menu, and "Preferences...". Choose the "Network" tab).
 
-![](https://i.imgur.com/GBdHCEb.png)
+![](https://hackmd.io/_uploads/HyGuyzxc2.png)
 
-Select the small NIC icon with a + on the right-hand side of the window. You can use the bottom-most right-hand side icon to view and change the configuration of that new NAT Network. Note the "Port Forwarding" button.
-
-![](https://i.imgur.com/Jj3tg2G.png)
+You will likely see a blank list, and thus should select the "Create" button, and match the settings shown in my screen capture, above.
 
 Now return to each of your VM console windows, and shut down your VMs. You can do this cleanly by logging into the VM and running `sudo poweroff`. Or you can just click the top-left window close icon and choose "Power off the machine" (virtually yanking out the power cord). Note that you can also shut down your VMs from the VirtualBox Manager window, e.g., by clicking on the machine and then using items within the "Machine" menu ("Close" -> "Power Off").
 
 Open the network configuration of each VM and change the network to "NAT Network", ensuring that both machines have the same NatNetwork selected, that you created above.
 
-Start up your two VMs, and check that they show different IP addresses. In the CS labs mine came up as:
-- bitnami-lampstack-1 10.0.2.4
-- bitnami-lampstack-2 10.0.2.5
+Start up your two VMs, and check that they show different IP addresses. If you see different IP addresses for your two VMs, great! You can skip the next section, and continue from the section entitled "DHCP worked..."
 
-If you see different IP addresses for your two VMs, great! You can skip the next section, and continue from the section entitled "DHCP worked..."
+On my laptop, the two VMs fetched different addresses:
+- bitnami-lamp-1 10.0.2.5
+- bitnami-lamp-2 10.0.2.4
+However, the login banner continued to show 10.0.2.15 on both VMs (!). I was able to check the IP addresses that the VMs were being allocated by logging in to the console and running the `ip addr` command. I actually ran `ip addr | fgrep 10.0.2` to filter out all the lines I did not need to look at.
+
+If the `ip addr` command is _also_ still giving the same IP address for both computers, you can continue directly into the section that follows this one...
 
 ### If DHCP doesn't work...
 
@@ -648,39 +774,43 @@ You shouldn't need to change the IP addresses manually, and I wouldn't expect th
 
 :::warning
 :warning:
-Remember that your IP addresses are likely to be different from the ones I see, so you will need to replace the values I see with the values on your system.
+Remember that your IP addresses mau well be different from the ones I see, so you will need to replace the values I see with the values on your system.
 :::
 
-Your two VMs should now be able to reach each other, using the virtual network. You can test this by using the `ping` command (`ping` performs a simple network connectivity test between where it is run, and some other point on the internet). I logged into my `bitnami-lampstack-1` VM using its console window and could successfully ping both my own address (10.0.2.15) and that of the other VM (10.0.2.16). 
+Your two VMs should now be able to reach each other, using the virtual network. You can test this by using the `ping` command (`ping` performs a simple network connectivity test between where it is run, and some other point on the internet). I logged into my `bitnami-lampstack-1` VM using its console window and could successfully ping both my own address (10.0.2.4) and that of the other VM (10.0.2.5). 
 
-![](https://i.imgur.com/9GHOvAl.png)
+![](https://hackmd.io/_uploads/ry3xVMx9n.png)
 
 :::success
+:pencil:
 Try to SSH from one machine to the other. You can use the console of one VM to run the `ssh` command to reach the other.
 :::
 
 Finally, let's try to use the port forwarding configuration of the NAT Network to allow us to reach both VMs' web pages from a web browser running on our host. Here is a screen capture of how I configured port forwarding for the NAT Network.
 
-![](https://i.imgur.com/B3oGjxA.png)
+![](https://hackmd.io/_uploads/rJxLNGg93.png)
 
 Here are my two welcome screens. You can use whatever mapping suits you, but I recommend using the one we adopted above. 
 
-![](https://i.imgur.com/jTtrf3Z.png)
+![](https://hackmd.io/_uploads/BJq_Nflcn.png)
 
-![](https://i.imgur.com/GY6u3SV.png)
+![](https://hackmd.io/_uploads/rkpvVMe93.png)
 
-I then try to access `t.php`, which is only present on the first VM.
+As expected, when I then try to access `t.php`, it is only present on the first VM.
 
-![](https://i.imgur.com/JbnEyZm.png)
+![](https://hackmd.io/_uploads/SJ8jEGl5n.png)
 
-![](https://i.imgur.com/Jx01JLX.png)
+![](https://hackmd.io/_uploads/By43EMxc3.png)
 
 ## Suggested exercises if you have time and/or interest
 
+:::success
+:pencil:
 1. Experiment with deploying a more complicated PHP script into your Bitnami LAMP stack. For example, determine how to use the `scp` command (or equivalent) to copy PHP files to and from your host in order to edit them on your host, and copy back the updated versions to be served up by the guest's webserver.
 2. Examine the Bitnami stack and see how effectively you can deploy other Bitnami applications from their OVA files.
 3. Explore your ReactOS VM, and read up on the project. The goal of creating an open source Windows NT compatible operating system is a worthy one, albeit ambitious in scale.
 4. (Challenge) Build a demonstrator of a system that produces output based on multiple VMs interacting.
+:::
 
 ## Cleaning up
 
@@ -690,4 +820,4 @@ To remove a VM and its virtual hard disks, ensure that the VM is stopped. This c
 
 You can then select the VM in the VirtualBox Manager window, and from the Machine menu (or by right-clicking the VM's entry), select "Remove..." and select "Delete all files", such as shown in the following screen capture:
 
-![](https://i.imgur.com/xbte9aZ.png)
+![](https://hackmd.io/_uploads/S1AXHGx93.png)
