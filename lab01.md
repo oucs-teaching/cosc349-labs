@@ -1,6 +1,3 @@
----
-tags: cosc349
----
 ## Lab 1—Git, CS labs, and the Unix shell
 
 This week, the computers in Lab E and Lab F are iMacs but are running Microsoft Windows. Apparently soon the machines will change to non-Apple hardware running Windows. Linux and macOS are Unix-based operating systems, so have ready access to a Unix shell, e.g., if you are using your own computer.
