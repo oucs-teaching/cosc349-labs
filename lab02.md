@@ -1,6 +1,3 @@
----
-tags: cosc349
----
 [Lab 4]: /DclJIDNxQtO40T8TnOOvEg
 [COSC301 lab book]: https://www.cs.otago.ac.nz/cosc301/student2019.pdf
 [ReactOS Live CD ZIP file]: https://downloads.sourceforge.net/reactos/ReactOS-0.4.14-release-77-gf6507c2-live.zip
@@ -41,7 +38,7 @@ Throughout the exercises, "VM" will be used as an abbreviation of "virtual machi
 4. Add a new web page on a LAMP stack running within a VirtualBox VM that you import.
 5. Connect to a VirtualBox VM that you have created, using Secure Shell (`ssh`), so that you can perform development and administrative tasks.
 
-## Caution: VirtualBox creates large files
+## Caution: VirtualBox may create large files
 
 As is typical with most (full / hardware) virtualisation systems, working with VirtualBox will involve working with large files. You should keep an eye on where these large files accumulate, regardless of whether you are using your own computer, or using CS Lab computers. The typical sources of large files include:
 - VMs' hard disk image files;
@@ -58,8 +55,8 @@ In some circumstances, these large files may remain on your computer even if you
 
 I have been told that as of early in week one of semester, the VirtualBox application configuration within the CS Labs is now set up to default to a place that allows for fast storage of large files. Like your home directory, this "J" drive should migrate to different computers in the labs that you log into. However, unlike your home directory, you cannot access the "J" drive easily from the remote Otago Student Desktop (but that's just for information, as VirtualBox, Docker, etc., won't run on the Otago Student Desktop anyway).
 
-:::info
-:pencil: Note that I am showing screen captures from my laptop, which is a macOS device running a recent version of VirtualBox 7. The CS Lab environment may be slightly behind my version. Just let me know if you encounter any problems that my testing of the CS Lab environment has not uncovered.
+:::success
+:pencil: Note that I am showing screen captures from my laptop, which is a macOS device running a recent version of VirtualBox 7 (7.0.8). The CS Lab environment is running the same version of VirtualBox, which is ideal. It may be that the CS Lab version stays fixed as it is presently for the semester, even if new VirtualBox versions are released, so just be aware that you may end up with a slightly newer version of VirtualBox on your own laptop if you install it in future weeks.
 :::
 
 :::danger
@@ -71,13 +68,8 @@ The backups for your Computer Science network home may not include your virtual 
 
 The instructions below lead you to create a new VM running ReactOS.
 
-- Download the [ReactOS Live CD ZIP file] (about 80MB) to a location on your lab/home computer where you can find it later. (I just used the usual macOS 'Downloads' folder.)
-- Decompress the ZIP file you downloaded to extract the ~265MB ISO file (ISO files are serialisations of the contents of a CD/DVD).
-
-:::info
-Note that any rectangles with dashed outlines in the screenshots below are redacted content, given that all this imagery is publicly available in the cloud, and releasing the screenshots verbatim might accidentally expose sensitive information.
-:::
-
+- Download the [ReactOS Live CD ZIP file] (an 80MB(ish) ZIP file) to a location on your lab/home computer where you can find it later. (I just used the usual macOS 'Downloads' folder.)
+- Decompress the ZIP file you downloaded to extract the ~265MB ISO file (ISO files are serialisations of the contents of a CD/DVD). (You can probably just double-click the ZIP file in a Windows/macOS/Linux GUI desktop to get at the ISO file within the ZIP file.)
 - Start VirtualBox and you should be greeted with the welcome screen shown, or something that looks similar.
 
 ![](https://hackmd.io/_uploads/HJrHblgq2.png)
@@ -197,37 +189,7 @@ VirtualBox provides a rich set of ways to manage virtual networks. VirtualBox [p
 - **NAT Network**. Extends NAT to allow multiple VMs assigned to the same NAT Network to talk to each other, as well as being able to access the internet, and be accessed from the host or beyond if port forwarding is set up.
 - **Bridged networking**. **Do not use this mode in the CS labs!** In this case, the guest exposes its own Ethernet MAC address directly to the local-area network—the guest will appear as another computer on the network. Thus the guest can take on its own Internet identity, however this will not work within the UoOtago network, and may cause technical problems (as well as possibly leading to staff in ITS to wail and gnash their teeth).
 - **Internal networking**. Creates a LAN that multiple VMs can connected to, but that is not connected to the Internet.
-- **Host-only networking**. Like internal networking, but the host is also able to send network traffic to and from the virtual network.
-
-### Setting up a VirtualBox "host only network"
-
-:::danger
-:warning: 
-At least for me, host-only networking does not function correctly in the CS Labs.
-
-You should thus just skip to the next section "Let’s import a VM from an OVA file", and read about host-only networks only if you expect to use them on your own computers.
-:::
-
-This section is a bit historical: these days I believe the "NAT Network" option should cover most of the cases that used to suit "host only network" configurations. Thus, perhaps skip this section and return to it only if you cannot get NAT Networks to work for you.
-
-In the past, I have found host-only networking to be useful when working on my laptop, allowing me to add VMs to an internal network where they can communicate with each other, but which also has convenient access to the host network interface. I leave this documentation here largely for your interest.
-
-From the main VirtualBox Manager window, you can select the "File" menu choose "Tools" and "Network Manager", then naviagate to the Host-only Networks tab. In previous VirtualBox versions, "Host Network Manager..." was in the file menu. This will bring up a window such as the following (the details will probably be different from mine). Click the "Properties" button in the tool-bar to see the details shown on my screen capture. You will need to click "Create" before you are able to click "Properties" if there are no networks in your list.
-
-![](https://hackmd.io/_uploads/S1x1yWg53.png)
-
-In present VirtualBox versions, note the term "Legacy" in my migrated settings: Host-only Networks are likely going to be deprecated, I'd guess.
-
-For older VirtualBox versions you can change more settings and see more configuration options. You should ensure that you use a network (e.g., vboxnet0) that has a tick in the "DHCP Server" column. I have shown a host-only network configuration that was useful to me, on my laptop. You can click the "Create" button to add a network if your list is blank. 
-
-On the lower configuration panel, where there is a "Configure Adapter Manually" selected on my system, I have shown settings that should work. You need to click the "Apply" button to cause changes to remain in effect.
-
-On the "DHCP Server" tab near those settings, my network was configured thusly:
-- Enable Server
-- Server Address: 192.168.56.100
-- Server Mask: 255.255.255.0
-- Lower Address Bound: 192.168.56.200
-- Upper Address Bound: 192.168.56.254
+- **Host-only networking**. Like internal networking, but the host is also able to send network traffic to and from the virtual network. (I think that this form of networking is going to be deprecated in favour of NAT Network, so I'm dropping out the material that I have previously included about it within this lab.)
 
 ## Let's import a VM from an OVA file
 
