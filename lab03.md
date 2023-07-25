@@ -1,12 +1,16 @@
 ---
-tags: cosc349
+tags: cosc349 lab
 ---
-# COSC349 Lab 3—Cloud Architecture—2022
 [Lab 2]: /h71h3B-3Tda2XUyNyzkanA
 
 ## Lab 3—Vagrant for automating virtualisation
 
-The computers in Lab E and Lab F can be (re)booted into macOS or Linux. This lab requires you to boot into macOS.
+The CS Labs' computers' installation of Vagrant has had some very recent fixes. It should now work OK, but let me know if anything seems broken, still.
+
+:::warning
+:warning: 
+For me, some `vagrant` commands did not work for me on the CS Lab computers when I ran them from the old Windows command line (`cmd.exe`), but did work when I ran them from Git Bash, so I'd suggest just working in Git Bash.
+:::
 
 ### Lab objectives
 
@@ -37,7 +41,7 @@ You can explore the [VirtualBox documentation][VBoxManage documentation] for mor
   
     Host Information:
   
-  Host time: 2022-07-24T07:51:36.172000000Z
+  Host time: 2023-07-25T09:01:06.330000000Z
   Processor online count: 8
   Processor count: 8
   Processor online core count: 4
@@ -65,9 +69,9 @@ You can explore the [VirtualBox documentation][VBoxManage documentation] for mor
   Processor#7 speed: 2600 MHz
   Processor#7 description: Intel(R) Core(TM) i7-6700HQ CPU @ 2.60GHz
   Memory size: 16384 MByte
-  Memory available: 4929 MByte
+  Memory available: 6337 MByte
   Operating system: Darwin
-  Operating system version: 19.6.0  
+  Operating system version: 21.6.0
   ```
 - List the NAT Networks (recall that you created such a network in order to interact with your VM back in [Lab 2]).
   ```
@@ -102,36 +106,30 @@ Vagrant does not provide a virtualisation system itself, it instead uses an exis
 
 ```bash
 $ vagrant --version
-Vagrant 2.2.7
+Vagrant 2.3.7
 ```
 
 :::info
 :eyes: 
 Vagrant and VirtualBox can sometimes fail to work together depending on their specific versions. This will usually be documented online.
 
-The exercises are tested on CS lab computers to try to ensure that you don't run into version problems. Sometimes there may be minor differences in the output shown in the lab exercises from the versions of software that you are using, however.
+The exercises are tested on CS Lab computers to try to ensure that you don't run into version problems. Sometimes there may be minor differences in the output shown in the lab exercises from the versions of software that you are using, however.
+
+At the time of writing, the CS Lab computers are running the latest version of Vagrant.
 :::
 
-- If you run into problems within the CS labs and have a computer that you can administer yourself, you can [install Vagrant][Vagrant] on it, and attain a newer version of the software.
+- If you run into problems within the CS Labs and have a computer that you can administer yourself, you can [install Vagrant][Vagrant] on it. Note, however that because Vagrant uses VirtualBox, if you're on an Arm CPU, you won't be able to use either tool reliably (this will change, but unclear when).
 
 [Vagrant]: https://www.vagrantup.com
 
 ## Set up from scratch a `Vagrantfile`, i.e., a Vagrant environment
 
-In a command shell, create a new directory in which to store your Vagrant environment, and change into that new directory.
+In a command shell (e.g., Git Bash on a CS Lab computer), create a new directory in which to store your Vagrant environment, and change into that new directory.
 
 Now run the `vagrant init` command. Vagrant has been written to try to provide useful feedback, so please do read it, and indeed it has indicated what the `vagrant init` command actually did. (Of course the notice abut there being a new Vagrant version will probably be different in your environment.)
 
-:::info
-:eyes: 
-At some times when using Vagrant I have needed to run `vagrant plugin repair`... but I was instructed to do so by Vagrant...
-:::
-
 ```
 $ vagrant init
-==> vagrant: A new version of Vagrant is available: 2.2.17 (installed version: 2.2.7)!
-==> vagrant: To upgrade visit: https://www.vagrantup.com/downloads.html
-
 A `Vagrantfile` has been placed in this directory. You are now
 ready to `vagrant up` your first virtual environment! Please read
 the comments in the Vagrantfile as well as documentation on
@@ -153,15 +151,17 @@ A `Vagrantfile` is intended to sit at the top-level directory of a project that 
 
 A very common and convenient working model is that the `Vagrantfile` is contained in the top-level of a Git repository. It is likely that this way of working will be useful for your first COSC349 assignment.
 
-The context of any `vagrant` command invocation is determined by Vagrant searching the current working directory and each parent directory in turn until it first finds a `Vagrantfile`. 
+The context of many `vagrant` command invocations is determined by Vagrant searching the current working directory and each parent directory in turn until it first finds a `Vagrantfile`. This means that the Vagrant commands are run in the context of a particular project. If Vagrant can't find a `Vagrantfile`, the tool with present an error message.
 
-The `Vagrantfile` specifies the configuration, initial (virtual) hard-disk content (a so-called Vagrant "box"), and scripting to set up one or more VMs that are relevant to a project. Because `vagrant` command invocations determine their context from the current working directory (or its parent directories, until a `Vagrantfile` is found), you can easily check out two copies of a project into different directories, e.g., a stable version and an unstable one that you are working on, and the same `vagrant` command invocation will refer to independent instances of the VMs for that project.
+The `Vagrantfile` specifies the configuration, initial (virtual) hard-disk content (a so-called Vagrant "box"), and scripting to set up one or more VMs that are relevant to a project. 
+
+As noted above, most common `vagrant` command invocations determine their context from the current working directory (or its parent directories, until a `Vagrantfile` is found), and thus you can easily check out two copies of a project into different directories, e.g., a stable version and an unstable one that you are working on, and the same `vagrant` command invocation will refer to independent instances of the VMs for that project.
 
 ## A tour of Vagrant's features via the default `Vagrantfile`
 
 We will explore a number of Vagrant's key features and concepts by working through the default `Vagrantfile`.
 
-Although you can often treat a `Vagrantfile` just as a static configuration file, it's in fact valid code in the [Ruby] programming language. This can be used to positive effect (e.g., easy ability to use expressions, conditionals and loops in your configurations), although there is a risk that complex code in your `Vagrantfile` may make it very difficult for others to understand. (On one occasion I created a `Vagrantfile` so complex in its use of Ruby features that I subsequently found it difficult to understand how it worked—so try not to do that!)
+Although you can often treat a `Vagrantfile` just as a static configuration file, it's in fact valid code in the [Ruby] programming language. This can be used to positive effect (e.g., easy ability to use expressions, conditionals and loops in your configurations), although there is a risk that complex code in your `Vagrantfile` may make it very difficult for others to understand. (On one occasion I created a `Vagrantfile` so complex in its use of Ruby features that I subsequently found it extremely difficult to understand how it worked—so try not to do that!)
 
 [Ruby]: https://www.ruby-lang.org/en/
 
@@ -240,7 +240,7 @@ As noted above, Vagrant VMs usually use NAT to reach the Internet. Vagrant can c
 
 :::warning
 :warning: 
-Note that in the CS labs, you should not create `public_networks`. This is for the same reasons given in the [Lab 2] regarding not creating VirtualBox "bridged" network adapters.
+Note that in the CS Labs, you should not create `public_networks`. This is for the same reasons given in the [Lab 2] regarding not creating VirtualBox "bridged" network adapters.
 :::
 
 ```ruby=+
@@ -268,6 +268,13 @@ We will explore this feature below. The configuration parameters here, that are 
   # argument is a set of non-required options.
   # config.vm.synced_folder "../data", "/vagrant_data"
 
+  # Disable the default share of the current code directory. Doing this
+  # provides improved isolation between the vagrant box and your host
+  # by making sure your Vagrantfile isn't accessable to the vagrant box.
+  # If you use this you may want to enable additional shared subfolders as
+  # shown above.
+  # config.vm.synced_folder ".", "/vagrant", disabled: true
+
 ```
 
 ### Provider-specific parameters
@@ -276,7 +283,7 @@ As mentioned above, Vagrant doesn't provide a virtualisation engine itself. It i
 
 Vagrant is intended to allow you to change provider and still do useful work for you, e.g., you should be able to set up your environment, and then change the provider from VirtualBox to VMware, or change to a provider that deploys directly to cloud services.
 
-Nonetheless, it can be useful to include configuration parameters that are specific for a given virtualisation provider. The VirtualBox-specific parameters shown here allow you to turn on display of the "monitor" of the VirtualBox VM, and/or to change the memory allocated (although in this case you would probably first need to first look up in the Vagrant documentation what units that "1024" number is using!).
+Nonetheless, it can be useful to include configuration parameters that are specific for a given virtualisation provider. The VirtualBox-specific parameters shown here allow you to turn on display of the "monitor" (i.e., virtual display device) of the VirtualBox VM, and/or to change the memory allocated (although in this case you would probably first need to first look up in the Vagrant documentation what units that "1024" number is using!).
 
 ```ruby=+
   # Provider-specific configuration so you can fine-tune various
@@ -302,14 +309,14 @@ Another key feature of Vagrant is its extensive support for integration with pro
 
 :::info
 :thought_balloon: 
-As a specific example of a provisioning system, CFEngine is used in the CS labs to install software, and generally check that the machines are running as expected. Evidence of this can sometimes be seen when you open shell windows on these computers.
+As a specific example of a provisioning system, CFEngine used to be used in the CS Labs to install software, and generally check that the machines are running as expected.
 :::
 
-The simplest provisioning approach is to run a shell script as soon as the VM has been created and has booted. The commented-out lines of shell script here (67 and 68) would install the Apache Web Server (version 2) on a Linux system that uses the `apt` package management system, such as Debian or Ubuntu.
+The simplest provisioning approach is to run a shell script as soon as the VM has been created and has booted. The commented-out lines of shell script here (74 and 75) would install the Apache Web Server (version 2) on a Linux system that uses the `apt` package management system, such as Debian or Ubuntu.
 
 The point of provisioning is that you automate steps you'd otherwise have to repeat each time you set up a new instance of a particular design of VM you want to use. A particular point of use is during collaborative development: instead of providing written instructions to your teammates as to how to set up a matching VM environment to yours, you can automate all the setup within the provisioning sections.
 
-A good way of checking that your provisioner is functioning as intended and that your scripting is complete is to create another working directory, `git clone` (or otherwise copy over) the content of your repository, and try deploying fresh VMs. The behaviour of the fresh VMs and those associated with your working copy should match.
+A good way of checking that your provisioner is functioning as intended and that your scripting is complete is to create another working directory, `git clone` (or otherwise copy over) the content of your repository, and try deploying fresh VMs temporarily. The behaviour of the fresh, temporary VMs and those associated with your working copy should match.
 
 :::info
 :bulb: 
@@ -337,23 +344,18 @@ You should now be able to have Vagrant set up a Ubuntu Focal 64-bit VM for you. 
 The first time you use a Vagrant box, it needs to be downloaded (it's about 270 megabytes), and stored locally. After that time, it will not be downloaded again: any other "ubuntu/focal64" VMs that you request will reuse the box file that has already been cached.
 :::
 
-:::info
-:eyes: 
-Back in 2019 the CS Lab environment has Vagrant installed in a way where a non-functional libvirtio "provider" jumped ahead of the expected VirtualBox provider in priority. You can override this behaviour by adding the `--provider` switch, as in `--provider virtualbox`. However, since 2020 the CS labs appear to work without this option. On my laptop, and on installations of Vagrant that you do on your own computers, it is likely that `vagrant up` would be sufficient, without `--provider` switch.
-:::
-
 ```
-$ vagrant up --provider virtualbox
+$ vagrant up
 Bringing machine 'default' up with 'virtualbox' provider...
 ==> default: Box 'ubuntu/focal64' could not be found. Attempting to find and install...
     default: Box Provider: virtualbox
     default: Box Version: >= 0
 ==> default: Loading metadata for box 'ubuntu/focal64'
     default: URL: https://vagrantcloud.com/ubuntu/focal64
-==> default: Adding box 'ubuntu/focal64' (20220724.0.0) for provider: virtualbox
-    default: Downloading: https://vagrantcloud.com/ubuntu/boxes/focal64/versions/20220724.0.0/providers/virtualbox.box
-    default: Download redirected to host: cloud-images.ubuntu.com
-==> default: Successfully added box 'ubuntu/focal64' (20220724.0.0) for 'virtualbox'!
+==> default: Adding box 'ubuntu/focal64' (v20230719.0.0) for provider: virtualbox
+    default: Downloading: https://vagrantcloud.com/ubuntu/boxes/focal64/versions/20230719.0.0/providers/virtualbox.box
+Download redirected to host: cloud-images.ubuntu.com
+==> default: Successfully added box 'ubuntu/focal64' (v20230719.0.0) for 'virtualbox'!
 ```
 
 At this point the Vagrant box for `ubuntu/focal64` has been cached, so the output below relates to creating your specific VM. Hopefully you can get the general gist of what is being done from the output below. You do not need to understand all of the output that is produced in order to use the VM you've requested.
@@ -366,8 +368,8 @@ Some of the output shown here will not match exactly what you see, but the gener
 ```
 ==> default: Importing base box 'ubuntu/focal64'...
 ==> default: Matching MAC address for NAT networking...
-==> default: Checking if box 'ubuntu/focal64' version '20220724.0.0' is up to date...
-==> default: Setting the name of the VM: tmp_default_1658823911607_73652
+==> default: Checking if box 'ubuntu/focal64' version '20230719.0.0' is up to date...
+==> default: Setting the name of the VM: test-vagrant_default_1690278387153_76923
 ==> default: Clearing any previously set network interfaces...
 ==> default: Preparing network interfaces based on configuration...
     default: Adapter 1: nat
@@ -379,8 +381,6 @@ Some of the output shown here will not match exactly what you see, but the gener
     default: SSH address: 127.0.0.1:2222
     default: SSH username: vagrant
     default: SSH auth method: private key
-    default: Warning: Connection reset. Retrying...
-    default: Warning: Remote connection disconnect. Retrying...
     default:
     default: Vagrant insecure key detected. Vagrant will automatically replace
     default: this with a newly generated keypair for better security.
@@ -390,8 +390,17 @@ Some of the output shown here will not match exactly what you see, but the gener
     default: Key inserted! Disconnecting and reconnecting using new SSH key...
 ==> default: Machine booted and ready!
 ==> default: Checking for guest additions in VM...
+    default: The guest additions on this VM do not match the installed version of
+    default: VirtualBox! In most cases this is fine, but in rare cases it can
+    default: prevent things such as shared folders from working properly. If you see
+    default: shared folder errors, please make sure the guest additions within the
+    default: virtual machine match the version of VirtualBox you have installed on
+    default: your host and reload your VM.
+    default:
+    default: Guest Additions Version: 6.1.38
+    default: VirtualBox Version: 7.0
 ==> default: Mounting shared folders...
-    default: /vagrant => /Users/dme26/tmp/tmp
+    default: /vagrant => /Users/dme26/tmp/nospot/test-vagrant
 ```
 
 After the `vagrant up` command completes you are returned to your shell, and nothing obvious seems to have happened. That's because the VirtualBox VM is "headless": it is running on your computer, but it has no (emulated) monitor attached to it, so you see no obvious evidence that it is running.
@@ -400,7 +409,7 @@ If you run the VirtualBox command to list running VMs, you should see the above-
 
 ```
 $ VBoxManage list runningvms
-"tmp_default_1658823911607_73652" {ebfac0e9-419e-4402-8539-bd0cc398e967}
+"test-vagrant_default_1690278387153_76923" {c00401c1-9742-4dec-9131-f35b20009eb9}
 ```
 Note also that if you start the main VirtualBox application, you will also see Vagrant's VMs displayed there. 
 
@@ -418,44 +427,57 @@ suspend the virtual machine. In either case, to restart it again,
 simply run `vagrant up`.
 ```
 
-To interact with a Unix shell on your new VM, run the `vagrant ssh` command. An example interaction is shown, but note that there is now a mix of macOS shell interaction and interaction with your new VM.
+To interact with a Unix shell on your new VM, run the `vagrant ssh` command. An example interaction is shown, but note that there is now a mix of macOS / Git Bash shell interaction and interaction with your new VM.
 
 ```
 $ vagrant ssh
-Welcome to Ubuntu 20.04.4 LTS (GNU/Linux 5.4.0-122-generic x86_64)
+Welcome to Ubuntu 20.04.6 LTS (GNU/Linux 5.4.0-153-generic x86_64)
 
  * Documentation:  https://help.ubuntu.com
  * Management:     https://landscape.canonical.com
  * Support:        https://ubuntu.com/advantage
 
-  System information as of Tue Jul 26 08:28:26 UTC 2022
+  System information as of Tue Jul 25 09:49:32 UTC 2023
 
-  System load:  0.11              Processes:               120
-  Usage of /:   3.5% of 38.70GB   Users logged in:         0
-  Memory usage: 20%               IPv4 address for enp0s3: 10.0.2.15
+  System load:  0.13              Processes:               121
+  Usage of /:   3.7% of 38.70GB   Users logged in:         0
+  Memory usage: 21%               IPv4 address for enp0s3: 10.0.2.15
   Swap usage:   0%
 
 
-1 update can be applied immediately.
-To see these additional updates run: apt list --upgradable
+Expanded Security Maintenance for Applications is not enabled.
+
+0 updates can be applied immediately.
+
+Enable ESM Apps to receive additional future security updates.
+See https://ubuntu.com/esm or run: sudo pro status
+
+New release '22.04.2 LTS' available.
+Run 'do-release-upgrade' to upgrade to it.
 
 
 vagrant@ubuntu-focal:~$ uname -a
-Linux ubuntu-focal 5.4.0-122-generic #138-Ubuntu SMP Wed Jun 22 15:00:31 UTC 2022 x86_64 x86_64 x86_64 GNU/Linux
-vagrant@ubuntu-focal:~$ whoami
-vagrant
+Linux ubuntu-focal 5.4.0-153-generic #170-Ubuntu SMP Fri Jun 16 13:43:31 UTC 2023 x86_64 x86_64 x86_64 GNU/Linux
+vagrant@ubuntu-focal:~$ whaomi
+
+Command 'whaomi' not found, did you mean:
+
+  command 'whoami' from deb coreutils (8.30-3ubuntu2)
+
+Try: apt install <deb name>
+
 vagrant@ubuntu-focal:~$ ls /vagrant
 Vagrantfile
 vagrant@ubuntu-focal:~$ echo "Hello from Ubuntu!" >/vagrant/new-file.txt
 vagrant@ubuntu-focal:~$ logout
 Connection to 127.0.0.1 closed.
 $ uname -a
-Darwin Laptop-of-dme-112.local 19.6.0 Darwin Kernel Version 19.6.0: Tue Jun 21 21:18:39 PDT 2022; root:xnu-6153.141.66~1/RELEASE_X86_64 x86_64
+Darwin Laptopofdme112 21.6.0 Darwin Kernel Version 21.6.0: Thu Jun  8 23:57:12 PDT 2023; root:xnu-8020.240.18.701.6~1/RELEASE_X86_64 x86_64
 $ cat new-file.txt 
 Hello from Ubuntu!
 ```
 
-Note that we created `new-file.txt` within the VM, and were able to read it from macOS. This is due to the shared folder that Vagrant gets VirtualBox to create, sharing between the host (macOS) file system, and the guest (Linux) file system.
+Note that we created `new-file.txt` within the VM, and were able to read it from the host (macOS in my case). This is due to the shared folder that Vagrant gets VirtualBox to create, sharing between the host (macOS / Windows / Linux / etc.) file system, and the guest (Linux) file system.
 
 :::success
 :pencil: 
@@ -486,7 +508,7 @@ A common development workflow is to place `Vagrantfile`s within Git repositories
 
 :::info
 :bulb: 
-Note that this workflow has been useful for a number of other CS papers, including COSC345, COSC412 and COSC430.
+Note that this workflow has been useful for a number of other CS papers, including COSC345, COSC312, COSC412, etc.
 :::
 
 Move to a directory in which you are happy to check out an example Git repository (for example, you may have a `checkouts` directory that contains all your Git working copies, or a `cosc349` directory containing files relevant to the COSC349 labs).
@@ -497,11 +519,10 @@ Clone the Git repository at https://altitude.otago.ac.nz/cosc349/lab03-apache an
 $ git clone https://altitude.otago.ac.nz/cosc349/lab03-apache cosc349-lab03-apache
 Cloning into 'cosc349-lab03-apache'...
 warning: redirecting to https://altitude.otago.ac.nz/cosc349/lab03-apache.git/
-remote: Enumerating objects: 18, done.
-remote: Counting objects: 100% (18/18), done.
-remote: Compressing objects: 100% (14/14), done.
-remote: Total 18 (delta 3), reused 0 (delta 0)
-Unpacking objects: 100% (18/18), done.
+remote: Enumerating objects: 24, done.
+remote: Total 24 (delta 0), reused 0 (delta 0), pack-reused 24
+Receiving objects: 100% (24/24), 4.30 KiB | 880.00 KiB/s, done.
+Resolving deltas: 100% (7/7), done.
 $ cd cosc349-lab03-apache 
 $ ls -a
 .                 .git              Vagrantfile       www
@@ -520,8 +541,8 @@ $ vagrant up
 Bringing machine 'default' up with 'virtualbox' provider...
 ==> default: Importing base box 'ubuntu/focal64'...
 ==> default: Matching MAC address for NAT networking...
-==> default: Checking if box 'ubuntu/focal64' version '20220724.0.0' is up to date...
-==> default: Setting the name of the VM: cosc349-lab03-apache_default_1658824357440_22641
+==> default: Checking if box 'ubuntu/focal64' version '20230719.0.0' is up to date...
+==> default: Setting the name of the VM: cosc349-lab03-apache_default_1690278946483_82287
 ==> default: Clearing any previously set network interfaces...
 ==> default: Preparing network interfaces based on configuration...
     default: Adapter 1: nat
@@ -536,10 +557,10 @@ Bringing machine 'default' up with 'virtualbox' provider...
     default: SSH auth method: private key
     default: Warning: Connection reset. Retrying...
     default: Warning: Remote connection disconnect. Retrying...
-    default: 
+    default:
     default: Vagrant insecure key detected. Vagrant will automatically replace
     default: this with a newly generated keypair for better security.
-    default: 
+    default:
     default: Inserting generated public key within guest...
     default: Removing insecure key from the guest if it's present...
     default: Key inserted! Disconnecting and reconnecting using new SSH key...
@@ -551,11 +572,13 @@ Bringing machine 'default' up with 'virtualbox' provider...
     default: shared folder errors, please make sure the guest additions within the
     default: virtual machine match the version of VirtualBox you have installed on
     default: your host and reload your VM.
-    default: 
-    default: Guest Additions Version: 5.1.38
-    default: VirtualBox Version: 6.1
+    default:
+    default: Guest Additions Version: 6.1.38
+    default: VirtualBox Version: 7.0
 ==> default: Mounting shared folders...
-    default: /vagrant => /home/cshome/d/dme/checkouts/cosc349-lab03-apache
+    default: /vagrant => /Users/dme26/tmp/nospot/cosc349-lab03-apache
+==> default: Detected mount owner ID within mount options. (uid: 1000 guestpath: /vagrant)
+==> default: Detected mount group ID within mount options. (gid: 1000 guestpath: /vagrant)
 ```
 
 Note that at this point, the VM is created, and booted. The output then switches to showing what the provisioning script shell commands are doing, starting with the command that updates the Ubuntu packages.
@@ -563,43 +586,50 @@ Note that at this point, the VM is created, and booted. The output then switches
 ```
 ==> default: Running provisioner: shell...
     default: Running: inline script
-    default: Get:1 http://security.ubuntu.com/ubuntu focal-security InRelease [114 kB]
-    default: Hit:2 http://archive.ubuntu.com/ubuntu focal InRelease
+    default: Hit:1 http://archive.ubuntu.com/ubuntu focal InRelease
+    default: Get:2 http://security.ubuntu.com/ubuntu focal-security InRelease [114 kB]
     default: Get:3 http://archive.ubuntu.com/ubuntu focal-updates InRelease [114 kB]
-    default: Get:4 http://security.ubuntu.com/ubuntu focal-security/universe amd64 Packages [711 kB]
+    default: Get:4 http://security.ubuntu.com/ubuntu focal-security/main amd64 Packages [2335 kB]
     default: Get:5 http://archive.ubuntu.com/ubuntu focal-backports InRelease [108 kB]
-    default: Get:6 http://security.ubuntu.com/ubuntu focal-security/universe Translation-en [128 kB]
-    default: Get:7 http://security.ubuntu.com/ubuntu focal-security/universe amd64 c-n-f Metadata [14.7 kB]
-    default: Get:8 http://security.ubuntu.com/ubuntu focal-security/multiverse amd64 Packages [22.2 kB]
-    default: Get:9 http://security.ubuntu.com/ubuntu focal-security/multiverse Translation-en [5376 B]
-    default: Get:10 http://security.ubuntu.com/ubuntu focal-security/multiverse amd64 c-n-f Metadata [512 B]
-    default: Get:11 http://archive.ubuntu.com/ubuntu focal/universe amd64 Packages [8628 kB]
-    default: Get:12 http://archive.ubuntu.com/ubuntu focal/universe Translation-en [5124 kB]
-    default: Get:13 http://archive.ubuntu.com/ubuntu focal/universe amd64 c-n-f Metadata [265 kB]
-    default: Get:14 http://archive.ubuntu.com/ubuntu focal/multiverse amd64 Packages [144 kB]
-    default: Get:15 http://archive.ubuntu.com/ubuntu focal/multiverse Translation-en [104 kB]
-    default: Get:16 http://archive.ubuntu.com/ubuntu focal/multiverse amd64 c-n-f Metadata [9136 B]
-    default: Get:17 http://archive.ubuntu.com/ubuntu focal-updates/main amd64 Packages [1990 kB]
-    default: Get:18 http://archive.ubuntu.com/ubuntu focal-updates/main Translation-en [358 kB]
-    default: Get:19 http://archive.ubuntu.com/ubuntu focal-updates/universe amd64 Packages [924 kB]
-    default: Get:20 http://archive.ubuntu.com/ubuntu focal-updates/universe Translation-en [208 kB]
-    default: Get:21 http://archive.ubuntu.com/ubuntu focal-updates/universe amd64 c-n-f Metadata [20.9 kB]
-    default: Get:22 http://archive.ubuntu.com/ubuntu focal-updates/multiverse amd64 Packages [24.4 kB]
-    default: Get:23 http://archive.ubuntu.com/ubuntu focal-updates/multiverse Translation-en [7336 B]
-    default: Get:24 http://archive.ubuntu.com/ubuntu focal-updates/multiverse amd64 c-n-f Metadata [592 B]
-    default: Get:25 http://archive.ubuntu.com/ubuntu focal-backports/main amd64 Packages [44.8 kB]
-    default: Get:26 http://archive.ubuntu.com/ubuntu focal-backports/main Translation-en [11.3 kB]
-    default: Get:27 http://archive.ubuntu.com/ubuntu focal-backports/main amd64 c-n-f Metadata [976 B]
-    default: Get:28 http://archive.ubuntu.com/ubuntu focal-backports/restricted amd64 c-n-f Metadata [116 B]
-    default: Get:29 http://archive.ubuntu.com/ubuntu focal-backports/universe amd64 Packages [23.7 kB]
-    default: Get:30 http://archive.ubuntu.com/ubuntu focal-backports/universe Translation-en [15.9 kB]
-    default: Get:31 http://archive.ubuntu.com/ubuntu focal-backports/universe amd64 c-n-f Metadata [860 B]
-    default: Get:32 http://archive.ubuntu.com/ubuntu focal-backports/multiverse amd64 c-n-f Metadata [116 B]
-    default: Fetched 19.1 MB in 10s (1894 kB/s)
+    default: Get:6 http://archive.ubuntu.com/ubuntu focal/universe amd64 Packages [8628 kB]
+    default: Get:7 http://security.ubuntu.com/ubuntu focal-security/main Translation-en [370 kB]
+    default: Get:8 http://security.ubuntu.com/ubuntu focal-security/main amd64 c-n-f Metadata [13.0 kB]
+    default: Get:9 http://security.ubuntu.com/ubuntu focal-security/restricted amd64 Packages [2027 kB]
+    default: Get:10 http://security.ubuntu.com/ubuntu focal-security/restricted Translation-en [284 kB]
+    default: Get:11 http://security.ubuntu.com/ubuntu focal-security/universe amd64 Packages [864 kB]
+    default: Get:12 http://security.ubuntu.com/ubuntu focal-security/universe Translation-en [180 kB]
+    default: Get:13 http://security.ubuntu.com/ubuntu focal-security/universe amd64 c-n-f Metadata [18.8 kB]
+    default: Get:14 http://security.ubuntu.com/ubuntu focal-security/multiverse amd64 Packages [23.6 kB]
+    default: Get:15 http://security.ubuntu.com/ubuntu focal-security/multiverse Translation-en [5504 B]
+    default: Get:16 http://archive.ubuntu.com/ubuntu focal/universe Translation-en [5124 kB]
+    default: Get:17 http://security.ubuntu.com/ubuntu focal-security/multiverse amd64 c-n-f Metadata [548 B]
+    default: Get:18 http://archive.ubuntu.com/ubuntu focal/universe amd64 c-n-f Metadata [265 kB]
+    default: Get:19 http://archive.ubuntu.com/ubuntu focal/multiverse amd64 Packages [144 kB]
+    default: Get:20 http://archive.ubuntu.com/ubuntu focal/multiverse Translation-en [104 kB]
+    default: Get:21 http://archive.ubuntu.com/ubuntu focal/multiverse amd64 c-n-f Metadata [9136 B]
+    default: Get:22 http://archive.ubuntu.com/ubuntu focal-updates/main amd64 Packages [2718 kB]
+    default: Get:23 http://archive.ubuntu.com/ubuntu focal-updates/main Translation-en [452 kB]
+    default: Get:24 http://archive.ubuntu.com/ubuntu focal-updates/main amd64 c-n-f Metadata [16.9 kB]
+    default: Get:25 http://archive.ubuntu.com/ubuntu focal-updates/restricted amd64 Packages [2140 kB]
+    default: Get:26 http://archive.ubuntu.com/ubuntu focal-updates/restricted Translation-en [299 kB]
+    default: Get:27 http://archive.ubuntu.com/ubuntu focal-updates/universe amd64 Packages [1091 kB]
+    default: Get:28 http://archive.ubuntu.com/ubuntu focal-updates/universe Translation-en [260 kB]
+    default: Get:29 http://archive.ubuntu.com/ubuntu focal-updates/universe amd64 c-n-f Metadata [25.3 kB]
+    default: Get:30 http://archive.ubuntu.com/ubuntu focal-updates/multiverse amd64 Packages [25.8 kB]
+    default: Get:31 http://archive.ubuntu.com/ubuntu focal-updates/multiverse Translation-en [7424 B]
+    default: Get:32 http://archive.ubuntu.com/ubuntu focal-updates/multiverse amd64 c-n-f Metadata [620 B]
+    default: Get:33 http://archive.ubuntu.com/ubuntu focal-backports/main amd64 Packages [45.7 kB]
+    default: Get:34 http://archive.ubuntu.com/ubuntu focal-backports/main Translation-en [16.3 kB]
+    default: Get:35 http://archive.ubuntu.com/ubuntu focal-backports/main amd64 c-n-f Metadata [1420 B]
+    default: Get:36 http://archive.ubuntu.com/ubuntu focal-backports/restricted amd64 c-n-f Metadata [116 B]
+    default: Get:37 http://archive.ubuntu.com/ubuntu focal-backports/universe amd64 Packages [25.0 kB]
+    default: Get:38 http://archive.ubuntu.com/ubuntu focal-backports/universe Translation-en [16.3 kB]
+    default: Get:39 http://archive.ubuntu.com/ubuntu focal-backports/universe amd64 c-n-f Metadata [880 B]
+    default: Get:40 http://archive.ubuntu.com/ubuntu focal-backports/multiverse amd64 c-n-f Metadata [116 B]
+    default: Fetched 27.9 MB in 10s (2833 kB/s)
     default: Reading package lists...
     default: Reading package lists...
     default: Building dependency tree...
-    default:
     default: Reading state information...
     default: The following additional packages will be installed:
     default:   apache2-bin apache2-data apache2-utils libapr1 libaprutil1
@@ -610,45 +640,35 @@ Note that at this point, the VM is created, and booted. The output then switches
     default: The following NEW packages will be installed:
     default:   apache2 apache2-bin apache2-data apache2-utils libapr1 libaprutil1
     default:   libaprutil1-dbd-sqlite3 libaprutil1-ldap libjansson4 liblua5.2-0 ssl-cert
-    default: 0 upgraded, 11 newly installed, 0 to remove and 1 not upgraded.
+    default: 0 upgraded, 11 newly installed, 0 to remove and 7 not upgraded.
     default: Need to get 1867 kB of archives.
-    default: After this operation, 8095 kB of additional disk space will be used.
+    default: After this operation, 8098 kB of additional disk space will be used.
     default: Get:1 http://archive.ubuntu.com/ubuntu focal/main amd64 libapr1 amd64 1.6.5-1ubuntu1 [91.4 kB]
-    default: Get:2 http://archive.ubuntu.com/ubuntu focal/main amd64 libaprutil1 amd64 1.6.1-4ubuntu2 [84.7 kB]
-    default: Get:3 http://archive.ubuntu.com/ubuntu focal/main amd64 libaprutil1-dbd-sqlite3 amd64 1.6.1-4ubuntu2 [10.5 kB]
-    default: Get:4 http://archive.ubuntu.com/ubuntu focal/main amd64 libaprutil1-ldap amd64 1.6.1-4ubuntu2 [8736 B]
+    default: Get:2 http://archive.ubuntu.com/ubuntu focal-updates/main amd64 libaprutil1 amd64 1.6.1-4ubuntu2.1 [84.9 kB]
+    default: Get:3 http://archive.ubuntu.com/ubuntu focal-updates/main amd64 libaprutil1-dbd-sqlite3 amd64 1.6.1-4ubuntu2.1 [10.6 kB]
+    default: Get:4 http://archive.ubuntu.com/ubuntu focal-updates/main amd64 libaprutil1-ldap amd64 1.6.1-4ubuntu2.1 [8756 B]
     default: Get:5 http://archive.ubuntu.com/ubuntu focal/main amd64 libjansson4 amd64 2.12-1build1 [28.9 kB]
     default: Get:6 http://archive.ubuntu.com/ubuntu focal/main amd64 liblua5.2-0 amd64 5.2.4-1.1build3 [106 kB]
-    default: Get:7 http://archive.ubuntu.com/ubuntu focal-updates/main amd64 apache2-bin amd64 2.4.41-4ubuntu3.12 [1181 kB]
-    default: Get:8 http://archive.ubuntu.com/ubuntu focal-updates/main amd64 apache2-data all 2.4.41-4ubuntu3.12 [159 kB]
-    default: Get:9 http://archive.ubuntu.com/ubuntu focal-updates/main amd64 apache2-utils amd64 2.4.41-4ubuntu3.12 [84.5 kB]
-    default: Get:10 http://archive.ubuntu.com/ubuntu focal-updates/main amd64 apache2 amd64 2.4.41-4ubuntu3.12 [95.6 kB]
+    default: Get:7 http://archive.ubuntu.com/ubuntu focal-updates/main amd64 apache2-bin amd64 2.4.41-4ubuntu3.14 [1182 kB]
+    default: Get:8 http://archive.ubuntu.com/ubuntu focal-updates/main amd64 apache2-data all 2.4.41-4ubuntu3.14 [158 kB]
+    default: Get:9 http://archive.ubuntu.com/ubuntu focal-updates/main amd64 apache2-utils amd64 2.4.41-4ubuntu3.14 [84.4 kB]
+    default: Get:10 http://archive.ubuntu.com/ubuntu focal-updates/main amd64 apache2 amd64 2.4.41-4ubuntu3.14 [95.6 kB]
     default: Get:11 http://archive.ubuntu.com/ubuntu focal/main amd64 ssl-cert all 1.0.39 [17.0 kB]
     default: dpkg-preconfigure: unable to re-open stdin: No such file or directory
-    default: Fetched 1867 kB in 3s (600 kB/s)
+    default: Fetched 1867 kB in 2s (808 kB/s)
     default: Selecting previously unselected package libapr1:amd64.
-    default: (Reading database ...
-(Reading database ... 55%abase ... 5%
-    default: (Reading database ... 60%
-    default: (Reading database ... 65%
-    default: (Reading database ... 70%
-    default: (Reading database ... 75%
-    default: (Reading database ... 80%
-    default: (Reading database ... 85%
-    default: (Reading database ... 90%
-    default: (Reading database ... 95%
-(Reading database ... 63485 files and directories currently installed.)
+(Reading database ... 63693 files and directories currently installed.)
     default: Preparing to unpack .../00-libapr1_1.6.5-1ubuntu1_amd64.deb ...
     default: Unpacking libapr1:amd64 (1.6.5-1ubuntu1) ...
     default: Selecting previously unselected package libaprutil1:amd64.
-    default: Preparing to unpack .../01-libaprutil1_1.6.1-4ubuntu2_amd64.deb ...
-    default: Unpacking libaprutil1:amd64 (1.6.1-4ubuntu2) ...
+    default: Preparing to unpack .../01-libaprutil1_1.6.1-4ubuntu2.1_amd64.deb ...
+    default: Unpacking libaprutil1:amd64 (1.6.1-4ubuntu2.1) ...
     default: Selecting previously unselected package libaprutil1-dbd-sqlite3:amd64.
-    default: Preparing to unpack .../02-libaprutil1-dbd-sqlite3_1.6.1-4ubuntu2_amd64.deb ...
-    default: Unpacking libaprutil1-dbd-sqlite3:amd64 (1.6.1-4ubuntu2) ...
+    default: Preparing to unpack .../02-libaprutil1-dbd-sqlite3_1.6.1-4ubuntu2.1_amd64.deb ...
+    default: Unpacking libaprutil1-dbd-sqlite3:amd64 (1.6.1-4ubuntu2.1) ...
     default: Selecting previously unselected package libaprutil1-ldap:amd64.
-    default: Preparing to unpack .../03-libaprutil1-ldap_1.6.1-4ubuntu2_amd64.deb ...
-    default: Unpacking libaprutil1-ldap:amd64 (1.6.1-4ubuntu2) ...
+    default: Preparing to unpack .../03-libaprutil1-ldap_1.6.1-4ubuntu2.1_amd64.deb ...
+    default: Unpacking libaprutil1-ldap:amd64 (1.6.1-4ubuntu2.1) ...
     default: Selecting previously unselected package libjansson4:amd64.
     default: Preparing to unpack .../04-libjansson4_2.12-1build1_amd64.deb ...
     default: Unpacking libjansson4:amd64 (2.12-1build1) ...
@@ -656,17 +676,17 @@ Note that at this point, the VM is created, and booted. The output then switches
     default: Preparing to unpack .../05-liblua5.2-0_5.2.4-1.1build3_amd64.deb ...
     default: Unpacking liblua5.2-0:amd64 (5.2.4-1.1build3) ...
     default: Selecting previously unselected package apache2-bin.
-    default: Preparing to unpack .../06-apache2-bin_2.4.41-4ubuntu3.12_amd64.deb ...
-    default: Unpacking apache2-bin (2.4.41-4ubuntu3.12) ...
+    default: Preparing to unpack .../06-apache2-bin_2.4.41-4ubuntu3.14_amd64.deb ...
+    default: Unpacking apache2-bin (2.4.41-4ubuntu3.14) ...
     default: Selecting previously unselected package apache2-data.
-    default: Preparing to unpack .../07-apache2-data_2.4.41-4ubuntu3.12_all.deb ...
-    default: Unpacking apache2-data (2.4.41-4ubuntu3.12) ...
+    default: Preparing to unpack .../07-apache2-data_2.4.41-4ubuntu3.14_all.deb ...
+    default: Unpacking apache2-data (2.4.41-4ubuntu3.14) ...
     default: Selecting previously unselected package apache2-utils.
-    default: Preparing to unpack .../08-apache2-utils_2.4.41-4ubuntu3.12_amd64.deb ...
-    default: Unpacking apache2-utils (2.4.41-4ubuntu3.12) ...
+    default: Preparing to unpack .../08-apache2-utils_2.4.41-4ubuntu3.14_amd64.deb ...
+    default: Unpacking apache2-utils (2.4.41-4ubuntu3.14) ...
     default: Selecting previously unselected package apache2.
-    default: Preparing to unpack .../09-apache2_2.4.41-4ubuntu3.12_amd64.deb ...
-    default: Unpacking apache2 (2.4.41-4ubuntu3.12) ...
+    default: Preparing to unpack .../09-apache2_2.4.41-4ubuntu3.14_amd64.deb ...
+    default: Unpacking apache2 (2.4.41-4ubuntu3.14) ...
     default: Selecting previously unselected package ssl-cert.
     default: Preparing to unpack .../10-ssl-cert_1.0.39_all.deb ...
     default: Unpacking ssl-cert (1.0.39) ...
@@ -674,13 +694,13 @@ Note that at this point, the VM is created, and booted. The output then switches
     default: Setting up libjansson4:amd64 (2.12-1build1) ...
     default: Setting up ssl-cert (1.0.39) ...
     default: Setting up liblua5.2-0:amd64 (5.2.4-1.1build3) ...
-    default: Setting up apache2-data (2.4.41-4ubuntu3.12) ...
-    default: Setting up libaprutil1:amd64 (1.6.1-4ubuntu2) ...
-    default: Setting up libaprutil1-ldap:amd64 (1.6.1-4ubuntu2) ...
-    default: Setting up libaprutil1-dbd-sqlite3:amd64 (1.6.1-4ubuntu2) ...
-    default: Setting up apache2-utils (2.4.41-4ubuntu3.12) ...
-    default: Setting up apache2-bin (2.4.41-4ubuntu3.12) ...
-    default: Setting up apache2 (2.4.41-4ubuntu3.12) ...
+    default: Setting up apache2-data (2.4.41-4ubuntu3.14) ...
+    default: Setting up libaprutil1:amd64 (1.6.1-4ubuntu2.1) ...
+    default: Setting up libaprutil1-ldap:amd64 (1.6.1-4ubuntu2.1) ...
+    default: Setting up libaprutil1-dbd-sqlite3:amd64 (1.6.1-4ubuntu2.1) ...
+    default: Setting up apache2-utils (2.4.41-4ubuntu3.14) ...
+    default: Setting up apache2-bin (2.4.41-4ubuntu3.14) ...
+    default: Setting up apache2 (2.4.41-4ubuntu3.14) ...
     default: Enabling module mpm_event.
     default: Enabling module authz_core.
     default: Enabling module authz_host.
@@ -709,9 +729,15 @@ Note that at this point, the VM is created, and booted. The output then switches
     default: Created symlink /etc/systemd/system/multi-user.target.wants/apache2.service → /lib/systemd/system/apache2.service.
     default: Created symlink /etc/systemd/system/multi-user.target.wants/apache-htcacheclean.service → /lib/systemd/system/apache-htcacheclean.service.
     default: Processing triggers for ufw (0.36-6ubuntu1) ...
-    default: Processing triggers for systemd (245.4-4ubuntu3.17) ...
+    default: Processing triggers for systemd (245.4-4ubuntu3.22) ...
     default: Processing triggers for man-db (2.9.1-1) ...
     default: Processing triggers for libc-bin (2.31-0ubuntu9.9) ...
+    default: Enabling site test-website.
+    default: To activate the new configuration, you need to run:
+    default:   systemctl reload apache2
+    default: Site 000-default disabled.
+    default: To activate the new configuration, you need to run:
+    default:   systemctl reload apache2
 ```
 
 By now the Apache webserver has been installed and has started. The remaining output comes from the commands that switch the website configuration being used.
@@ -731,7 +757,9 @@ Since 2020 the CS lab environment seemed to require some extra tweaking: what wo
 
 Back then I pushed a change to the Git repository to fix the issue. This should mean that your `Vagrantfile` contains a line including "dmode".
 
-If I ever need to make further changes to the repository you can always run `git pull` to update your clone of the repository.
+Now that the CS Labs are moving to Microsoft Windows, I can likely remove the lines I added, but have not done so yet...
+
+In any case, if I ever need to make further changes to the repository you can always run `git pull` to update your clone of the repository.
 :::
 
 Now open in your web browser http://127.0.0.1:8080/ and you should see a test page. The HTML for this test page is contained within the `www` directory of the Git repository that you cloned. Note that you have not needed to use `vagrant ssh` to set anything up—all the functionality required was set up by the shell provisioner in the `Vagrantfile`.
@@ -747,9 +775,9 @@ Recall that when you first `vagrant ssh` into your VM, you will be in the `/home
 :pencil: 
 Exercise---test some shell commands on your VM and then "bake" these commands into your provisioning: Modify the provisioning shell script in your `Vagrantfile` to fetch some content from the Internet *at the time that the VM is deployed*, and change a local web page to reflect this content. 
 
-For example, you can use a shell command like `date > my-file.txt` which will execute the `date` command and write the output to the file `my-file.txt`. Or a more complex operation is to use `wget` to retrieve a file from the web, for example `wget 'https://www.otago.ac.nz/_assets/_gfx/logo@2x.png'` will download a file `logo@2x.png` of the Otago crest into the working directory at the time you ran `wget`.
+For example, you can use a shell command like `date > my-file.txt` which will execute the `date` command and write the output to the file `my-file.txt`. Or a more complex operation is to use `wget` to retrieve a file from the web, for example `wget 'https://www.otago.ac.nz/_assets/_gfx/logo@2x.png'` will download a file `logo@2x.png` of the University of Otago crest (... an exercise which by next year should also include the new University of Otago graphics) into the working directory at the time you ran `wget`.
 
-(By default when you view http://127.0.0.1:8080/ in your macOS web browser, your VM will retrieve the `index.html` file from `/vagrant/www`. You can add a filename to the end of the URL, e.g., http://127.0.0.1:8080/my-file.txt will retrieve `/vagrant/www/my-file.txt` and show it as plain text in your web browser.)
+(By default when you view http://127.0.0.1:8080/ in your host computer's web browser, your VM will retrieve the `index.html` file from `/vagrant/www`. You can add a filename to the end of the URL, e.g., http://127.0.0.1:8080/my-file.txt will retrieve `/vagrant/www/my-file.txt` and show it as plain text in your web browser.)
 
 One approach to tweaking a provisioning script is to manually run commands from a terminal on the VM (via `vagrant ssh`) to get to the point you want to reach, and then to factor those commands into the provisioning script within the `Vagrantfile`, as described in the following subsection. You are likely to need to `vagrant destroy` your machine and then `vagrant up` it again in order to test your provisioning script fully.
 :::
@@ -779,7 +807,7 @@ In the meantime, though, you can interact with the repository that I have set up
 
 :::warning
 :warning: 
-When using this repository in the CS Labs, the `synced_folder` line in the `Vagrantfile` needs to set default permissions for files and directories (`fmode` and `dmode`). The repository has been updated to contain this option, since it seems not to break non-CS Lab environments (even if it is not necessary for them).
+When using this repository in the CS Labs running macOS, the `synced_folder` line in the `Vagrantfile` needed to set default permissions for files and directories (`fmode` and `dmode`). The repository has been updated to contain this option, since it seems not to break non-CS Lab environments (even if it is not necessary for them).
 :::
 
 ## Advice on provisioning scripts
