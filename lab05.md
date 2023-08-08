@@ -1,14 +1,10 @@
----
-tags: cosc349
----
-# COSC349 Lab 5—Cloud Architecture—2022
 ## Lab 5—An introduction to Docker
 
-The computers in Lab E and Lab F can be (re)booted into macOS or Linux. This lab requires you to boot into macOS, since the CS Lab Linux environment has not been set up to directly support Docker.
+Docker Desktop should be able to be installed on recent versions of macOS (including Apple computers with Arm CPUs!), Windows and Linux. However, the assumption in the instructions below is that you will be trying to work through the lab on a Windows computer in the Owheo CS Labs.
 
 :::info
 :eyes: 
-The next lab will explore Vagrant further, and is now linked from the labs page. You may want to look at it now given that it is likely to have relevance to your assignment 1 work.
+The next lab will explore Vagrant further, and will soon be linked from the labs page. You may want to look at it now given that it is one technology that you can use to complete your assignment 1 work.
 :::
 
 [Lab 3]: /bi1pAIlXT3O4WezjVtqPrA
@@ -25,31 +21,48 @@ I (David) initiated an introduction to Docker in the style of a Software Carpent
 
 You are very welcome to follow the instructions in those materials to install Docker Desktop (most likely) on your own computers. 
 
-See below for instructions on how to get a Docker environment within the CS labs: it is likely to be more complicated and fiddly than on your own computer. That shouldn't be the case, but the COSC349 teaching team do not have control over the situation.
+See below for suggetsions on how to get a Docker environment within the CS Labs.
 
 Rather than copy the material over from the Software Carpentry lesson here, please work through this snapshot of the  [Introduction to Docker](https://dme-forks.github.io/2021-07-07-docker-introduction/) material that I used for a workshop I ran in July 2021. It would be good for you to complete the core lesson material, you are of course welcome to complete the extension exercises if you want to.
 
 For your interest, ongoing development of the Docker lesson is continuing collaboratively on the [Carpentries Incubator](https://carpentries-incubator.github.io/docker-introduction/), after I contributed the initial verison of the material.
 
-Comments and pull-requests are most welcome on that material. It has been used for teaching at many other institutions, but still is at a reasonably early stage of development. Because you all have experience with the Unix shell, and a CS background, it is likely that you will progress through the material more quickly than the suggested time guide.
+Comments and pull-requests are most welcome on that material. It has been used for teaching at many other institutions, but still is at a reasonably early stage of development. Because you all (now) have experience with the Unix shell, and a CS background, it is likely that you will progress through the material more quickly than the suggested time guide.
 
 ## Working with Docker in the CS Labs
 
 The Software Carpentry lesson is intended to be used on learners' computers rather than a managed environment such as the CS labs, where you don't have administrator privileges. (You are welcome to work through the lesson on your own computer, too, of course.)
 
+There are two routes to running Docker containers, and hopefully you only need to look at the first one, namely using Docker Desktop.
+
+### Using the Docker Desktop application
+
+Docker Desktop is installed on the CS Labs.
+
 :::warning
-:bomb:
-Docker Desktop used to work in the CS Labs, but the macOS environment for some reason wasn't able to be upgraded to a supported version of macOS... so Docker doesn't directly support the environment.
+:fire: 
+Getting Docker Desktop to start up for the first time in the CS Labs involves ignoring some error messages... but here's what worked for me:
+- Run the Docker Desktop application
+- Agree the terms and conditions presented
+- Acknowledge the need to update the Windows Subsystem for Linux (WSL)
+- Quit the Docker Desktop application
+- Run a command shell
+- Execute the command `wsl --update` in the shell
+- Cancel the UAP alert that comes up (does this mean we'll get broken WSL networking I wonder?) since our student / staff accounts are not administrator accounts
+- Run Docker Desktop again, and wait for a few minutes for it to start (not sure why it's quite so slow)
 :::
 
-Thus of the two routes below, we recommend that you use the first.
+In your systray (bottom right) a whale icon should eventuall appear—when the square containers on top of the whale within the icon stop animating, then the underlying Linux VM has started up.
 
-1. You can [start a Linux VM and run Docker containers](#Hosting-Docker-containers-within-a-Linux-VM) on that. This route allows you more control, and to see more detail about what is going on.
-2. You used to be able to use [use the Docker Desktop](#Using-the-Docker-Desktop-application) application. Behind the scenes Docker Desktop is starting a Linux VM, but it is hidden from you. Docker Desktop provides a GUI through which you can see the state and logs of Docker containers that you start.
+After that point, `docker` commands in the terminal will work, and you can switch from these instructions over to the Software Carpentry lesson.
+
+Once you have completed the core parts of the Docker lesson, you may wish to click on the systray whale-shaped icon to open up the Docker Desktop dashboard. Explore the GUI to discover what operations and diagnostics you can acquire regarding your Docker containers.
+
+When you have finished with the lab exercise you should delete your containers, e.g., from the Docker Desktop dashboard window. Ideally you should also delete the Docker image files that were downloaded in the course of the lab exercise. In a terminal window `docker image ls` will list the container images on your computer, including displaying numerical IDs for each. The `docker image rm` command followed by a space-separated list of container image IDs will remove all of those container images from your computer.
 
 ### Hosting Docker containers within a Linux VM
 
-We apply an extra level of virtualisation: using Vagrant to run Ubuntu, which in turn can run Docker containers.
+If you are unable to get Docker Desktop working, it is possible to run Docker containers first applying an extra level of virtualisation: using Vagrant to run Ubuntu, which in turn can run Docker containers (since the Ubuntu VM provides a Linux kernel on which to run containers).
 
 You can clone a Git repository containing a `Vagrantfile` that creates Ubuntu boxes ready to run the Docker command-line tools. This is similar to a step you performed in lab 3. After changing to the directory in which you want to store your local clone of the Git repository, you can run a command sequence such as—
 ```
@@ -72,7 +85,7 @@ One change that needs to be made in the Docker lesson is that `docker` commands 
 
 Using `127.0.0.1` (or `localhost`) means limiting access to the computer that's running Docker. So if you install Docker Desktop under macOS on your laptop, the browser that you use to connect to port 4000 is also running in the same macOS on your laptop. 
 
-In our case, the web browser you're viewing things from is _not_ on the same computer as the computer running Docker: Docker is running on a Vagrant VM. The `0.0.0.0` tells Docker to allow connections from anywhere, and not just the local computer.
+In our case, though, the web browser you're viewing things from is _not_ on the same computer as the computer running Docker: Docker is running on a Vagrant VM. The `0.0.0.0` tells Docker to allow connections from anywhere, and not just the local computer.
 :::
 
 Note that network port forwarding needs to be configured explicitly. For example, at the end of the Docker lessons referred to below, there is an exercise that opens a web browser on localhost port 4000. This will not be visible unless you add a port-forwarding line to the `Vagrantfile`. Since 4000 is not a privileged port (privileged ports are those less than 1024), you can simply port forward 4000 to 4000. This has not been done for you, but you can put off this configuration until you reach the last episode of the Docker introduction lesson. Refer back to [Lab 3] if you need example `Vagrantfile` lines to work from, or even better refer to the Vagrant documentation.
@@ -83,34 +96,3 @@ After setting up port forwarding, let's say `localhost` port 4000 to `localhost`
 
 When you have completed the lab exercise, you should `vagrant destroy` the VM that you have used for hosting Docker containers: this will remove the VM itself, as well as the Docker images that were downloaded in the course of the lab exercises.
 
-### Using the Docker Desktop application
-
-:::warning
-:bomb: 
-Docker Desktop worked in the CS labs in the past, but the current state of the lab software is problematic: an unsupported version of macOS is being used, which means Docker do not support the configuration. The COSC349 teaching team do not have control over this situation, although it is intended to be resolved by moving to Windows next year.
-:::
-
-This information is just left here for future reference. It is unlikely to be useful in 2022.
-
-:::info
-:eyes: 
-Back when it worked in the CS labs, there is a one-off configuration step required to have Docker work in the CS Labs: you need to run the following two commands to open up some of your directories' permissions a little (don't do this if you are not comfortable what the implications are) so that Docker can access files it needs:
-
-```bash
-chmod o+x ~/Library
-chmod o+x ~/Library/Containers
-```
-:::
-
-The Docker Desktop is installed under the application name "Docker.app" on macOS. 
-
-:::warning
-:fire: 
-Getting Docker Desktop to start on the CS Lab computers appears not to be an entirely smooth experience. It is likely to report that it needs to install software and that you need to authenticate. If you do so, and potentially after exiting and starting Docker.app again, eventually it does seem to start working OK.
-:::
-
-In your menu bar a whale icon will appear—when the square containers on top of the whale within the icon stop animating, then the underlying Linux VM has started up. After that point, `docker` commands in the Terminal will work.
-
-You can click the menu bar icon to open up the Docker Desktop dashboard. Explore the GUI to discover what operations and diagnostics you can acquire regarding your Docker containers.
-
-When you have finished with the lab exercise you should delete your containers, e.g., from the Docker Desktop dashboard window. Ideally you should also delete the Docker image files that were downloaded in the course of the lab exercise. In a terminal window `docker image ls` will list the container images on your computer, including displaying numerical IDs for each. The `docker image rm` command followed by a space-separated list of container image IDs will remove all of those container images from your computer.
