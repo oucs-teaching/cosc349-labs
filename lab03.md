@@ -1,6 +1,3 @@
----
-tags: cosc349 lab
----
 [Lab 2]: /h71h3B-3Tda2XUyNyzkanA
 
 ## Lab 3—Vagrant for automating virtualisation
@@ -9,7 +6,7 @@ The CS Labs' computers' installation of Vagrant has had some very recent fixes. 
 
 :::warning
 :warning: 
-For me, some `vagrant` commands did not work for me on the CS Lab computers when I ran them from the old Windows command line (`cmd.exe`), but did work when I ran them from Git Bash, so I'd suggest just working in Git Bash.
+If you are working on the CS Lab computers, my experience was that some `vagrant` commands did not work when I ran them within the old Windows command line (`cmd.exe`). They did work within Git Bash, however, so I'd suggest using that.
 :::
 
 ### Lab objectives
@@ -486,7 +483,7 @@ Exercise: change the file on your host and ensure that you can indeed see the ch
 
 :::info
 :bulb: 
-In the days before the Windows subsystem for Linux (WSL), the above type of Vagrant-powered interaction with Ubuntu Linux was a handy way to get access to Unix commands from Windows hosts.
+In the days before the Windows Subsystem for Linux (WSL), the above type of Vagrant-powered interaction with Ubuntu Linux was a handy way to get access to Unix commands from Windows hosts.
 :::
 
 While Vagrant has hopefully already shown itself to be useful, it is typical to manage `Vagrantfiles`—and thus Vagrant environments—within Git repositories. We will explore doing so in the next section.
@@ -784,7 +781,7 @@ One approach to tweaking a provisioning script is to manually run commands from 
 
 :::success
 :pencil: 
-Exercise: Create your own Git repository, pushed to a cloud-based Git repository server, that contains a Vagrant file that contains a shell provisioning step that you have configured. Try to clone your Git repository into a new working directory, and test that you can still `vagrant up` and that `vagrant ssh` reaches a different VM from the VM `vagrant ssh` reaches when run from the Git working directory from which you `git push`ed your repository.
+Exercise: Create your own Git repository, pushed to a Git repository server, that contains a Vagrant file that contains a shell provisioning step that you have configured. Try to clone your Git repository into a new working directory, and test that you can still `vagrant up` and that `vagrant ssh` reaches a different VM from the VM `vagrant ssh` reaches when run from the Git working directory from which you `git push`ed your repository.
 :::
 
 ## Cleaning up
