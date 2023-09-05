@@ -1,7 +1,7 @@
 ---
 tags: cosc349
 ---
-# COSC349 Lab 8—Cloud Architecture—2022
+# COSC349 Lab 8—Cloud Architecture—2023
 ## Lab 8—Amazon S3 object storage
 
 This lab encourages you to become familiar with Amazon's Simple Storage System (S3)—both a very widely used public object storage system and an API for object storage emulated by many other systems.
@@ -18,7 +18,7 @@ The aim is to demonstrate S3 hosting static web content. Note, however, that S3 
 - You will need to access your AWS Management Console to administer S3 resources. You access your console using the same approach that you used to complete Lab 4.
 - Your AWS Management Console should look similar to:
 
-![](https://i.imgur.com/uoTiQOC.png)
+![](https://hackmd.io/_uploads/rk7Uwt4Cn.png)
 
 :::info
 :bulb:
@@ -27,31 +27,30 @@ While you are in the console, consider double-checking that you are not running 
 
 - From the console you can search for or otherwise select S3
 
-![](https://i.imgur.com/DH1Dhsq.png)
-![](https://i.imgur.com/NG1Nrsj.png)
+![](https://hackmd.io/_uploads/r17uvYNCn.png)
 
 - From the S3 Management Console you can create a bucket.
-![](https://i.imgur.com/knPq0El.png)
+![](https://hackmd.io/_uploads/H1HsDtNAh.png)
 - Choose a simple bucket name, but keep in mind that it will need to be globally unique.
 - Do not change the region.
-- I used the name `dme26-2022-test` so make sure that you replace that name with yours if you are working from my screenshots or examples!
-- As an additional step, turn off "block all public access". This has been added since the tutorial PDF, in order to try to ensure that developers using S3 don't accidentally release private data. (Unfortunately this has happened a lot!) ![](https://i.imgur.com/QPPLguW.png)
-    - you will also need to check the acknowledgement tick box ![](https://i.imgur.com/uxc2RFb.png)
+- I used the name `dme26-2023-test` so make sure that you replace that name with yours if you are working from my screenshots or examples!
+- As an additional step, turn off "block all public access". This has been added since the tutorial PDF, in order to try to ensure that developers using S3 don't accidentally release private data. (Unfortunately this has happened a lot!) ![](https://hackmd.io/_uploads/B19AwK4Rn.png)
+    - you will also need to check the acknowledgement tick box ![](https://hackmd.io/_uploads/B1OeuKNCn.png)
 - You should then be able to select "Create bucket" at the bottom of the web page.
-![](https://i.imgur.com/gm3xOpM.png)
-![](https://i.imgur.com/16fQIK0.png)
+![](https://hackmd.io/_uploads/HJo-OKEA2.png)
+![](https://hackmd.io/_uploads/BkiGdtV02.png)
 ### Create an S3 bucket for log data
 - Follow the above procedure to create another bucket, this time with the name `logs.` prepended to the name you have used above. Note that the bucket containing logs should not be publicly accessible, though.
 - My S3 web console looked like this after creating the two buckets:
-![](https://i.imgur.com/b7x3xY9.png)
+![](https://hackmd.io/_uploads/H1OU_FEAh.png)
 
 ### Configure your S3 buckets
 
 - Now we will add a policy to our S3 bucket to allow it to have public access.
 - Select your website content bucket, and choose the 'permissions' tab.
-![](https://i.imgur.com/4BAsAjk.png)
+![](https://hackmd.io/_uploads/S1VuOYERh.png)
 - Scroll down and edit the Bucket policy.
-![](https://i.imgur.com/oiCCS36.png)
+![](https://hackmd.io/_uploads/Hy1idF4Ch.png)
 - I have used the policy from the PDF tutorial linked above *but* you must change the `Resource` to match the name of your bucket!
 ```json
 {
@@ -61,19 +60,19 @@ While you are in the console, consider double-checking that you are not running 
         "Effect": "Allow",
         "Principal": "*",
         "Action": "s3:GetObject",
-        "Resource": "arn:aws:s3:::dme26-2022-test/*"
+        "Resource": "arn:aws:s3:::dme26-2023-test/*"
     }] 
 }
 ```
 - Click "Save changes" at the bottom of the policy editor web page and you will be returned to the page configuring your bucket.
-![](https://i.imgur.com/QUXRIhE.png)
+![](https://hackmd.io/_uploads/ryHxKt4Rh.png)
 - Now under the "Properties" tab enable "Server access logging".
-![](https://i.imgur.com/zJueWhd.png)
-![](https://i.imgur.com/52risYJ.png)
-![](https://i.imgur.com/647hjD6.png)
+![](https://hackmd.io/_uploads/Bk0ZKY4Rh.png)
+![](https://hackmd.io/_uploads/HyGmKY4Rn.png)
+![](https://hackmd.io/_uploads/HkWrFtV0h.png)
 - I used the "Browse S3" button to locate the bucket created earlier, with the `log.` name at the start.
-![](https://i.imgur.com/vhHrxJx.png)
-![](https://i.imgur.com/AF6CLak.png)
+![](https://hackmd.io/_uploads/ryvDttNA2.png)
+![](https://hackmd.io/_uploads/Hk_uYKNC3.png)
 
 ### N(s4) Deploy website content
 
@@ -93,26 +92,26 @@ While you are in the console, consider double-checking that you are not running 
   </body>
 </html>
 ```
-- There are many ways to upload the above two files to your S3 bucket. From the "Objects" panel:
-![](https://i.imgur.com/Qi51os4.png)
+- There are many ways to upload the above two files to your S3 bucket. In my case, from the "Objects" panel:
+![](https://hackmd.io/_uploads/r1tX5KVAn.png)
 - I selected "Upload"
-![](https://i.imgur.com/Vt1Fn0T.png)
+![](https://hackmd.io/_uploads/By8Vqt4An.png)
 - ... and was able to use the drag-and-drop interface shown on that page.
-![](https://i.imgur.com/Qhw2KlE.png)
+![](https://hackmd.io/_uploads/ryML5KNRn.png)
 - ... after which you can click the "Upload" button at the end of that page.
-![](https://i.imgur.com/dmawIbo.png)
+![](https://hackmd.io/_uploads/rJuw5KV0n.png)
 - The Upload status page should confirm that your files were uploaded successfully.
-![](https://i.imgur.com/3eCiIWW.png)
+![](https://hackmd.io/_uploads/H1iOqYNR2.png)
 - Navigate to the "Properties" tab of your bucket, and find the "Static website hosting" section and the end:
-![](https://i.imgur.com/WuyN5Mk.png)
+![](https://hackmd.io/_uploads/HkmjcYVRn.png)
 - Edit that setting and add the `index.html` and `error.html` files in the appropriate fields.
-![](https://i.imgur.com/57EewUA.png)
+![](https://hackmd.io/_uploads/SyQ0qYVR3.png)
 - After saving changes you will be returned to the bucket configuration page, but will now see that static website details are included on the "Static website hosting" section:
-![](https://i.imgur.com/lbKiyhi.png)
+![](https://hackmd.io/_uploads/BJHeoF4R2.png)
 - My tests returned the expected results for the bucket URI:
-![](https://i.imgur.com/dnGnfJv.png)
+![](https://hackmd.io/_uploads/r1kGjtNC2.png)
 - ... and also when I tried to request a name that didn't have a corresponding object:
-![](https://i.imgur.com/ZrQBz3f.png)
+![](https://hackmd.io/_uploads/SkBVotEA2.png)
 
 ### Clean up
 
@@ -130,20 +129,19 @@ Exercise:
 Exercise:
 - If you want to examine what Amazon S3's logging information looks like, you will likely need to wait for quite a while—possibly hours—before the log writing process deposits data into the bucket you set up for logging. In my case, I left the S3 resources online for an hour or so. I then viewed my logging bucket, which contained numerous objects:
 
-![](https://i.imgur.com/E9qwywL.png)
+![](https://hackmd.io/_uploads/H1EfAKVC2.png)
 
 - ... with details such as:
 
-![](https://i.imgur.com/qx1B4bL.png)
+![](https://hackmd.io/_uploads/HJT70K4Ch.png)
 
 - ... and content (that I downloaded) such as:
 
 ```
-2928aba2ae0c838794f7f9dc65b86f0c024b3ab549ace83861e66b8501a357b2 dme26-2022-test [05/Sep/2022:23:52:50 +0000] 119.224.98.119 arn:aws:sts::409523232788:assumed-role/voclabs/user2053053=Test_Student H87M41FGTXHB1ATY REST.GET.ACL - "GET /?acl HTTP/1.1" 200 - 590 - 24 - "-" "S3Console/0.4, aws-internal/3 aws-sdk-java/1.11.1030 Linux/5.4.207-126.363.amzn2int.x86_64 OpenJDK_64-Bit_Server_VM/25.302-b08 java/1.8.0_302 vendor/Oracle_Corporation cfg/retry-mode/standard" - l95tYk6lH7MbyWiuiACv5r1A99AXdlYrg/FFp6HsFWpS/irysR+jaKIux0S2TNGwbjfIfHAhPwQ= SigV4 ECDHE-RSA-AES128-GCM-SHA256 AuthHeader dme26-2022-test.s3.us-east-1.amazonaws.com TLSv1.2 -
-2928aba2ae0c838794f7f9dc65b86f0c024b3ab549ace83861e66b8501a357b2 dme26-2022-test [05/Sep/2022:23:52:50 +0000] 119.224.98.119 arn:aws:sts::409523232788:assumed-role/voclabs/user2053053=Test_Student H87NFXWK7MWFNTMC REST.GET.POLICY_STATUS - "GET /?policyStatus HTTP/1.1" 200 - 141 - 14 - "-" "S3Console/0.4, aws-internal/3 aws-sdk-java/1.11.1030 Linux/5.4.207-126.363.amzn2int.x86_64 OpenJDK_64-Bit_Server_VM/25.302-b08 java/1.8.0_302 vendor/Oracle_Corporation cfg/retry-mode/standard" - AV2cp0t76QdiZuVvODGO9wwo5k4ETIs9AOLhNDch8lW1SjEANEGlJVIEcjGAwVXul8iO8gDm0Qk= SigV4 ECDHE-RSA-AES128-GCM-SHA256 AuthHeader dme26-2022-test.s3.us-east-1.amazonaws.com TLSv1.2 -
-2928aba2ae0c838794f7f9dc65b86f0c024b3ab549ace83861e66b8501a357b2 dme26-2022-test [05/Sep/2022:23:52:50 +0000] 119.224.98.119 arn:aws:sts::409523232788:assumed-role/voclabs/user2053053=Test_Student H87ZTKV64XS135N6 REST.GET.PUBLIC_ACCESS_BLOCK - "GET /?publicAccessBlock HTTP/1.1" 404 NoSuchPublicAccessBlockConfiguration 345 - 37 - "-" "S3Console/0.4, aws-internal/3 aws-sdk-java/1.11.1030 Linux/5.4.207-126.363.amzn2int.x86_64 OpenJDK_64-Bit_Server_VM/25.302-b08 java/1.8.0_302 vendor/Oracle_Corporation cfg/retry-mode/standard" - k8BlDBVdJ0H71J7+RERE2Gx9ZtRTGrRpCJJRdpWf3Ir+lhW80NRHJrWrXrlyn21oKRBtlxpKFQc= SigV4 ECDHE-RSA-AES128-GCM-SHA256 AuthHeader dme26-2022-test.s3.us-east-1.amazonaws.com TLSv1.2 -
+3cc995608916b20d5e9e7ca8746195f3df1d13c5e67bab619d8a563cfa09f558 dme26-2023-test [05/Sep/2023:10:57:05 +0000] 161.65.248.210 arn:aws:sts::262408492548:assumed-role/voclabs/user2678317=_Student_View__David_Eyers 34HRHA3CNN7HQSSS REST.GET.LOGGING_STATUS - "GET /dme26-2023-test?logging= HTTP/1.1" 200 - 241 - 30 - "-" "S3Console/0.4, aws-internal/3 aws-sdk-java/1.12.488 Linux/5.10.186-157.751.amzn2int.x86_64 OpenJDK_64-Bit_Server_VM/25.372-b08 java/1.8.0_372 vendor/Oracle_Corporation cfg/retry-mode/standard" - 7eas+bV+xuvM0biIKoT7SQOOHKvLpduQVv4ciuu34zWPc3RNUJ6QP2i691cZtT1W0zWe8lHdmxY= SigV4 ECDHE-RSA-AES128-GCM-SHA256 AuthHeader s3.amazonaws.com TLSv1.2 - -
 ```
 
+- ... which looks like it was me using the `aws` command line tool to access my bucket (the mention of Java leads me to assume the `aws` tool itself, or at least a library used by CLI tooling is implemented in Java).
 - There will likely be next to no cost counted against your AWS Academy Learner Lab account for your S3 use, but it is safer to delete S3 buckets when you are done with them, rather than leaving them online. One reason for that is that the logging bucket will continue to accumulate log records, and these incur standard S3 charges. Your S3 buckets are, of course, Internet-accessible, although it is not likely that they will attract much web traffic.
 :::
 
@@ -151,24 +149,23 @@ Exercise:
 
 ## Update your S3 resources from code
 - These instructions focus on use of Python, but any language for which you can find S3 API documentation is acceptable.
-- You will need the `aws` command line tools. These should be installed in the CS Lab macOS environment already.
+- You will need the `aws` command line tools. These are not yet installed in the Computer Science Owheo Lab Windows computer, so you will need to follow the next step.
 - If you wish, you can use the `aws` command line tools from within a virtual machine. The software you will need is included in a Vagrant repository at https://altitude.otago.ac.nz/cosc349/lab08-s3-api that you should `git clone` and `vagrant up` as usual.
     - This repository installs an official Python3 library that facilitates you accessing AWS services from Python code.
     - The repository also installs the AWS command line interface (`aws`).
 
 ### Setting up your access credentials
 - Before you can use AWS from your code or the command line, you need to set up your access credentials.
-- If using AWS command line tools that you have installed yourself, consult the documentation to determine where you need to save your credentials.
-- If using the CS Labs running macOS, you should save your credentials within `~/.aws`.
+- If using AWS command line tools that you have installed yourself, consult the documentation to determine where you need to save your credentials. (On Unix systems typically `~/.aws` will be consulted.)
 - If using the aforementioned virtual machine, you should first `vagrant ssh` to your VM and `mkdir ~/.aws`
 - For normal AWS accounts you would acquire your command line credentials using the IAM console. However, this won't work for AWS Academy accounts.
 - For AWS Academy accounts you instead need to navigate to your "Learner Lab" module page:
-![](https://i.imgur.com/QS6QbRN.png)
+![](https://hackmd.io/_uploads/By_RhtN02.png)
 - ... and from there select the "AWS Details" option near the top right of the page, which will show an information panel on the right hand side:
-![](https://i.imgur.com/iuqmCbn.png)
+![](https://hackmd.io/_uploads/rk-lpK4An.png)
 - From there you can reveal your AWS CLI credentials (these will keep changing every few hours!).
 - Copy/paste your access credentials into the appropriate file, for the AWS tools you are using:
-    - e.g., under `~/.aws/credentials` on your CS Lab macOS environment, or the aforementioned VM, e.g., using the `nano` editor on your VM.
+    - e.g., under `~/.aws/credentials` on the aforementioned VM, e.g., using the `nano` editor on your VM.
 
 ### Using the Boto3 library to access AWS from Python
 
@@ -183,9 +180,9 @@ for bucket in s3.buckets.all():
 ```
 - Running this code produced the results I expected:
 ```
-vagrant@ubuntu-xenial:~$ python3 test.py
-dme26-2022-test
-logs.dme26-2022-test
+vagrant@ubuntu-focal:~$ python3 test.py
+dme26-2023-test
+logs.dme26-2023-test
 ```
 :::success
 :pencil: 
@@ -202,8 +199,8 @@ Exercise:
 
 ```
 vagrant@ubuntu-focal:~$ aws s3 ls
-2022-09-05 23:32:22 dme26-2022-test
-2022-09-05 23:36:57 logs.dme26-2022-test
+2023-09-05 10:50:48 dme26-2023-test
+2023-09-05 10:51:51 logs.dme26-2023-test
 ```
 
 ## Cleaning up
