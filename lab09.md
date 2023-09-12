@@ -1,119 +1,47 @@
 ---
 tags: cosc349
 ---
-# COSC349 Lab 9—Cloud Architecture—2022
-## Lab 9—Amazon EC2 via Vagrant
+# COSC349 Lab 9—Cloud Architecture—2023
+## Lab 9—Amazon EC2 using Hashicorp Terraform
 
 [Lab 8]: /a8wHsmkVTh6-ud_vNAe2Mw
 
-:::info
-:warning: 
-This lab has been tested in 2022 by the teaching team, including on the CS labs to the extent to which student user accounts will behave like staff accounts does. If you run into problems when working on the CS lab computers, please let the teaching team know.
-:::
-
-This lab involves deploying virtual machines into Amazon EC2 using Vagrant. More detailed use of SSH is also explored.
-
-As before, when using Vagrant, in the CS Labs you will need to boot into macOS.
+This lab involves deploying virtual machines into Amazon EC2 using the Terraform tool from Hashicorp (i.e., the company that makes Vagrant).
 
 :::warning
 :warning: 
-Note that if Vagrant presents error messages such as "Request has expired", then you should check your AWS Academy credentials, since the AWS_SESSION_TOKEN etc. roll-over periodically. VMs that you created before your AWS session token expires will be accessible after you refresh your AWS session token, although it's possible that the VMs may need to be brought back from a paused or shutdown state.
+Note that if you receive confusing looking error messages from Terraform, you should check that your AWS Academy credentials have not expired. The `AWS_SESSION_TOKEN` etc., all roll-over periodically (every few hours). VMs that you created before your AWS session token expires will be accessible after you refresh your AWS session token, although it's possible that the VMs may need to be brought back from a paused or shutdown state.
 :::
 
-## Prepare your Vagrant environment
+## Using Vagrant to access Terraform
+
+The Owheo CS Labs do not have the AWS command line tools or Terraform installed on them. To provide a standardised environment that should also work on your home computers, we instead work within a Vagrant VM.
+
 
 :::danger
-:bomb: Using Vagrant to control EC2 is complicated by an increasing number of factors. You may well find that it is simplest just to manually deploy your assignment two work to EC2. You are welcome to do so.
+:bomb: The Docker branch of the provided Vagrant repository does not yet support Apple M! CPUs. This edition will be comming soon... :crossed_fingers:
+
+Note that you do not need to automate deployment of your assignment two code and configuration, although you must document how you set up your assignment, otherwise.
 :::
 
-:::warning
-:warning: In the CS Labs an appropriately old version of Vagrant should be running. For your own computers please download Vagrant version 2.2.15 or below (e.g., I am running version 2.2.14 on my laptop).
-:::
-
-:::info
-These steps should only need to be performed once for a given installation of Vagrant, or for a given user account within the CS Lab environment. This should be true even if you subsequently use Vagrant to deploy further VMs to EC2.
-:::
-
-:::warning
-:warning: 
-The CS Lab environment requires additional steps due to the sysadmins holding back software updates so as to maximise stability. Unfortunately for many cloud tools, latest is greatest, and dependencies change rapidly. The instructions below divide in a few places between what should work on your own computer running the most recent Vagrant download, and what is necessary on the CS Labs.
-:::
-
-- Vagrant does not come with a built-in capability to deploy VMs to Amazon EC2, but Vagrant does have a plug-in system that allows for such extensions in functionality.
-:::info
-Vagrant is not likely to be widely used for AWS resource management. However given that you are familiar with Vagrant from earlier COSC349 lab exercises, use of the AWS provider for Vagrant is being presented for your convenience.
-
-It would be much more common to use a cloud-focused orchestration tool such as Terraform (by the same developers that wrote Vagrant), or possibly just custom scripting built over the `aws` command line tool. (Note that as from 2021 the `aws` command line tool should be installed within the CS lab macOS environment.)
-:::
-- Install the AWS plug-in into your Vagrant environment:
-    - Download this fork of the AWS plugin https://github.com/bdwyertech/vagrant-aws/releases/download/v0.8.0-bdwyertech/vagrant-aws-0.8.0.gem
-    - Install the local `vagrant-aws-0.8.0.gem` that you just downloaded (macOS/Linux/PowerShell syntax for a file in the current directory---Windows cmd shell syntax might need `.\` instead of `./`).
-     ```shell=-
-    vagrant plugin install ./vagrant-aws-0.8.0.gem
-     ```
-    
-It will take a while to download and configure the plug-in. Installation should not require super-user privileges.
-- The other configuration step required is to download a dummy Vagrant box. Since AWS EC2 provides its own infrastructure for disk images (i.e., AMIs), the Vagrant box facilities are unneeded. (Vagrant boxes can contain AWS configuration parameters, but in this lab we will be also to set these sorts of parameters just as easily, within the `Vagrantfile`.)
-
-```
-vagrant box add dummy https://github.com/mitchellh/vagrant-aws/raw/master/dummy.box
-```
-
-
-
-## Repository with an initial `Vagrantfile`
-
-- A git repository that provides a starting point for your `Vagrantfile` is available at https://altitude.otago.ac.nz/cosc349/lab09-vagrant-aws
+- A Git repository that installs Terraform inside a helper VM is available at  https://altitude.otago.ac.nz/cosc349/lab09-terraform-ec2
 - `git clone` this repository so that you acquire a local copy.
-- As for [Lab 8], you will need to have your AWS API credentials set up so that Vagrant can work on your behalf. The `aws` command and Vagrant AWS plugin can read details from the `credentials` configuration files (often stored at `~/.aws/credentials`), however the simplest approach may be to use shell environment variables to your AWS API credentials.
+- Change into your Git clone's directory
+- `vagrant up` to set up the helper VM
+- `vagrant ssh` into your helper VM
+- Working inside the helper VM, as for [Lab 8], you will need to have your AWS Academy API credentials set up so that Vagrant can work on your behalf. As suggested by the AWS Academy page that provides you with your credentials (that remain valid for a few hours), store the crentials at `~/.aws/credentials`.
 
-## Set shell environment variables for AWS use
+## Ensure that your `aws` command is working
 
-- Amazon has defined a number of shell environment variables that can pass useful configuration information to the `aws` command (see https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-envvars.html). These environment variables are also used by the Vagrant AWS plug-in.
-- Rather than putting your AWS API access credentials into your `Vagrantfile`, though, in this lab exercise you will define shell environment variables for the three authentication-related parameters required. These shell environment variables will be available to commands you run subsequently, until you exit the shell in which they are defined.
-- My apprach was to copy the API credentials from the AWS Academy Learner Lab information page (as for [Lab 8]) and paste the data into a temporary text file. Those credentials will have the following sort of form (although I manually destroyed the specific values here, as you should never share your API details):
-```
-[default]
-aws_access_key_id=ASJD83JMFNMFKJJJFFDA
-aws_secret_access_key=oXdfjerj35jg+aMsdfjerDGJjfeERFjrferFFf6K
-aws_session_token=FwoGadfgaADFSDAFsdffsdFSDFSDFfdsdfSDFSF4sdgDFDSFzhh+83AXXR+RASdffasdfEWRDFasdfasDFSADFdfdsDEFW/IQDFGdfgegsdh45wgsdgfsrgfRsgrwrgrwtytr5t4gregetrZGERTGERT6zeLpnMXQ89IQ/2SLNasASDFJSfj45hsfSdghjDFGDFGDFhrheSDFSDFWehetrwFDJSDFJDS4534SDGFJSTRfjsdfjsdFSDFJESJFFF25TkBl/2GasdfJEWJFJEWJFVN3234nfSDFJASDFJASDFnfdwenfhsdf12312FSDJFDEKFSJVD234fvdsdjgjv3jdsfjsjfEdsjjfjew4x
-```
-- Copy the necessary secret values from the right-hand side (i.e., to the right of the `=`) of each of the above three variables into the right-hand-side of the three shell environment variables below. I saved the three `exprt` lines into a temporary file in my text editor so that I could then copy-paste the commands into shell windows whenever I needed that shell to have my AWS API credentials set (either for use of `aws` or use of the Vagrant AWS plug-in). Note that the left-hand-side naming conventions are different (!).
-
-For macOS or Linux users, use the following form:
-```
-export AWS_ACCESS_KEY_ID=
-export AWS_SECRET_ACCESS_KEY=
-export AWS_SESSION_TOKEN=
-```
-
-For Windows PowerShell users, do the following
-```
-$env:AWS_ACCESS_KEY_ID=""
-$env:WS_SECRET_ACCESS_KEY=""
-$env:AWS_SESSION_TOKEN=""
-```
-
-## Ensure you have access to the `aws` command
-
-- The CS Lab computers should now—under macOS—include the `aws` command line tool. If you can run `aws` in a terminal, you do not need to set up a complete VM to access the `aws` command, and can skip the following subsection.
-### Prepare a separate VM that can use the `aws` command
-
-- The Vagrant configuration steps later in Lab , involve fetching some information that can be gathered by the `aws` command line interface.
-- Thus, you will need to have access to the `aws` command, and in the instructions here for Lab 9 we suggest how to use the VM from [Lab 8] to achieve this.
-- [Lab 8] describes how to use Vagrant to create a machine into which you set up AWS credentials, and that has the `aws` command installed.
-- Open a terminal window focused on your [Lab 8] VM and a separate terminal window working through this lab.
-- Ensure that you have done the usual `vagrant up`, `vagrant ssh` invocations successfully in your [Lab 8] window, and have tested that the `aws` command works as expected.
-- Remember that Vagrant isolates state within each directory, so you are able to use multiple independent Vagrant VMs from different directories at the same time.
-- In the [Lab 8] VM, test that your credentials are working as expected. For me, this involved pasting the three `export` lines from my temporary text editor window into my VM's shell, and then running the `aws` command. (The command below I've used for testing the `aws` command shows my lack of removing resources following completion of [Lab 8]...)
-
+- Inside the helper VM, test that your `aws` command line tools are working (e.g., also testing your `credentials`).
+- In my case I ran:
 ```
 vagrant@ubuntu-focal:~$ aws s3 ls
-2022-09-05 23:32:22 dme26-2022-test
-2022-09-05 23:36:57 logs.dme26-2022-test
+2023-09-05 10:50:48 dme26-2023-test
+2023-09-05 10:51:51 logs.dme26-2023-test
 ```
-
-
+- ... with both indicates that my `aws` command line tools are working as expected, and also indicates that I did not follow my own advice to delete the S3 buckets that I was no longer using... (!)
+- Run the `aws configure` command and set your region to `us-east-1`, since that is the only region that we can access using AWS Academy. The other options' default values you can accept just by pressing <kbd>return</kbd> or <kbd>enter</kbd>.
 
 ## Create a keypair on EC2, if you need to
 
@@ -122,9 +50,16 @@ vagrant@ubuntu-focal:~$ aws s3 ls
 For some reason, I have described the process here in lab 9 for creating a new key pair as if you have never done so... but you probably created a key pair back in lab 4! You can use the key pair you created back in lab 4, and skip creating another one, and thus this section. In any case, having multiple key pairs will not break anything---provided that you match up the name of the key pair (used by AWS to look it up) with the private key file that you specify (used by your local software to prove to AWS that it's your key).
 :::
 
+- you can see what keypairs you have available by running a command such as the following:
+```
+vagrant@ubuntu-focal:~$ aws ec2 describe-key-pairs | grep KeyName | grep -v vockey | cut -d'"' -f 4
+cosc349-2023
+```
+- if you still have the private key file for the key name that is shown, you do not need to create another key pair and can skip to the next section.
+
 :::info
 :information_source: 
-The screenshots in this section are from a past year (in 2022 I chose to re-use my lab 4 keypair!), but should provide enough context to be useful even so. Let the teaching team know if this is not the case!
+The screenshots in this section are from a past year (since 2022 I've chosen to re-use my lab 4 keypair!), but should provide enough context to be useful even so. Let the teaching team know if this is not the case!
 :::
 
 - We will define an AWS key pair with a given name that can be loaded into EC2 instances that you create.
@@ -142,7 +77,7 @@ The screenshots in this section are from a past year (in 2022 I chose to re-use 
 ![](https://i.imgur.com/Q71sM1v.png)
 ![](https://i.imgur.com/MNiD3JK.png)
 
-- From there, click the red "Create key pair" button, and provide a key pair name (e.g., `cosc349-2022`):
+- From there, click the red "Create key pair" button, and provide a key pair name (e.g., `cosc349-2023`):
 
 ![](https://i.imgur.com/Zw0EDrT.png)
 
@@ -150,453 +85,457 @@ The screenshots in this section are from a past year (in 2022 I chose to re-use 
 
 ![](https://i.imgur.com/N4iYXeK.png)
 
-- ... but **in addition**, the private portion of your key-pair will have been downloaded by your web browser. For example, Safari is likely to place your key in a path such as `Downloads/cosc349-2022.pem` within your home directory (noting that this filename embeds the key pair's name).
-- Keys should be protected in terms of file system permissions, and stored in a consistent, useful place. It is usually ideal for SSH key pairs to be stored in the `.ssh` directory within your home directory, since this is where tools such as OpenSSH (i.e., `ssh`) will default to looking. To address the location and permissions of your file, execute commands similar to the following (for macOS / Linux):
+- ... but **in addition**, the private portion of your key-pair will have been downloaded by your web browser into a file such as `cosc349-2023.pem`.
+- Keys should be protected in terms of file system permissions, and stored in a consistent, useful place. It is usually ideal for SSH key pairs to be stored in the `.ssh` directory within your home directory, since this is where tools such as OpenSSH (i.e., `ssh`) will default to looking. To address the location and permissions of your file, execute commands similar to the following (for macOS / Linux / Git Bash on Windows):
 
 ```shell=-
-mv ~/Downloads/cosc349-2022.pem ~/.ssh/
-chmod 700 ~/.ssh/cosc349-2022.pem
+mv ~/Downloads/cosc349-2023.pem ~/.ssh/
+chmod 700 ~/.ssh/cosc349-2023.pem
 ```
+- I launched SSH connections to my VMs below from my host computer. If you want to launch SSH connections from within the helper VM, you'll need to ensure that that VM has your `cosc349-2023.pem` (or equivalent) file in _its_ `~/.ssh/` directory, with the appropriate file permissions.
 
-- You need to update this lab's `Vagrantfile` to contain the key pair name (`cosc349-2022` here), and the path to your `.pem` file. Comments within the `Vagrantfile` will (hopefully) guide you to the right place.
+## Getting started with Terraform
 
-## Set your EC2 instance type
+- Let's create an initial test of Terraform by creating a directory to contain its configuration: `mkdir /vagrant/tf-deploy; cd /vagrant/tf-deploy`
+- Note that I am creating this directory within the directory shared with the VM host: this is so that I can run a handy editor on the host or edit the configuration from within the VM.
+- I then opened VSCode on my host computer pointed at the `tf-deploy` directory.
+- Create a file named `main.tf` with the content:
+```
+provider "aws" {
+  region = "us-east-1"
+}
 
-- You need to choose the type of EC2 instance you want to deploy—keeping in mind the different costs that types of instances incur.
-- The `Vagrantfile` for this lab suggests one of the cheapest instances `t2.micro` in a source-code comment. This is a safe (but slow and underpowered) default, but if you do not uncomment this line, then you will get the AWS Vagrant provider's default, which is a somewhat larger and more expensive instance type.
+resource "aws_security_group" "allow_ssh" {
+  name        = "allow_ssh"
+  description = "Allow inbound SSH traffic"
 
-## Configure Vagrant and EC2 networking
+  ingress {
+    description = "SSH from anywhere"
+    from_port   = 22
+    to_port     = 22
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
 
-The configuration of security groups, subnet IDs, AMIs, etc., often involve work that only needs to be done once. For example, once you have settled on an AMI for the OS you want to use for your EC2 instances, you can simply copy and paste that data into subsequent `Vagrantfile`s that you might need to set up.
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+}
 
-### Security groups
+resource "aws_instance" "web_server" {
+  ami           = "ami-010e83f579f15bba0"
+  instance_type = "t2.micro"
+  key_name      = "cosc349-2023"
 
-- Amazon security groups define network properties such as open network ports. They are scoped within the "virtual private cloud" (VPC) that EC2 launches VMs within.
-- We will not seek to interact with the VPC itself, but just create security groups of use within the VPC.
-- In the EC2 console, under "Network & Security", navigate to "Security Groups":
+  vpc_security_group_ids = [aws_security_group.allow_ssh.id]
 
-![](https://i.imgur.com/IHyu2lX.png)
+  user_data = <<-EOF
+              #!/bin/bash
+              sudo apt update
+              sudo apt install -y apache2
+              sudo systemctl start apache2
+              sudo systemctl enable apache2
+              EOF
 
-- Click the "Create security group" button:
+  tags = {
+    Name = "WebServer"
+  }
+}
 
-![](https://i.imgur.com/6BtqDEI.png)
-
-- Give your security group a name (e.g., `cosc349-ssh`) and a description.
-
-![](https://i.imgur.com/9mUYrNo.png)
-
-- Also, check that the outbound rule for "All traffic" is set to "Custom" "0.0.0.0/0", which means that your VMs will be able to initiate outbound connections without restriction. (This was already the default in my case.)
-- For the "Inbound" configuration, click "Add Rule" and for type "SSH" allow source "Anywhere-IPv4". (Of course in production use commercially you would want to lock this down much more specifically.)
-
-![](https://i.imgur.com/m2aP86h.png)
-
-- After clicking "Create", you should see your new security group listed:
- 
-![](https://i.imgur.com/0EHCpjt.png)
-
-- Copy the "Group ID" (something like `sg-016880c1cb05410dd`) and paste it as the value of the `aws.security_groups` parameter within your `Vagrantfile`.
-
-### Availability zone and subnet ID
-
-- In general, creating an EC2 instance should only involve selection of the Amazon region (e.g., `us-east-1`, as is required by Amazon Academy), and EC2 will select the particular availability zone to use within the region.
-- Using Vagrant within Amazon Academy accounts seems to require selecting a specific availability zone within the region (it does not matter which). Availability zones are usually named with a letter after the region, such as `us-east-1a`.
-- Select an availability zone, and put your choice into the `Vagrantfile` for this lab.
-- Now you need to find the subnet ID for your chosen availability zone. The approach taken in this lab to finding the subnet ID is to use the `aws` command line tool, using it from within the VM you created in [Lab 8]. You are welcome to find a different way to get this to work.
-- Run the command `aws ec2 describe-subnets --region us-east-1` (e.g., in your [Lab 8] VM terminal, or using `aws` on the CS lab macOS environment).
-- This command provides a JSON response:
-
-```json=
-{
-    "Subnets": [
-        {
-            "AvailabilityZone": "us-east-1c",
-            "AvailabilityZoneId": "use1-az1",
-            "AvailableIpAddressCount": 4091,
-            "CidrBlock": "172.31.0.0/20",
-            "DefaultForAz": true,
-            "MapPublicIpOnLaunch": true,
-            "MapCustomerOwnedIpOnLaunch": false,
-            "State": "available",
-            "SubnetId": "subnet-08656356657f8cf9e",
-            "VpcId": "vpc-09a8d17e143ab4828",
-            "OwnerId": "409523232788",
-            "AssignIpv6AddressOnCreation": false,
-            "Ipv6CidrBlockAssociationSet": [],
-            "SubnetArn": "arn:aws:ec2:us-east-1:409523232788:subnet/subnet-08656356657f8cf9e",
-            "EnableDns64": false,
-            "Ipv6Native": false,
-            "PrivateDnsNameOptionsOnLaunch": {
-                "HostnameType": "ip-name",
-                "EnableResourceNameDnsARecord": false,
-                "EnableResourceNameDnsAAAARecord": false
-            }
-        },
-        {
-            "AvailabilityZone": "us-east-1d",
-            "AvailabilityZoneId": "use1-az2",
-            "AvailableIpAddressCount": 4091,
-            "CidrBlock": "172.31.80.0/20",
-            "DefaultForAz": true,
-            "MapPublicIpOnLaunch": true,
-            "MapCustomerOwnedIpOnLaunch": false,
-            "State": "available",
-            "SubnetId": "subnet-0191621f39c96720e",
-            "VpcId": "vpc-09a8d17e143ab4828",
-            "OwnerId": "409523232788",
-            "AssignIpv6AddressOnCreation": false,
-            "Ipv6CidrBlockAssociationSet": [],
-            "SubnetArn": "arn:aws:ec2:us-east-1:409523232788:subnet/subnet-0191621f39c96720e",
-            "EnableDns64": false,
-            "Ipv6Native": false,
-            "PrivateDnsNameOptionsOnLaunch": {
-                "HostnameType": "ip-name",
-                "EnableResourceNameDnsARecord": false,
-                "EnableResourceNameDnsAAAARecord": false
-            }
-        },
-        {
-            "AvailabilityZone": "us-east-1e",
-            "AvailabilityZoneId": "use1-az3",
-            "AvailableIpAddressCount": 4091,
-            "CidrBlock": "172.31.48.0/20",
-            "DefaultForAz": true,
-            "MapPublicIpOnLaunch": true,
-            "MapCustomerOwnedIpOnLaunch": false,
-            "State": "available",
-            "SubnetId": "subnet-03d00644d7228e902",
-            "VpcId": "vpc-09a8d17e143ab4828",
-            "OwnerId": "409523232788",
-            "AssignIpv6AddressOnCreation": false,
-            "Ipv6CidrBlockAssociationSet": [],
-            "SubnetArn": "arn:aws:ec2:us-east-1:409523232788:subnet/subnet-03d00644d7228e902",
-            "EnableDns64": false,
-            "Ipv6Native": false,
-            "PrivateDnsNameOptionsOnLaunch": {
-                "HostnameType": "ip-name",
-                "EnableResourceNameDnsARecord": false,
-                "EnableResourceNameDnsAAAARecord": false
-            }
-        },
-        {
-            "AvailabilityZone": "us-east-1a",
-            "AvailabilityZoneId": "use1-az4",
-            "AvailableIpAddressCount": 4091,
-            "CidrBlock": "172.31.16.0/20",
-            "DefaultForAz": true,
-            "MapPublicIpOnLaunch": true,
-            "MapCustomerOwnedIpOnLaunch": false,
-            "State": "available",
-            "SubnetId": "subnet-00bc365d464af3faf",
-            "VpcId": "vpc-09a8d17e143ab4828",
-            "OwnerId": "409523232788",
-            "AssignIpv6AddressOnCreation": false,
-            "Ipv6CidrBlockAssociationSet": [],
-            "SubnetArn": "arn:aws:ec2:us-east-1:409523232788:subnet/subnet-00bc365d464af3faf",
-            "EnableDns64": false,
-            "Ipv6Native": false,
-            "PrivateDnsNameOptionsOnLaunch": {
-                "HostnameType": "ip-name",
-                "EnableResourceNameDnsARecord": false,
-                "EnableResourceNameDnsAAAARecord": false
-            }
-        },
-        {
-            "AvailabilityZone": "us-east-1f",
-            "AvailabilityZoneId": "use1-az5",
-            "AvailableIpAddressCount": 4091,
-            "CidrBlock": "172.31.64.0/20",
-            "DefaultForAz": true,
-            "MapPublicIpOnLaunch": true,
-            "MapCustomerOwnedIpOnLaunch": false,
-            "State": "available",
-            "SubnetId": "subnet-003126171f9868015",
-            "VpcId": "vpc-09a8d17e143ab4828",
-            "OwnerId": "409523232788",
-            "AssignIpv6AddressOnCreation": false,
-            "Ipv6CidrBlockAssociationSet": [],
-            "SubnetArn": "arn:aws:ec2:us-east-1:409523232788:subnet/subnet-003126171f9868015",
-            "EnableDns64": false,
-            "Ipv6Native": false,
-            "PrivateDnsNameOptionsOnLaunch": {
-                "HostnameType": "ip-name",
-                "EnableResourceNameDnsARecord": false,
-                "EnableResourceNameDnsAAAARecord": false
-            }
-        },
-        {
-            "AvailabilityZone": "us-east-1b",
-            "AvailabilityZoneId": "use1-az6",
-            "AvailableIpAddressCount": 4091,
-            "CidrBlock": "172.31.32.0/20",
-            "DefaultForAz": true,
-            "MapPublicIpOnLaunch": true,
-            "MapCustomerOwnedIpOnLaunch": false,
-            "State": "available",
-            "SubnetId": "subnet-03c26616dbd442774",
-            "VpcId": "vpc-09a8d17e143ab4828",
-            "OwnerId": "409523232788",
-            "AssignIpv6AddressOnCreation": false,
-            "Ipv6CidrBlockAssociationSet": [],
-            "SubnetArn": "arn:aws:ec2:us-east-1:409523232788:subnet/subnet-03c26616dbd442774",
-            "EnableDns64": false,
-            "Ipv6Native": false,
-            "PrivateDnsNameOptionsOnLaunch": {
-                "HostnameType": "ip-name",
-                "EnableResourceNameDnsARecord": false,
-                "EnableResourceNameDnsAAAARecord": false
-            }
-        }
-    ]
+output "web_server_ip" {
+  value = aws_instance.web_server.public_ip
 }
 ```
-
-- Find the block corresponding for the `AvailabilityZone` that you selected and copy its `SubnetId` value into your `Vagrantfile`.
-
-## Find an appropriate AMI
-
-- Before you can launch your EC2 instance, you need to determine what disk image the VM will boot from—an Amazon Machine Image (AMI).
-- From the EC2 Dashboard, under "Images" you can select "AMIs", and use the search facilities provided. Note that the initial display defaults to showing AMIs that you have created.
-
-![](https://i.imgur.com/1iByLep.png)
-
-- ... but changing the "Owned by me" to "Public images", will show a longer list (where "longer" can be interpreted here as "a list with more than 120,000 items in it").
-
-![](https://i.imgur.com/vAgXQrY.png)
-
-- You want to know the origin of these AMIs, as it is possible that they are not secure.
-- An alternative, if you want to use a Ubuntu VM, is to use Ubuntu's "[Amazon EC2 AMI Locator](https://cloud-images.ubuntu.com/locator/ec2/)": 
-
-![](https://i.imgur.com/2gFcvkn.png)
-
-- The "Search" box allows quick filtering of the list. In this case the terms entered were:
-    - `us-east-1` since each region has different AMIs;
-    - `hvm` since that is the type of virtualisation that we wish to use;
-    - `amd64` since that's the CPU architecture I desired (for some reason I find `amd64` visually similar to `arm64` in some typefaces, but they're very different choices!).
-
-- Having made those search selections, the list narrows to different versions of Ubuntu.
-
-![](https://i.imgur.com/NK8Piz1.png)
-
-- Copy and paste the AMI into the `Vagrantfile` for this lab. (I chose `focal`, since it's the most recent LTS (long term support) release shown.)
-- Note that when using Ubuntu, it is likely that the login user should be `ubuntu`, and thus the `override.ssh.username` parameter should be set as suggested in the comments within the `Vagrantfile`.
-
-## Start an instance
-
-:::danger
-:warning: 
-The `vagrant` command invocation below this warning box may fail with a Ruby error that concludes with `undefined method 'except'`, and if so, you can try this workaround.
-
-The CS Lab environments require that you make a change to your `Vagrantfile` to fix a glitch in the installed Vagrant version. Since 2021, I found that I needed to make the same change on my work iMac too. 
-
-You also need to do this in Windows 10 machines in order to get it to work properly
-
-Insert the following at line 3 of your `Vagrantfile` (just above the comment `All Vagrant configuration is done below`): ([source of fix](https://github.com/mitchellh/vagrant-aws/issues/566#issuecomment-637184574))
-```ruby=-
-class Hash
-  def slice(*keep_keys)
-    h = {}
-    keep_keys.each { |key| h[key] = fetch(key) if has_key?(key) }
-    h
-  end unless Hash.method_defined?(:slice)
-  def except(*less_keys)
-    slice(*keys - less_keys)
-  end unless Hash.method_defined?(:except)
-end
+- This is a declarative syntax that contains four top-level parts:
+    - The `provider` is AWS operating in the `us-east-1` region
+    - A security group is set up called "allow_ssh" that allows SSH traffic to reach a VM that uses that security group
+    - A `resource` that defines a VM named "web_server"
+    - An output section that indicates information that Terraform will display when its finished its work. 
+- Run the `terraform init` command from which I get output:
 ```
-:::
+Initializing the backend...
 
-- You should now be able to use Vagrant to start an EC2 instance on AWS, using:
+Initializing provider plugins...
+- Finding latest version of hashicorp/aws...
+- Installing hashicorp/aws v5.16.2...
+- Installed hashicorp/aws v5.16.2 (signed by HashiCorp)
 
+Terraform has created a lock file .terraform.lock.hcl to record the provider
+selections it made above. Include this file in your version control repository
+so that Terraform can guarantee to make the same selections by default when
+you run "terraform init" in the future.
+
+Terraform has been successfully initialized!
+
+You may now begin working with Terraform. Try running "terraform plan" to see
+any changes that are required for your infrastructure. All Terraform commands
+should now work.
+
+If you ever set or change modules or backend configuration for Terraform,
+rerun this command to reinitialize your working directory. If you forget, other
+commands will detect it and remind you to do so if necessary.
 ```
-vagrant up --provider=aws
+- Then run the `terraform plan` command, for which I get output:
 ```
+Terraform used the selected providers to generate the following execution plan.
+Resource actions are indicated with the following symbols:
+  + create
 
-- Note that once you have successfully run the above command, the VM state stored within the hidden `.vagrant` directory means that you do not need to add `--provider=aws` to subsequent Vagrant command invocations within or below that directory.
-- Running the above `up` command should produce output such as the following:
+Terraform will perform the following actions:
 
+  # aws_instance.web_server will be created
+  + resource "aws_instance" "web_server" {
+      + ami                                  = "ami-010e83f579f15bba0"
+      + arn                                  = (known after apply)
+      + associate_public_ip_address          = (known after apply)
+      + availability_zone                    = (known after apply)
+      + cpu_core_count                       = (known after apply)
+      + cpu_threads_per_core                 = (known after apply)
+      + disable_api_stop                     = (known after apply)
+      + disable_api_termination              = (known after apply)
+      + ebs_optimized                        = (known after apply)
+      + get_password_data                    = false
+      + host_id                              = (known after apply)
+      + host_resource_group_arn              = (known after apply)
+      + iam_instance_profile                 = (known after apply)
+      + id                                   = (known after apply)
+      + instance_initiated_shutdown_behavior = (known after apply)
+      + instance_lifecycle                   = (known after apply)
+      + instance_state                       = (known after apply)
+      + instance_type                        = "t2.micro"
+      + ipv6_address_count                   = (known after apply)
+      + ipv6_addresses                       = (known after apply)
+      + key_name                             = "cosc349-2023"
+      + monitoring                           = (known after apply)
+      + outpost_arn                          = (known after apply)
+      + password_data                        = (known after apply)
+      + placement_group                      = (known after apply)
+      + placement_partition_number           = (known after apply)
+      + primary_network_interface_id         = (known after apply)
+      + private_dns                          = (known after apply)
+      + private_ip                           = (known after apply)
+      + public_dns                           = (known after apply)
+      + public_ip                            = (known after apply)
+      + secondary_private_ips                = (known after apply)
+      + security_groups                      = (known after apply)
+      + source_dest_check                    = true
+      + spot_instance_request_id             = (known after apply)
+      + subnet_id                            = (known after apply)
+      + tags                                 = {
+          + "Name" = "WebServer"
+        }
+      + tags_all                             = {
+          + "Name" = "WebServer"
+        }
+      + tenancy                              = (known after apply)
+      + user_data                            = "07c9939940fed692444ad659f6257659122880ac"
+      + user_data_base64                     = (known after apply)
+      + user_data_replace_on_change          = false
+      + vpc_security_group_ids               = (known after apply)
+    }
+
+  # aws_security_group.allow_ssh will be created
+  + resource "aws_security_group" "allow_ssh" {
+      + arn                    = (known after apply)
+      + description            = "Allow inbound SSH traffic"
+      + egress                 = [
+          + {
+              + cidr_blocks      = [
+                  + "0.0.0.0/0",
+                ]
+              + description      = ""
+              + from_port        = 0
+              + ipv6_cidr_blocks = []
+              + prefix_list_ids  = []
+              + protocol         = "-1"
+              + security_groups  = []
+              + self             = false
+              + to_port          = 0
+            },
+        ]
+      + id                     = (known after apply)
+      + ingress                = [
+          + {
+              + cidr_blocks      = [
+                  + "0.0.0.0/0",
+                ]
+              + description      = "SSH from anywhere"
+              + from_port        = 22
+              + ipv6_cidr_blocks = []
+              + prefix_list_ids  = []
+              + protocol         = "tcp"
+              + security_groups  = []
+              + self             = false
+              + to_port          = 22
+            },
+        ]
+      + name                   = "allow_ssh"
+      + name_prefix            = (known after apply)
+      + owner_id               = (known after apply)
+      + revoke_rules_on_delete = false
+      + tags_all               = (known after apply)
+      + vpc_id                 = (known after apply)
+    }
+
+Plan: 2 to add, 0 to change, 0 to destroy.
+
+Changes to Outputs:
+  + web_server_ip = (known after apply)
+
+───────────────────────────────────────────────────────────────────────────────
+
+Note: You didn't use the -out option to save this plan, so Terraform can't
+guarantee to take exactly these actions if you run "terraform apply" now.
 ```
-Bringing machine 'default' up with 'aws' provider...
-==> default: Warning! The AWS provider doesn't support any of the Vagrant
-==> default: high-level network configurations (`config.vm.network`). They
-==> default: will be silently ignored.
-==> default: Warning! You're launching this instance into a VPC without an
-==> default: elastic IP. Please verify you're properly connected to a VPN so
-==> default: you can access this machine, otherwise Vagrant will not be able
-==> default: to SSH into it.
-==> default: Launching an instance with the following settings...
-==> default:  -- Type: t2.micro
-==> default:  -- AMI: ami-079ca844e323047c2
-==> default:  -- Region: us-east-1
-==> default:  -- Availability Zone: us-east-1a
-==> default:  -- Keypair: cosc349 2022
-==> default:  -- Subnet ID: subnet-00bc365d464af3faf
-==> default:  -- Security Groups: ["sg-016880c1cb05410dd"]
-==> default:  -- Block Device Mapping: []
-==> default:  -- Terminate On Shutdown: false
-==> default:  -- Monitoring: false
-==> default:  -- EBS optimized: false
-==> default:  -- Source Destination check:
-==> default:  -- Assigning a public IP address in a VPC: false
-==> default:  -- VPC tenancy specification: default
-==> default: Waiting for instance to become "ready"...
-==> default: Waiting for SSH to become available...
-==> default: Machine is booted and ready for use!
-==> default: Rsyncing folder: /Users/dme26/tmp/lab09-vagrant-aws/ => /vagrant
-```
+- If you're happy with the proposal Terraform has made, then you can enact something very similar to the present plan using the `terraform apply` command.
+- Terraform will prompt you for confirmation, to which you say "yes" if you wish to proceed.
+- For me, when that apply command finished, I was presented with lots of diagnostics, and an "Outputs:" section including `web_server_ip = "52.71.252.201"`.
+- You should reload your AWS dashboard to confirm that you see the EC2 VM that you created using Terraform
+## Connect to your EC2 VM
 
-- It should now be possible to connect to that EC2 instance using the normal Vagrant invocation `vagrant ssh`, for which output should be similar to what follows (if your choice of AMI was similar to mine):
-
+- Unlike Vagrant, Terraform does not provide a built in way to connect to your EC2 VM using SSH.
+- However, you know the public IP address from the above, and should have your private key file handy, and thus be able to connect to your VM using SSH. In this case I am connecting from my macOS host computer:
 ```
-Welcome to Ubuntu 20.04.5 LTS (GNU/Linux 5.15.0-1019-aws x86_64)
+→ ssh -i ~/.ssh/cosc349-2023.pem ubuntu@52.71.252.201
+The authenticity of host '52.71.252.201 (52.71.252.201)' can't be established.
+ED25519 key fingerprint is SHA256:nLF1ZIdUH7/HUaxP46Z+Jm3+bWFNroR6f1YECpFAuk4.
+This key is not known by any other names
+Are you sure you want to continue connecting (yes/no/[fingerprint])? yes
+Welcome to Ubuntu 23.04 (GNU/Linux 6.2.0-1011-aws x86_64)
 
  * Documentation:  https://help.ubuntu.com
  * Management:     https://landscape.canonical.com
  * Support:        https://ubuntu.com/advantage
 
-  System information as of Mon Sep 12 11:45:08 UTC 2022
+  System information as of Tue Sep 12 09:56:10 UTC 2023
 
-  System load:  0.18              Processes:             104
-  Usage of /:   19.9% of 7.57GB   Users logged in:       0
-  Memory usage: 24%               IPv4 address for eth0: 172.31.20.114
+  System load:  0.08              Processes:             101
+  Usage of /:   24.7% of 7.58GB   Users logged in:       0
+  Memory usage: 22%               IPv4 address for enX0: 172.31.43.128
   Swap usage:   0%
-
 
 0 updates can be applied immediately.
 
 
-The list of available updates is more than a week old.
-To check for new updates run: sudo apt update
-New release '22.04.1 LTS' available.
-Run 'do-release-upgrade' to upgrade to it.
 
+The programs included with the Ubuntu system are free software;
+the exact distribution terms for each program are described in the
+individual files in /usr/share/doc/*/copyright.
 
-ubuntu@ip-172-31-20-114:~$ ls /vagrant/
-Vagrantfile
+Ubuntu comes with ABSOLUTELY NO WARRANTY, to the extent permitted by
+applicable law.
+
+To run a command as administrator (user "root"), use "sudo <command>".
+See "man sudo_root" for details.
+
+ubuntu@ip-172-31-43-128:~$
 ```
-
-- The `ls` command that was run on this EC2 instance indicates that the local directory containing this lab's `Vagrantfile` was copied over to the EC2 instance.
-
-:::warning
-:warning: 
-Note that the synchronisation of files to EC2 **only happens once** during the `vagrant up` process, and is not dynamically synchronised. This is different behaviour to how shared folders work using Vagrant's VirtualBox provider.
-:::
-
-- You can verify that outgoing network access is permitted, by running commands such as the following on your EC2 instance (I'm essentially manually tracking how https://www.cs.otago.ac.nz/ redirects to https://www.otago.ac.nz/computer-science/index.html through an intermediate step):
-
+- You can test whether this VM is running the webserver that the `user_data` section intalled using:
+- `sudo lsof -Pni`
 ```
-ubuntu@ip-172-31-20-114:~$ curl --head https://www.cs.otago.ac.nz/
+ubuntu@ip-172-31-43-128:~$ sudo lsof -Pni
+COMMAND    PID            USER   FD   TYPE DEVICE SIZE/OFF NODE NAME
+systemd      1            root   98u  IPv6  16773      0t0  TCP *:22 (LISTEN)
+systemd-r  238 systemd-resolve   13u  IPv4  15595      0t0  UDP 127.0.0.53:53
+systemd-r  238 systemd-resolve   14u  IPv4  15596      0t0  TCP 127.0.0.53:53 (LISTEN)
+systemd-r  238 systemd-resolve   15u  IPv4  15597      0t0  UDP 127.0.0.54:53
+systemd-r  238 systemd-resolve   16u  IPv4  15598      0t0  TCP 127.0.0.54:53 (LISTEN)
+systemd-n  303 systemd-network   18u  IPv4  16404      0t0  UDP 172.31.43.128:68
+chronyd    488         _chrony    5u  IPv4  17358      0t0  UDP 127.0.0.1:323
+chronyd    488         _chrony    6u  IPv6  17359      0t0  UDP [::1]:323
+apache2   1920            root    4u  IPv6  21311      0t0  TCP *:80 (LISTEN)
+apache2   1922        www-data    4u  IPv6  21311      0t0  TCP *:80 (LISTEN)
+apache2   1923        www-data    4u  IPv6  21311      0t0  TCP *:80 (LISTEN)
+sshd      2247            root    3u  IPv6  16773      0t0  TCP *:22 (LISTEN)
+sshd      2278            root    4u  IPv6  23904      0t0  TCP 172.31.43.128:22->139.80.239.160:8237 (ESTABLISHED)
+sshd      2398          ubuntu    4u  IPv6  23904      0t0  TCP 172.31.43.128:22->139.80.239.160:8237 (ESTABLISHED)
+```
+- Which on my VM indicates `apache2` is listening on TCP port 80.
+- You can confirm that your VM is able to access the Internet, e.g., by running a `curl` command, such as in:
+```
+ubuntu@ip-172-31-43-128:~$ curl --head https://www.cs.otago.ac.nz/
 HTTP/1.1 301 Moved Permanently
-Date: Mon, 12 Sep 2022 11:46:22 GMT
+Date: Tue, 12 Sep 2023 10:00:18 GMT
 Server: Apache/2.4.6 (CentOS) OpenSSL/1.0.2k-fips PHP/5.4.16 SVN/1.7.14
 Strict-Transport-Security: max-age=63072000; includeSubDomains;
 Location: https://www.otago.ac.nz/computer-science/
 Content-Type: text/html; charset=iso-8859-1
 
-ubuntu@ip-172-31-20-114:~$ curl --head https://www.otago.ac.nz/computer-science/
-HTTP/2 301
-date: Mon, 12 Sep 2022 11:46:34 GMT
-content-type: text/html; charset=utf-8
-content-length: 108
-location: /computer-science/index.html
-x-oracle-dms-rid: 0
-x-content-type-options: nosniff
-x-xss-protection: 1; mode=block
-x-frame-options: SAMEORIGIN
-cache-control: private, max-age=60
-set-cookie: JSESSIONID=8c4xhcZTe6z438QAKu_se_b_1zsqB90ijiCB48CWyc3CC7Nr6q6x!-1162065392; path=/; HttpOnly
-vary: Accept-Encoding
-set-cookie: servedby=ffffffff094a0a5145525d5f4f58455e445a4a42378c;expires=Mon, 12-Sep-2022 11:48:41 GMT;path=/;secure;httponly
-
-ubuntu@ip-172-31-20-114:~$ curl --head https://www.otago.ac.nz/computer-science/index.html
-HTTP/2 200
-date: Mon, 12 Sep 2022 11:46:48 GMT
-content-type: text/html; charset=utf-8
-content-length: 28193
-x-oracle-dms-rid: 0
-x-content-type-options: nosniff
-x-xss-protection: 1; mode=block
-x-frame-options: SAMEORIGIN
-cache-control: private, max-age=60
-set-cookie: JSESSIONID=rpoxhf7PgQq8lA_V1w9-7axOMuNEass8S0MUZ1JhttFMwDyLW51f!-1162065392; path=/; HttpOnly
-vary: Accept-Encoding
-set-cookie: servedby=ffffffff094a0a5145525d5f4f58455e445a4a42378c;expires=Mon, 12-Sep-2022 11:48:55 GMT;path=/;secure;httponly
 ```
-
-## Setting up a web server
+- However, we cannot access the machine from the Internet as the security groups block HTTP traffic.
 
 :::success
-:book: 
-Exercise:
-- Using your access to your VM through `vagrant ssh`, install a web server. 
-- You can use commands such as `curl` or `wget` to test it locally, but to be able to access your web server from the Internet you will need to change the security groups for this VM, as described in the following section.
+:book: Using the `allow_ssh` security group resource as a starting point, add into your `main.tf` a resource defining a security group named `allow_web` that opens port 80 and port 443 to all internet traffic.
 :::
 
-### Changing security groups for a VM
+- When you have defined your `allow_ssh` resource, add your new security group ID into the `vpc_security_group_ids` list wtihin the resource defining your web server.
+- You should be able to run `terraform apply` and Terraform should be able to figure out what to do.
+- Now see whether you can access the public IP address in your web browser, for example I accessed http://52.71.252.201/ (take care not to have your browser switch this to HTTPS). I see:
+![](https://hackmd.io/_uploads/ByKazAaC2.png)
 
-- You can change dynamically the security groups that a VM is within.
-- For example, to support web access to your VM, create another security group, such as:
+## Add a database server
 
-![](https://i.imgur.com/oePxV7r.png)
+- Add to your `main.tf` a new `aws_instance` resource named `mysql_server`. You can use the following `user_data` to install MySQL.
+```
+user_data = <<-EOF
+            #!/bin/bash
+            sudo apt update
+            sudo apt install -y mysql-server
+            sudo systemctl start mysql
+            sudo systemctl enable mysql
+            EOF
+```
+- You will need to create an `allow_mysql` security group (for port 3306).
+- You should also ensure that your output shows the MySQL server public IP address
+- Test that you can SSH to your MySQL server, and that you can use `lsof -Pni` to verify that your MySQL server is running.
 
-- Select (tick box at left-hand-side of instance table) the EC2 instance that you wish to reassign security groups for, and navigate through the menu options shown. (Actions → Security → Change security groups.)
+## Telling the web server the database server's IP
 
-![](https://i.imgur.com/HFcdeYE.png)
+- A useful feature of Terraform is that it will determine the necessary order to carry out actions.
+- For example, if you add this into your `user_data` for your web server:
+```
+echo MYSQL_SERVER_IP=${aws_instance.mysql_server.private_ip} | sudo tee -a /etc/environment
+```
+- Then Terraform will replace the `${}` construct with the private IP of your database server, including determining that the database server needs to be created before your web server.
+- You can test this if you want to, but note that you may need your VM to be redeployed to re-run the intitialisation in `user_data`.
+- The command `terraform taint aws_instance.web_server` will inform Terraform that at the next `apply` the web server should be recreated.
 
-- You can then add and remove the security groups you wish the VM to be associated with:
+## Use a template file to run setup shell scripting
 
-![](https://i.imgur.com/Hjnhqnv.png)
+We will replace the `user_data` structure to a form that instead replaces Terraform variables within an external file. Change each of your `user_data` sections for your VMs to just be one line, as appropriate:
+```
+user_data = templatefile("${path.module}/build-webserver-vm.tpl", { mysql_server_ip = aws_instance.mysql_server.private_ip })
+user_data = templatefile("${path.module}/build-dbserver-vm.tpl", { })
+```
 
-- ... adding web access, in this case:
+## Test the web server
 
-![](https://i.imgur.com/397I3YU.png)
+The web server is configured in a slightly different way to the configuration used in the multi-VM Vagrant example that you've seen earlier in the paper.
 
-### Testing your web server
+The `index.html` file is at `/var/www/html/`, and the database testing page will be within the directory too. By default, Apache will continue to show the `index.html` page: you need to explicitly add `index.php` onto the URL in order to test that the PHP script installed on your web server VM does indeedd connect to your database server, as expected.
 
-- On the EC2 Dashboard, when an instance is selected, you can see its "Public DNS" entry, as shown in the following screen capture. Note that a "Copy to clipboard" helper is included. Also, an "open address" link will open a new tab, but note that it defaults to using `https` when for my test I needed to change this to `http` (I hadn't set up `https` on the Apache web server running on my VM).
+## If you get stuck in the exercises...
 
-![](https://i.imgur.com/lC7UTaF.png)
-
-- You should be able to open this address in a web browser, if your server is set up correctly:
-
-![](https://i.imgur.com/88DSFbq.png)
-
-### Reworking this deployment
-
-:::success
-:book: Exercise:
-- The ability to use provisioning scripts within Vagrant should continue to work when Vagrant is provisioning EC2 instances.
-- Incrementally rework at least some of the manual steps (e.g., installing a web server) into a provisioning script that sets up your EC2 instance more automatically.
-:::
-
-## Check Vagrant status
-
-- The `vagrant status` command should provide some information about the EC2 instance(s) that it is managing:
+<details>
+<summary>Just in case you are really stuck producing a `main.tf` that works, you can reveal one that works, here....</summary>
 
 ```
-Current machine states:
+provider "aws" {
+  region = "us-east-1"
+}
 
-default                   running (aws)
+resource "aws_security_group" "allow_ssh" {
+  name        = "allow_ssh"
+  description = "Allow inbound SSH traffic"
 
-The EC2 instance is running. To stop this machine, you can run
-`vagrant halt`. To destroy the machine, you can run `vagrant destroy`.
+  ingress {
+    description = "SSH from anywhere"
+    from_port   = 22
+    to_port     = 22
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+}
+
+resource "aws_security_group" "allow_web" {
+  name        = "allow_web"
+  description = "Allow inbound HTTP(S) traffic"
+
+  ingress {
+    description = "HTTP from anywhere"
+    from_port   = 80
+    to_port     = 80
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  ingress {
+    description = "HTTPS from anywhere"
+    from_port   = 443
+    to_port     = 443
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+}
+
+resource "aws_security_group" "allow_mysql" {
+  name        = "allow_mysql"
+  description = "Allow inbound MySQL traffic"
+
+  ingress {
+    description = "MySQL from anywhere"
+    from_port   = 3306
+    to_port     = 3306
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+}
+
+resource "aws_instance" "web_server" {
+  ami           = "ami-010e83f579f15bba0"
+  instance_type = "t2.micro"
+  key_name      = "cosc349-2023"
+
+  vpc_security_group_ids = [aws_security_group.allow_ssh.id,
+              aws_security_group.allow_web.id]
+
+  user_data = templatefile("${path.module}/build-webserver-vm.tpl", { mysql_server_ip = aws_instance.mysql_server.private_ip })
+
+  tags = {
+    Name = "WebServer"
+  }
+}
+
+resource "aws_instance" "mysql_server" {
+  ami           = "ami-010e83f579f15bba0"
+  instance_type = "t2.micro"
+  key_name      = "cosc349-2023"
+
+  vpc_security_group_ids = [aws_security_group.allow_ssh.id,
+                aws_security_group.allow_mysql.id]
+
+  user_data = templatefile("${path.module}/build-dbserver-vm.tpl", { })
+
+  tags = {
+    Name = "MySQLServer"
+  }
+}
+
+output "web_server_ip" {
+  value = aws_instance.web_server.public_ip
+}
+
+output "mysql_server_ip" {
+  value = aws_instance.mysql_server.public_ip
+}
 ```
+</details>
 
 ## Destroy your EC2 instance
 
-- When you wish to remove your EC2 instance, the `vagrant destroy` command should work in a similar way to how it operates on VirtualBox VMs.
-
-```
-$ vagrant destroy
-    default: Are you sure you want to destroy the 'default' VM? [y/N] y
-==> default: Terminating the instance...
-$ vagrant status
-Current machine states:
-
-default                   not created (aws)
-
-The EC2 instance is not created. Run `vagrant up` to create it.
-```
-
+- When you wish to remove your EC2 instance, the `terraform destroy` command should work to remove resources, after you confirm this action.
 - You should also check on the EC2 Dashboard that your instance really has been terminated... and if it hasn't been, you can always terminate it from the EC2 Dashboard manually.
-
-
