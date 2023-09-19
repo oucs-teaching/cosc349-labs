@@ -1,7 +1,7 @@
 ---
 tags: cosc349
 ---
-# COSC349 Lab 10—Cloud Architecture—2022
+# COSC349 Lab 10—Cloud Architecture—2023
 ## Lab 10—AWS Lambda (Serverless computing)
 
 [Lab 8]: /a8wHsmkVTh6-ud_vNAe2Mw
@@ -12,110 +12,110 @@ In this lab we will explore AWS Lambda, which is Amazon's Function as a Service 
 
 - In the usual (unusual) AWS Academy Learner Lab way, reach your AWS Management Console.
 
-![](https://i.imgur.com/wpoQEv5.png)
+![](https://hackmd.io/_uploads/SyhHHlDJa.png)
 
 - Using "Find Services" or otherwise, click through to AWS Lambda.
 
-![](https://i.imgur.com/YvRwN7n.png)
+![](https://hackmd.io/_uploads/HJ72HxPJa.png)
 
 - Click the "Create function" button that should be near the top right of the web interface you see. You should reach a form from which you can select "Author from scratch" ...
 
-![](https://i.imgur.com/bb7mzAj.png)
+![](https://hackmd.io/_uploads/rkI6Sevkp.png)
 
 - ... and scrolling further down that page, other options that you should set up are shown. In particular
     - You need to name your function
-    - In the walk-through here Python 3.9 is used—although of course in your own experimentation feel free to use whatever language you want to.
+    - In the walk-through here Python 3.11 is used—although of course in your own experimentation feel free to use whatever language you want to.
     - Note that the "Execution role" must be set to the existing role: the AWS Academy accounts do not have sufficient IAM privileges to be able to create roles.
 
-![](https://i.imgur.com/WLVUFIP.png)
+![](https://hackmd.io/_uploads/rkozLewka.png)
 
 - Click "Create function" and you should be taken to a page dedicated to your function. 
 
-![](https://i.imgur.com/34J3iua.png)
+![](https://hackmd.io/_uploads/rkNEUlPJT.png)
 
 - The Function overview shows your AWS Lambda function, and the resources it could interact with. The test function currently does not interact with other AWS services—we will later interact with AWS S3.
 - Scroll down and you will find the "Code source" pane (under the "Code" tab).
 - In this case the "hello world" type of message will be sufficient for testing.
 
-![](https://i.imgur.com/5p0ghIa.png)
+![](https://hackmd.io/_uploads/SJ8UIlDyT.png)
 
 - From the button bar at 
 the top of the page, click the "Test" button, and you will be taken to a page on which you should configure a test event.
 
-![](https://i.imgur.com/9pgV1zJ.png)
+![](https://hackmd.io/_uploads/ryWu8evy6.png)
 
 - In this case there is no need to fine-tune the test event that you are defining.
 - Lambda maintains the set of test events that you define for each function, so that you can reuse them.
 - Complete the definition of your test event (likely this just involves giving it a name), and you will be returned to the function designer page.
 
-![](https://i.imgur.com/LUxNWpN.png)
+![](https://hackmd.io/_uploads/BJMiLxv1p.png)
 
 - With the event that you defined selected in the pull-down menu to the right of the "Test" button, click the "Test" button.
 - You should see the following "Execution result" pane appear.
 
-![](https://i.imgur.com/Yk2kDoL.png)
+![](https://hackmd.io/_uploads/SkVaLxwyT.png)
 
 - The above execution success includes the data returned from the function, using the HTTP status code 200, to indicate everything is OK, and the body of the request containing the text that was returned by the test function's code.
 - Now, using the "breadcrumbs" in the top-left of the button bar or otherwise, return to the Lambda page and define a new function.
 - This time select "Use a blueprint".
 
-![](https://i.imgur.com/QXRe1aY.png)
+![](https://hackmd.io/_uploads/HykPOgw1a.png)
 
-- Search the "Blueprints" for "s3-get-object-python" and select that blueprint. (Click "Configure".)
+- Search the "Blueprints" for "s3-get-object-python" and select that blueprint.
 
-![](https://i.imgur.com/sxJYFij.png)
+![](https://hackmd.io/_uploads/HkzTulwka.png)
 
 - In the "Basic information" pane can can name your function.
 - Ensure that you select the AWS Academy role, or you will likely encounter missing permission errors.
 
-![](https://i.imgur.com/IDKkyaV.png)
+![](https://hackmd.io/_uploads/By3QKev1p.png)
 
 - Note that the above blueprint includes an S3 trigger. Scroll down to see the configuration that I used, as shown below.
 - You will need to specify the S3 bucket to use, and you will not be able to access `dme26-test`. You can use the instructions in [Lab 8] to create an S3 bucket again, noting that it does not need to contain any files.
 
-![](https://i.imgur.com/8uSt3DE.png)
+![](https://hackmd.io/_uploads/SypKYxP1p.png)
 
-- Scroll down further to see the function's code.
+- Scroll up to see the function's code.
 - Note that the Python function is using the boto3 library, just as we did, in [Lab 8].
 
-![](https://i.imgur.com/ddiFMGx.png)
+![](https://hackmd.io/_uploads/Byentgwya.png)
 
-- When you have read through the Python code, click "Create function" button below the listing.
+- When you have read through the Python code, click "Create function" button at the end of the web page.
 - You will reach the configuration page of your new test function, just as you did for the hello world example, shown previously.
 - Note that in this case, the S3 trigger is shown.
 
-![](https://i.imgur.com/0LKjATl.png)
+![](https://hackmd.io/_uploads/HkOyqxPJa.png)
 
 - First, let's try a test event that will fail.
 - Click "Test" to configure a new test event.
 - Create your event from the "Amazon S3 Put" template, and give your event a name.
 
-![](https://i.imgur.com/T2ljaHi.png)
+![](https://hackmd.io/_uploads/BklhXqgwJp.png)
 
 (The screenshot below is scrolled down from the screenshot shown above.)
 - Click the "Save" button to define your test event.
 
-![](https://i.imgur.com/tRPOj4t.png)
+![](https://hackmd.io/_uploads/SymLceD1a.png)
 
 - Now, back at the function configuration page, select your test event and click the "Test" button.
 
-![](https://i.imgur.com/14691Z1.png)
+![](https://hackmd.io/_uploads/BJSDcxDJp.png)
 
-- If you scroll down to the source code pane, you should see an "Execution Result" sub-panel.
+- You should see an "Execution Result" sub-panel appear.
 - Note that the stack trace indicates where the problem occurred in the code.
 - The cause is that an invalid S3 bucket was specified in the test event's template, and we did not change it.
 
-![](https://i.imgur.com/mUQAT2f.png)
+![](https://hackmd.io/_uploads/rJ7hcgD1a.png)
 
 - The test selection pull-down menu allows you to "Configure test events" to fix the bucket being referred to.
 
-![](https://i.imgur.com/TeyhwZC.png)
+![](https://hackmd.io/_uploads/ryQp5ePyp.png)
 
 - In a separate web browser tab or window, navigate to the S3 bucket that you intend to use.
 - Selecting the bucket from the S3 console.
 - Click the "Copy ARN" button, to place the specific Amazon Resource Name into the clipboard.
 
-![](https://i.imgur.com/E186QzN.png)
+![](https://hackmd.io/_uploads/rJrzieDyT.png)
 
 - In your other browser tab, where you are editing your test event, paste in your ARN as the value of the "arn" key in the test event's JSON.
 - Also change the "name" of your "bucket" to the value that you are using.
@@ -124,7 +124,7 @@ the top of the page, click the "Test" button, and you will be taken to a page on
     - You need to change the value `test/key` to an S3 key of an object that is actually in your bucket.
     - (Also, if you have no objects in your S3 bucket, you will first need to upload one.)
 
-![](https://i.imgur.com/wWaPHO8.png)
+![](https://hackmd.io/_uploads/rJcg3evy6.png)
 
 - Save your updated test event.
 
@@ -141,47 +141,47 @@ Note that we are using fields for the S3 "put" template, despite the function's 
 Recall that [Lab 8] steps through activating website hosting features such as specifying an index file (you will need to first upload such an index file to your S3 bucket).
 :::
 
-![](https://i.imgur.com/bJ4marT.png)
+![](https://hackmd.io/_uploads/r1eMnlwy6.png)
 
 - For more information, you can click on the "Monitor" tab that's just above the "Code source" panel.
 - This will display CloudWatch metrics related to the operation of your function. (Note that there is sometimes a delay between a function executing and the CloudWatch metrics updating.)
 
-![](https://i.imgur.com/Tf2sC6g.png)
+![](https://hackmd.io/_uploads/HkaVheDJ6.png)
 
 - If you instead select the "Logs" tab that's directly to the right of the Cloud Watch "Metrics" tab that is highlighted by default, you can see your "Recent invocations" list, and information about the cost of the function. (Depending on what you (or I) have clicked, you may see a different number of invocations)
 
-![](https://i.imgur.com/wauOcFI.png)
+![](https://hackmd.io/_uploads/r1zOnev16.png)
 
 - So far we have been manually testing the Lambda function.
 - An S3 "trigger" is the mechanism that reacts to S3 events.
 - To view your S3 trigger, select the "Configuration" tab of your function (to the right of the "Monitor" tab you were just using), and click on the "Triggers" left menu item.
 
-![](https://i.imgur.com/uvFDlpF.png)
+![](https://hackmd.io/_uploads/HyaohgD1a.png)
 
 - In a browser window focused on your S3 console, click the "Upload" button.
 
-![](https://i.imgur.com/HT0B3MZ.png)
+![](https://hackmd.io/_uploads/HktRhxwJT.png)
 
 - You should see a panel into which you can drag-and-drop (or otherwise) upload a file.
 - Select a non-sensitive file with a known file-type and drag-and-drop this into the upload panel.
 
-![](https://i.imgur.com/u9gtZUE.png)
+![](https://hackmd.io/_uploads/SyBP6ewkp.png)
 
 - You can then click the "Upload" button in the bottom-left.
 
-![](https://i.imgur.com/OmfiT5W.png)
+![](https://hackmd.io/_uploads/BJ8saeD1a.png)
 
 - You should be returned to the S3 overview page, and see your new object (`mascot-cosc349.jp2` in this screen-shot).
 
-![](https://i.imgur.com/Pi9PqGs.png)
+![](https://hackmd.io/_uploads/B1NTpgDy6.png)
 
 - Back in your browser window examining your function's logs, you should now see another invocation on your "Recent invocations". (Note again that CloudWatch may not update the Recent invocations immediately.)
 
-![](https://i.imgur.com/CYGGWYB.png)
+![](https://hackmd.io/_uploads/BJqW0xP1p.png)
 
 - Just underneath the "Logs" tab, there is a button labeled "View logs in CloudWatch". Click this button.
 
-![](https://i.imgur.com/jIRDsKu.png)
+![](https://hackmd.io/_uploads/ByIQCxvka.png)
 
 - You will be taken to the CloudWatch service web pages.
 - You should see some Log Streams.
