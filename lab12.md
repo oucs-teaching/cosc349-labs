@@ -1,8 +1,8 @@
 ---
 tags: cosc349
 ---
-# COSC349 Lab 12—Cloud Architecture—2022
-## Lab 12—Work on assignment 2
+# COSC349 Lab 11—Cloud Architecture—2023
+## Lab 11—Work on assignment 2
 
 This lab time has been set aside for you to work on assignment 2.
 
@@ -19,14 +19,6 @@ When Apache presents error pages, it writes additional information into its log 
 When SSHed into your Apache VM, you can show the end of the error log using `sudo tail /var/log/apache2/error.log` (this is the location where Debian and Ubuntu Linux put their Apache log files: if you're using a different variant of Linux, you should check the its documentation for details).
 
 As far as I can tell there is not an easy way to cause Apache to present this detailed information on the error pages themselves. In general this would be a very bad idea in terms of computer security, which is why I suspect that the facility is not provided.
-
-## Transfer of files
-
-When using the AWS provider in `vagrant` your local repository's files get copied over to your instances once at provisioning time. Note, however, that they get copied over as user `root`.
-
-Thus, you are likely to need to change permissions and/or Unix user and/or group, so that your web server is able to read the files that have been transferred into `/vagrant`.
-
-Lab 1's shell material covers use of relevant commands, such as `chmod` (change the permissions on a set of file), `chgrp` (change the Unix group of a set of files), and `chown` (change the Unix owner (and optionally also the group) of a set of files).
 
 ## Facilitating VMs finding out about each other's addresses
 
@@ -45,33 +37,15 @@ One approach is to do your deployment in multiple phases.
 - Phase 1: provision your VMs
 - Phase 2: accumulate information required to connect to your machines (since they've now been provisioned), then connect to each of your VMs to update this information, and run a script to complete the start up of the services your application needs.
 
-For example, I've applied this type of approach running `vagrant up --provider=aws` within a shell script on my host machine. When the `vagrant` command is completed, there is information in the local Vagrant environment about the address of each machine (that's how `vagrant ssh` knows where to connect). This information can be collected and passed to VMs in phase 2.
-
 ### Use a shared resource to coordinate configuration
 
-If you're using an approach such as `vagrant` to copy files to your VM, you can set up `.aws/credentials` to be made available, so that the provisioning script can run `aws` commands as "you".
+You can potentially set up `.aws/credentials` to be made available on your VM, so that the provisioning script can run `aws` commands as "you".
 
 You can set up a resource that all of your VMs can access, such as an S3 bucket that contains a set of objects giving the addresses of your VMs.
 
 If your VMs have access to your AWS credentials, you can use the `aws` command (or equivalent) to read and write to your S3 bucket.
 
 There will be other ways to scan for AWS resources: although I have not used the mechanism, I believe that tags can be applied to EC2 instances, and would likely be able to be queried using the `aws` command.
-
-## Permissions if using Vagrant for deployment
-
-:::info
-:bulb: Note that it is absolutely **not required** that you use Vagrant to deploy your application to the cloud.
-:::
-
-However, if you do use Vagrant to deploy your application to the cloud remember that your provisioning script will be running as `root` whereas if you `ssh` into an EC2 instance that you've provisioned, then you will be running as `ubuntu` or whatever the default user is for the operating system AMI that you're deploying.
-
-One useful approach is to run scripts as user `ubuntu` from your Vagrant provisioning scripting. The `su` command can be used to do this.
-
-Looking at `Vagrantfile`s I've used in the past for research work, I see lines such as—
-```
-su -c "echo 'run some shell script'; ./some-shell-script.sh" ubuntu
-```
-—which will run run a shell as user `ubuntu` and execute the scripting that's in quotes. Note that in this case, the shell that's run as `ubuntu` goes and runs another script, namely `./some-shell-script.sh`.
 
 ## Expiry of the AWS Academy Learner Lab sessions
 
