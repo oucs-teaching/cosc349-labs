@@ -1,7 +1,3 @@
----
-tags: cosc349
----
-# COSC349 Lab 10—Cloud Architecture—2023
 ## Lab 10—AWS Lambda (Serverless computing)
 
 [Lab 8]: /a8wHsmkVTh6-ud_vNAe2Mw
@@ -186,12 +182,12 @@ Recall that [Lab 8] steps through activating website hosting features such as sp
 - You will be taken to the CloudWatch service web pages.
 - You should see some Log Streams.
 
-![](https://i.imgur.com/ksYPGgl.png)
+![](https://hackmd.io/_uploads/rJCNAxvy6.png)
 
 - Click on the Log Stream related to the event around the time you modified your S3 bucket.
 - Within that Log Stream, you should see displayed the console output of your Lambda function.
 
-![](https://i.imgur.com/uiu3x06.png)
+![](https://hackmd.io/_uploads/SyA_Clv16.png)
 
 - In the case shown above, the content type of the uploaded file is shown as an `binary/octet-stream` is was what I had uploaded.
 
