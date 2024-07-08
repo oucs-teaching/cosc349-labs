@@ -1,12 +1,8 @@
----
-tags: cosc349
----
-# COSC349 Lab 9—Cloud Architecture—2023
 ## Lab 9—Amazon EC2 using Hashicorp Terraform
 
 [Lab 8]: /a8wHsmkVTh6-ud_vNAe2Mw
 
-This lab involves deploying virtual machines into Amazon EC2 using the Terraform tool from Hashicorp (i.e., the company that makes Vagrant).
+This lab involves deploying virtual machines into Amazon EC2 using the [Terraform tool](https://www.terraform.io) from Hashicorp (i.e., the company that makes Vagrant).
 
 :::warning
 :warning: 
@@ -15,11 +11,13 @@ Note that if you receive confusing looking error messages from Terraform, you sh
 
 ## Using Vagrant to access Terraform
 
-The Owheo CS Labs do not have the AWS command line tools or Terraform installed on them. To provide a standardised environment that should also work on your home computers, we instead work within a Vagrant VM.
+The Owheo CS Labs do not have the AWS command line tools or Terraform installed on them. To provide a standardised environment that should also work on your home computers (apart from Arm Macs, for now, sorry---soon to be fixed), we instead install and use Terraform within a Vagrant VM.
 
 
 :::danger
 :bomb: The Docker branch of the provided Vagrant repository does not yet support Apple M! CPUs. This edition will be comming soon... :crossed_fingers:
+
+However if you are willing to install Terraform under macOS and do all of the steps below on your host rather than the helper VM, you should be able to get the lab done equivalently.
 
 Note that you do not need to automate deployment of your assignment two code and configuration, although you must document how you set up your assignment, otherwise.
 :::
@@ -31,8 +29,9 @@ Note that you do not need to automate deployment of your assignment two code and
 - `vagrant ssh` into your helper VM
 - Working inside the helper VM, as for [Lab 8], you will need to have your AWS Academy API credentials set up so that Vagrant can work on your behalf. As suggested by the AWS Academy page that provides you with your credentials (that remain valid for a few hours), store the crentials at `~/.aws/credentials`.
 
-## Ensure that your `aws` command is working
+## (Optional) Check that your `aws` command is working
 
+- This lab does not require use of the `aws` command line tools, but they can be used to test (and modify) the AWS configuration files (e..g, within `~/.aws` ) that Terraform _does_ rely on.
 - Inside the helper VM, test that your `aws` command line tools are working (e.g., also testing your `credentials`).
 - In my case I ran:
 ```
@@ -96,7 +95,7 @@ chmod 700 ~/.ssh/cosc349-2023.pem
 
 ## Getting started with Terraform
 
-- Let's create an initial test of Terraform by creating a directory to contain its configuration: `mkdir /vagrant/tf-deploy; cd /vagrant/tf-deploy`
+- Let's create an initial test of Terraform within a folder checked out from the Git repository for lab 9. First, inside your VM, change into the shared folder: `cd /vagrant/tf-deploy`
 - Note that I am creating this directory within the directory shared with the VM host: this is so that I can run a handy editor on the host or edit the configuration from within the VM.
 - I then opened VSCode on my host computer pointed at the `tf-deploy` directory.
 - Create a file named `main.tf` with the content:
@@ -405,9 +404,12 @@ echo MYSQL_SERVER_IP=${aws_instance.mysql_server.private_ip} | sudo tee -a /etc/
 
 ## Use a template file to run setup shell scripting
 
-We will replace the `user_data` structure to a form that instead replaces Terraform variables within an external file. Change each of your `user_data` sections for your VMs to just be one line, as appropriate:
+We will replace the `user_data` structure within each VM to a form that instead replaces Terraform variables within an external file, rather than including the shell commands to run within `main.tf`. Your webserver can use a form such as:
 ```
 user_data = templatefile("${path.module}/build-webserver-vm.tpl", { mysql_server_ip = aws_instance.mysql_server.private_ip })
+```
+... and your database seerver can use a form such as:
+```
 user_data = templatefile("${path.module}/build-dbserver-vm.tpl", { })
 ```
 
