@@ -1,12 +1,11 @@
----
-tags: cosc349
----
-# COSC349 Lab 13—Cloud Architecture—2022
 ## Lab 13—Kubernetes and AWS orchestration with CloudFormation
 
 This purpose of this lab is to provide you with potentially interesting starting points for your future exploration of cloud technologies beyond COSC349.
 
+:::info
+:bulb: 
 The Kubernetes and CloudFormation parts of this lab are entirely independent so if you get blocked completing one part, you should be able to continue with the other.
+:::
 
 ## Kubernetes
 
@@ -119,33 +118,33 @@ http://127.0.0.1:46370/api/v1/namespaces/kubernetes-dashboard/services/http:kube
 
 - After starting VirtualBox, the VM that Vagrant started is visible:
 
-![](https://i.imgur.com/fjKveOw.png)
+![](https://hackmd.io/_uploads/HJTlLsAep.png)
 
 - ... open the "Settings" (e.g., using the toolbar) when focused on that running VM.
 
-![](https://i.imgur.com/BH05q2w.png)
+![](https://hackmd.io/_uploads/rk1fUsAl6.png)
 
 - From there you can select the "Network" tab to display the network configuration.
 
-![](https://i.imgur.com/NMmB7Hz.png)
+![](https://hackmd.io/_uploads/Hy3f8oAlp.png)
 
 - Unfold the "Advanced" controls ...
 
-![](https://i.imgur.com/hvLXTFL.png)
+![](https://hackmd.io/_uploads/H13XLjClT.png)
 
 - ... and select the "Port Forwarding" button. From which you can add appropriate forwarding rules (note that you need to substitute your specific parameter values).
 
-![](https://i.imgur.com/rCyG7zk.png)
+![](https://hackmd.io/_uploads/H1-XPjCep.png)
 
 - Remember that you need to click "OK" not only on the port forwarding configuration, but also to click "OK" on the underlying networking configuration window before port forwarding rules are applied.
 - You can then navigate in your web browser, to the address shown in the command output above, but ensure that the appropriate port number is substituted, i.e., the "Host Port" in your port forwarding rule.
 - You should see a fully-featured dashboard for your (cut-down) Kubernetes cluster.
 
-![](https://i.imgur.com/Mlv8mvS.png)
+![](https://hackmd.io/_uploads/HkuvdiCga.png)
 
 - For example, by clicking on "Nodes" in the left-hand side menu, you can see the information that the `kubectl` command provided previously:
 
-![](https://i.imgur.com/dCUnXte.png)
+![](https://hackmd.io/_uploads/r1qOOiRl6.png)
 
 :::info
 :bulb:
@@ -217,7 +216,7 @@ vagrant@ubuntu-xenial:~$ minikube service hello-node
 - However, the service itself may not be ready: you can use the commands above to list services and events to get an idea of what the application deployment is up to.
 - Eventually, you will be able to reach the test page:
 
-![](https://i.imgur.com/BXDBM5v.png)
+![](https://hackmd.io/_uploads/r1M1jsRgT.png)
 
 ### A stateless application using a deployment
 
@@ -238,11 +237,11 @@ deployment.apps/nginx-deployment created
 vagrant@ubuntu-xenial:~$ kubectl describe deployment nginx-deployment
 Name:                   nginx-deployment
 Namespace:              default
-CreationTimestamp:      Wed, 21 Sep 2022 11:45:05 +0000
+CreationTimestamp:      Sat, 07 Oct 2023 10:02:10 +0000
 Labels:                 <none>
 Annotations:            deployment.kubernetes.io/revision: 1
 Selector:               app=nginx
-Replicas:               2 desired | 2 updated | 2 total | 1 available | 1 unavailable
+Replicas:               2 desired | 2 updated | 2 total | 0 available | 2 unavailable
 StrategyType:           RollingUpdate
 MinReadySeconds:        0
 RollingUpdateStrategy:  25% max unavailable, 25% max surge
@@ -266,7 +265,7 @@ NewReplicaSet:   nginx-deployment-574b87c764 (2/2 replicas created)
 Events:
   Type    Reason             Age   From                   Message
   ----    ------             ----  ----                   -------
-  Normal  ScalingReplicaSet  15s   deployment-controller  Scaled up replica set nginx-deployment-574b87c764 to 2
+  Normal  ScalingReplicaSet  12s   deployment-controller  Scaled up replica set nginx-deployment-574b87c764 to 2
 ```
 - Note the mention of a ScalingReplicaSet. The contents of that set can be viewed using the following command, indicating that it's just a pair of replicas.
 ```
@@ -326,11 +325,11 @@ nginx-deployment-5d66cc795f-fbk9v   1/1     Running   0          27s
 - The above commands have—unsurprisingly—had significant effect in the Kubernetes dashboard.
 - For example, selecting "Workloads" on the left-side menu shows all of the deployments, pods, etc.
 
-![](https://i.imgur.com/B9FGnWN.png)
+![](https://hackmd.io/_uploads/SJJdpjCl6.png)
 
 - (The following screen-shot is just content reached by scrolling down from content shown in the preceding screen-capture.)
 
-![](https://i.imgur.com/TeXm4Ho.png)
+![](https://hackmd.io/_uploads/BJYdTjCx6.png)
 
 ### Further deployments
 
@@ -350,17 +349,20 @@ Suggested exercise:
 - We will use a template to deploy the WordPress content management system on EC2 using AWS CloudFormation, which is Amazon's cloud orchestration tool.
 - From the AWS Console ...
 
-![](https://i.imgur.com/REI7haU.png)
+![](https://hackmd.io/_uploads/HyRal30xT.png)
 
 - ... navigate to the CloudFormation console.
 
-![](https://i.imgur.com/7ZfPfgk.png)
+![](https://hackmd.io/_uploads/Bkh-ZhAxa.png)
 
 - You might instead see a page showing a list of "stacks" (possibly an empty list). The term "stack" is in the sense of a deployed software stack.
 
-![](https://i.imgur.com/0jL5Rnu.png)
+![](https://hackmd.io/_uploads/rkbbbn0e6.png)
 
 - In either case, click on "Create stack", and select "Template is ready", and "Upload a template file".
+
+![](https://hackmd.io/_uploads/r1dj-h0g6.png)
+
 - Using your host's web browser download https://raw.githubusercontent.com/awslabs/aws-cloudformation-templates/master/aws/solutions/WordPress_Single_Instance.yaml to a local file.
 - Choose that file under the "Upload a template file" selector.
 - The template file will undergo some preliminary checks, and when they are complete, you can click the "View in Designer" button.
@@ -374,82 +376,82 @@ Suggested exercise:
 In this case, if we were to run the template, WordPress wouldn't actually work, as the latest version of WordPress requires a later version of PHP than gets installed. We will use the designer to fix this, although of course could have edited the template file before uploading it to AWS CloudFormation.
 :::
 
-![](https://i.imgur.com/Qt0tMym.png)
+![](https://hackmd.io/_uploads/ryIGGnClp.png)
 
 - Navigate to around line 345, which indicates that `/var/www/html` should be created from `http://wordpress.org/latest.tar.gz`.
 
-![](https://i.imgur.com/KI7Ifse.png)
+![](https://hackmd.io/_uploads/HyuVznCxa.png)
 
 - Downgrade this URL for the latest version of WordPress to version 5.1, using the URL: `https://wordpress.org/wordpress-5.1.2.tar.gz`
 
-![](https://i.imgur.com/phuulnD.png)
+![](https://hackmd.io/_uploads/BkXLz3Cea.png)
 
 - The graphical display will note that it is out-of-sync, so feel free to click the top-right reload button.
 
-![](https://i.imgur.com/9TVPDLN.png)
+![](https://hackmd.io/_uploads/H1BPz2RgT.png)
 
 - Then select the cloud icon with an up-arrow in it, to deploy your template.
 - You will be returned to the "Create stack" page.
 - Click "Next".
 
-![](https://i.imgur.com/Bf1qGO1.png)
+![](https://hackmd.io/_uploads/SyTFG2Cgp.png)
 
 - On the "Specify stack details" page, give your Stack a name.
 - Fill out all of the other details that the template requires to be completed. Note that for parameters such as the database passwords, these are for you to control what gets deployed, so they can be any values that you will remember.
 
-![](https://i.imgur.com/rmJC82e.png)
+![](https://hackmd.io/_uploads/SkxJQnCx6.png)
 
 - Scrolling down, you will see a "Next" button, which you should click when you have filled in all of the required form fields.
 
-![](https://i.imgur.com/NNDHYhm.png)
+![](https://hackmd.io/_uploads/B1mb73CxT.png)
 
 - You will reach the "Configure stack options" page, but none of the defaults should need to be changed.
 
-![](https://i.imgur.com/N7uuxnw.png)
+![](https://hackmd.io/_uploads/HJuGQh0xT.png)
 
 - So scrolling down you will again see a "Next" button that you should click.
 
-![](https://i.imgur.com/bZPpgTn.png)
+![](https://hackmd.io/_uploads/SyHQ7hAlT.png)
 
 - You will reach the Review page for your CloudFormation Stack.
 
-![](https://i.imgur.com/4iyllsp.png)
+![](https://hackmd.io/_uploads/Hkb47hRga.png)
 
 - ... and again scrolling down, you should not need to change any of the parameters.
-- You can click the "Create stack" button.
+- You can click the "Submit" button.
 
-![](https://i.imgur.com/9f7U21D.png)
+![](https://hackmd.io/_uploads/SkJvX2Cxa.png)
 
 - This will return you to the "Stack details" page, where you can watch the deployment begin.
 
-![](https://i.imgur.com/h44BR02.png)
+![](https://hackmd.io/_uploads/Byeu7n0la.png)
 
 - After an amount of time (it might be a short time, or might be longer: first time for me was really quick, second time was... not), more events will appear, until the page announces "CREATE_COMPLETE".
 - From looking at the template, you can see that some outputs are specified.
 
-![](https://i.imgur.com/tKl5Nvm.png)
+![](https://hackmd.io/_uploads/B1dlE20lp.png)
 
-- Click on the "Outputs" tab to see the outputs that were generated. (Your Stack will need to have completed its deployment for these Outputs to be available.)
+- Click on the "Outputs" tab (off the right edge of visible tabs in the screen capture here---scroll right from the "Events" tab) to see the outputs that were generated. (Your Stack will need to have completed its deployment for these Outputs to be available.)
 
-![](https://i.imgur.com/k0WA1D2.png)
+![](https://hackmd.io/_uploads/ryzSS2Axp.png)
 
 - In particular, we see the URL of the webserver that has been provisioned and configured, as key "WebsiteURL".
 - Click on that link, and you should reach your EC2 instance's WordPress configuration page.
 
-![](https://i.imgur.com/K6LqLZV.png)
+![](https://hackmd.io/_uploads/By0UHhRga.png)
 
 - Feel free to experiment with setting up and then using WordPress.
 - When you have interacted with WordPress to your satisfaction, return to the CloudFormation page and choose "Delete" for your WordPress Stack.
 
-![](https://i.imgur.com/igWbfEJ.png)
+![](https://hackmd.io/_uploads/rybFS2Re6.png)
 
 - After you confirm your request to "Delete stack" you will be returned to the "Stack details" page, where you can watch your resources being de-provisioned.
 
-![](https://i.imgur.com/miQB5lG.png)
+![](https://hackmd.io/_uploads/SyAFS2Rxa.png)
 
 - You should ensure that the Stacks count returns to what it was before you started (1 for me, possibly 0 for you?), so that you are not being charged for services that you are not using.
 
-![](https://i.imgur.com/l3D3D6P.png)
+![](https://hackmd.io/_uploads/Sy_3B2Al6.png)
 
 :::success
 :pencil: 
