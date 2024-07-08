@@ -1,7 +1,3 @@
----
-tags: cosc349
----
-# COSC349 Lab 8—Cloud Architecture—2023
 ## Lab 8—Amazon S3 object storage
 
 This lab encourages you to become familiar with Amazon's Simple Storage System (S3)—both a very widely used public object storage system and an API for object storage emulated by many other systems.
