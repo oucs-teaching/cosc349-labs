@@ -1,8 +1,21 @@
+---
+title: Vagrant beyond lab 3...
+tags: [cosc349, lab]
+
+---
+
 [Lab 2]: /h71h3B-3Tda2XUyNyzkanA
 
 ## Lab 3—Vagrant for automating virtualisation
 
 The CS Labs' computers' installation of Vagrant has had some very recent fixes. It should now work OK, but let me know if anything seems broken, still.
+
+:::info
+:bulb: 
+This is another lab for which the most consistent experience is Intel CPUs. Apple Mac users with Arm CPUs _may_ run into difficulties, because VirtualBox (which sits beneath Vagrant) only recently began supporting Arm CPUs. But now that we (Dave and Aaron) have Arm Macs ourselves we're working to update the instructions where we can. 
+
+Even if VirtualBox fails to work, you can take a related path, if you are willing to try it, using Vagrant with Docker behind it, rather than VirtualBox. You can try the instructions at   https://altitude.otago.ac.nz/cosc412/demo-vm/-/tree/docker?ref_type=heads to the point of getting `vagrant ssh` to work, and then see what lines up and what doesn't in the exercise below. David or Aaron can provide more context as to what's going on.
+:::
 
 :::warning
 :warning: 
@@ -31,7 +44,8 @@ You can explore the [VirtualBox documentation][VBoxManage documentation] for mor
   "UDA2 net boot" {c0877216-a80b-4c75-9e5d-9956a646d06d}
   "ReactOS test" {77fb8dcb-82ae-4870-9e6b-e56f19377f6b}
   ```
-- Provide information about the host computer (my laptop, in this case)
+- Provide information about the host computer
+  - Here's my old Intel Mac laptop's information:
   ```
   $ VBoxManage list hostinfo
   Host Information:
@@ -70,6 +84,53 @@ You can explore the [VirtualBox documentation][VBoxManage documentation] for mor
   Operating system: Darwin
   Operating system version: 21.6.0
   ```
+  - Here's the equivalent for my Arm Mac:
+```
+$ VBoxManage list hostinfo
+
+  Host Information:
+
+Host time: 2025-07-27T03:06:08.866000000Z
+Processor online count: 12
+Processor count: 12
+Processor online core count: 12
+Processor core count: 12
+Processor supports HW virtualization: yes
+Processor supports PAE: no
+Processor supports long mode: yes
+Processor supports nested paging: yes
+Processor supports unrestricted guest: yes
+Processor supports nested HW virtualization: no
+Processor supports virt. vmsave/vmload: no
+Processor#0 speed: unknown
+Processor#0 description: Apple M3 Pro E (sawtooth)
+Processor#1 speed: unknown
+Processor#1 description: Apple M3 Pro E (sawtooth)
+Processor#2 speed: unknown
+Processor#2 description: Apple M3 Pro E (sawtooth)
+Processor#3 speed: unknown
+Processor#3 description: Apple M3 Pro E (sawtooth)
+Processor#4 speed: unknown
+Processor#4 description: Apple M3 Pro E (sawtooth)
+Processor#5 speed: unknown
+Processor#5 description: Apple M3 Pro E (sawtooth)
+Processor#6 speed: 450971566 MHz
+Processor#6 description: Apple M3 Pro P (everest)
+Processor#7 speed: unknown
+Processor#7 description: Apple M3 Pro P (everest)
+Processor#8 speed: unknown
+Processor#8 description: Apple M3 Pro P (everest)
+Processor#9 speed: unknown
+Processor#9 description: Apple M3 Pro P (everest)
+Processor#10 speed: unknown
+Processor#10 description: Apple M3 Pro
+Processor#11 speed: unknown
+Processor#11 description: Apple M3 Pro
+Memory size: 36864 MByte
+Memory available: 17121 MByte
+Operating system: Darwin
+Operating system version: 24.5.0
+```
 - List the NAT Networks (recall that you created such a network in order to interact with your VM back in [Lab 2]).
   ```
   $ VBoxManage natnetwork list
@@ -103,7 +164,7 @@ Vagrant does not provide a virtualisation system itself, it instead uses an exis
 
 ```bash
 $ vagrant --version
-Vagrant 2.3.7
+Vagrant 2.4.7
 ```
 
 :::info
@@ -111,17 +172,15 @@ Vagrant 2.3.7
 Vagrant and VirtualBox can sometimes fail to work together depending on their specific versions. This will usually be documented online.
 
 The exercises are tested on CS Lab computers to try to ensure that you don't run into version problems. Sometimes there may be minor differences in the output shown in the lab exercises from the versions of software that you are using, however.
-
-At the time of writing, the CS Lab computers are running the latest version of Vagrant.
 :::
 
-- If you run into problems within the CS Labs and have a computer that you can administer yourself, you can [install Vagrant][Vagrant] on it. Note, however that because Vagrant uses VirtualBox, if you're on an Arm CPU, you won't be able to use either tool reliably (this will change, but unclear when).
+- If you run into problems within the CS Labs and have a computer that you can administer yourself, you can [install Vagrant][Vagrant] on it. Note, however that because Vagrant uses VirtualBox, if you're on a Mac with an Arm CPU, you may run into difficulties with either tool (Arm support has only been recently added).
 
 [Vagrant]: https://www.vagrantup.com
 
 ## Set up from scratch a `Vagrantfile`, i.e., a Vagrant environment
 
-In a command shell (e.g., Git Bash on a CS Lab computer), create a new directory in which to store your Vagrant environment, and change into that new directory.
+In a command shell (e.g., Git Bash on a CS Lab computer), create a new directory on your `J:` drive in which to store your Vagrant environment, and change into that new directory.
 
 Now run the `vagrant init` command. Vagrant has been written to try to provide useful feedback, so please do read it, and indeed it has indicated what the `vagrant init` command actually did. (Of course the notice abut there being a new Vagrant version will probably be different in your environment.)
 
@@ -334,11 +393,17 @@ end
 
 In your `Vagrantfile` change the box specified from ``"base"`` to ``"ubuntu/focal64"``. This is on line 15 of the Vagrantfile shown here, but your line number may differ, depending on software versions.
 
+:::info
+:warning:
+On my Arm MAC I was able to start Ubuntu using the box ``"bento/ubuntu-22.04"``: the Ubuntu-provided boxes don't support Arm CPUs.
+:::
+
 You should now be able to have Vagrant set up a Ubuntu Focal 64-bit VM for you. Run the `vagrant up` command. An example interaction is shown, below.
 
 :::warning
 :warning: 
-The first time you use a Vagrant box, it needs to be downloaded (it's about 270 megabytes), and stored locally. After that time, it will not be downloaded again: any other "ubuntu/focal64" VMs that you request will reuse the box file that has already been cached.
+The first time you use a Vagrant box, it needs to be downloaded (it's about 270 megabytes (Arm image is more like 700 megabytes...), and stored locally. After that time, it will not be downloaded again: any other 
+VMs that you request that use the same box name will reuse the box file that has already been cached.
 :::
 
 ```
@@ -511,6 +576,11 @@ Note that this workflow has been useful for a number of other CS papers, includi
 Move to a directory in which you are happy to check out an example Git repository (for example, you may have a `checkouts` directory that contains all your Git working copies, or a `cosc349` directory containing files relevant to the COSC349 labs).
 
 Clone the Git repository at https://altitude.otago.ac.nz/cosc349/lab03-apache and change into the directory that is created. Note the contents of the repository—as below, you can use the `ls -a` command.
+
+:::info
+:bulb: 
+On my Arm Mac changing the box to `bento/ubuntu-22.04` before running `vagrant up` worked.
+:::
 
 ```
 $ git clone https://altitude.otago.ac.nz/cosc349/lab03-apache cosc349-lab03-apache
@@ -754,7 +824,886 @@ Since 2020 the CS lab environment seemed to require some extra tweaking: what wo
 
 Back then I pushed a change to the Git repository to fix the issue. This should mean that your `Vagrantfile` contains a line including "dmode".
 
-Now that the CS Labs are moving to Microsoft Windows, I can likely remove the lines I added, but have not done so yet...
+Now that the CS Labs have moved to Microsoft Windows, I can likely remove the lines I added, but have not done so yet...
+
+In any case, if I ever need to make further changes to the repository you can always run `git pull` to update your clone of the repository.
+:::
+
+Now open in your web browser http://127.0.0.1:8080/ and you should see a test page. The HTML for this test page is contained within the `www` directory of the Git repository that you cloned. Note that you have not needed to use `vagrant ssh` to set anything up—all the functionality required was set up by the shell provisioner in the `Vagrantfile`.
+
+:::success
+:pencil: 
+Exercise---update files that your VM's web browser can serve to your website: Update the "???" on that page to something more personal, reloading the web-page to check that you changes have taken effect. Try to update the page using both an editor on your host system, and also using an editor such as `nano` within the VM. Run the `git status` command on your host—the changes that you have made are able to be committed back to the repository (although in this case you do not have direct write access to that Git repository).
+
+Recall that when you first `vagrant ssh` into your VM, you will be in the `/home/vagrant` directory. As [described above](#Synchronised-folders), the files shared between macOS and your VM are instead under the similar-looking but entirely different `/vagrant` directory.
+:::
+
+:::success
+:pencil: 
+Exercise---test some shell commands on your VM and then "bake" these commands into your provisioning: Modify the provisioning shell script in your `Vagrantfile` to fetch some content from the Internet *at the time that the VM is deployed*, and change a local web page to reflect this content. 
+
+For example, you can use a shell command like `date > my-file.txt` which will execute the `date` command and write the output to the file `my-file.txt`. Or a more complex operation is to use `wget` to retrieve a file from the web, for example `wget 'https://www.otago.ac.nz/_assets/_gfx/logo@2x.png'` will download a file `logo@2x.png` of the University of Otago crest (... an exercise which by next year should also include the new University of Otago graphics) into the working directory at the time you ran `wget`.
+
+(By default when you view http://127.0.0.1:8080/ in your host computer's web browser, your VM will retrieve the `index.html` file from `/vagrant/www`. You can add a filename to the end of the URL, e.g., http://127.0.0.1:8080/my-file.txt will retrieve `/vagrant/www/my-file.txt` and show it as plain text in your web browser.)
+
+One approach to tweaking a provisioning script is to manually run commands from a terminal on the VM (via `vagrant ssh`) to get to the point you want to reach, and then to factor those commands into the provisioning script within the `Vagrantfile`, as described in the following subsection. You are likely to need to `vagrant destroy` your machine and then `vagrant up` it again in order to test your provisioning script fully.
+:::
+
+:::success
+:pencil: 
+Exercise: Create your own Git repository, pushed to a Git repository server, that contains a Vagrant file that contains a shell provisioning step that you have configured. Try to clone your Git repository into a new working directory, and test that you can still `vagrant up` and that `vagrant ssh` reaches a different VM from the VM `vagrant ssh` reaches when run from the Git working directory from which you `git push`ed your repository.
+:::
+
+## Cleaning up
+
+### Cleaning up running Vagrant VMs
+
+The command `vagrant global-status` does not need to be run in a directory "below" or "at" the level of a `Vagrantfile`. It will list all of the VMs that Vagrant knows is still running. You can change into the directory listed in the command's output and execute `vagrant destroy` if you want to remove the VM. It is also possible to destroy named VMs---look up the details in the [Vagrant documentation](https://www.vagrantup.com/docs/).
+
+### Cleaning up box files
+
+As noted above, Vagrant will cache box files. If you need to reclaim storage space, you can run subcommands of `vagrant box` to list and remove cached box files, as [described in the Vagrant documentation](https://www.vagrantup.com/docs/cli/box.html)
+
+# Vagrant beyond lab 3...
+
+## Multiple VMs within one Vagrantfile
+
+An useful capability of Vagrant is to be able to manage multiple VMs within a single `Vagrantfile`. This type of use of Vagrant is likely to be useful for, say, COSC349 assignment work, but I intend to document it on a different page from these lab 3 exercises.
+
+In the meantime, though, you can interact with the repository that I have set up https://altitude.otago.ac.nz/cosc349/vagrant-multivm that shows a webserver and a database server interacting.
+
+:::warning
+:warning: 
+When using this repository in the CS Labs running macOS, the `synced_folder` line in the `Vagrantfile` needed to set default permissions for files and directories (`fmode` and `dmode`). The repository has been updated to contain this option, since it seems not to break non-CS Lab environments (even if it is not necessary for them).
+:::
+
+## Advice on provisioning scripts
+
+It may be difficult to convert your provisioning steps into a scripted version in one transition. Instead you can try to move your manual shell commands that set up your VM as desired into the provisioning script progressively.
+
+It is very important to check that you have not broken the functionality of automatic provisioning if you modify your scripts at all. However leaving your computer to re-run a clean checkout of the containing repository and building of your Vagrant VM should not require your attention before provisioning is completed. 
+
+After a development session I typically `git clone` and `vagrant up` in a terminal window that I hide while my attention is elsewhere. I periodically check back to see whether the Vagrant provisioning is complete, and then do any application testing required to be sure that I have a clean build process that creates a working application (e.g., that I haven't just broken something).[Lab 2]: /h71h3B-3Tda2XUyNyzkanA
+
+## Lab 3—Vagrant for automating virtualisation
+
+The CS Labs' computers' installation of Vagrant has had some very recent fixes. It should now work OK, but let me know if anything seems broken, still.
+
+:::info
+:bulb: 
+This is another lab for which the most consistent experience is Intel CPUs. Apple Mac users with Arm CPUs _may_ run into difficulties, because VirtualBox (which sits beneath Vagrant) only recently began supporting Arm CPUs. But now that we (Dave and Aaron) have Arm Macs ourselves we're working to update the instructions where we can. 
+
+Even if VirtualBox fails to work, you can take a related path, if you are willing to try it, using Vagrant with Docker behind it, rather than VirtualBox. You can try the instructions at   https://altitude.otago.ac.nz/cosc412/demo-vm/-/tree/docker?ref_type=heads to the point of getting `vagrant ssh` to work, and then see what lines up and what doesn't in the exercise below. David or Aaron can provide more context as to what's going on.
+:::
+
+:::warning
+:warning: 
+If you are working on the CS Lab computers, my experience was that some `vagrant` commands did not work when I ran them within the old Windows command line (`cmd.exe`). They did work within Git Bash, however, so I'd suggest using that.
+:::
+
+### Lab objectives
+
+1. Understand that VirtualBox operations can be automated using its command line tools (e.g., `VBoxManage`)
+2. Learn how to use a software tool named "Vagrant" to automate creation of virtual machines
+3. Configure provisioning of virtual machines using Vagrant, i.e., running Unix shell commands on the virtual machine after it is created, to get it ready for its intended use.
+
+## VirtualBox has a command line interface
+
+In the [previous lab exercise][Lab 2] we controlled VirtualBox using its GUI. However VirtualBox has an extremely rich command line interface, too.
+
+You can explore the [VirtualBox documentation][VBoxManage documentation] for more details, but some exploratory examples are shown as follows—although note that the real output has been filtered to make it more readable.
+
+- List the running VMs (none, at the time asked)
+  ```
+  $ VBoxManage list runningvms
+  ```
+- List the VMs defined, whether or not they are currently running. The right-hand column contains unique identifiers for each VM instance (yours should be different from mine).
+  ```
+  $ VBoxManage list vms
+  "UDA2 net boot" {c0877216-a80b-4c75-9e5d-9956a646d06d}
+  "ReactOS test" {77fb8dcb-82ae-4870-9e6b-e56f19377f6b}
+  ```
+- Provide information about the host computer
+  - Here's my old Intel Mac laptop's information:
+  ```
+  $ VBoxManage list hostinfo
+  Host Information:
+  
+    Host Information:
+  
+  Host time: 2023-07-25T09:01:06.330000000Z
+  Processor online count: 8
+  Processor count: 8
+  Processor online core count: 4
+  Processor core count: 4
+  Processor supports HW virtualization: yes
+  Processor supports PAE: yes
+  Processor supports long mode: yes
+  Processor supports nested paging: yes
+  Processor supports unrestricted guest: yes
+  Processor supports nested HW virtualization: no
+  Processor#0 speed: 2600 MHz
+  Processor#0 description: Intel(R) Core(TM) i7-6700HQ CPU @ 2.60GHz
+  Processor#1 speed: 2600 MHz
+  Processor#1 description: Intel(R) Core(TM) i7-6700HQ CPU @ 2.60GHz
+  Processor#2 speed: 2600 MHz
+  Processor#2 description: Intel(R) Core(TM) i7-6700HQ CPU @ 2.60GHz
+  Processor#3 speed: 2600 MHz
+  Processor#3 description: Intel(R) Core(TM) i7-6700HQ CPU @ 2.60GHz
+  Processor#4 speed: 2600 MHz
+  Processor#4 description: Intel(R) Core(TM) i7-6700HQ CPU @ 2.60GHz
+  Processor#5 speed: 2600 MHz
+  Processor#5 description: Intel(R) Core(TM) i7-6700HQ CPU @ 2.60GHz
+  Processor#6 speed: 2600 MHz
+  Processor#6 description: Intel(R) Core(TM) i7-6700HQ CPU @ 2.60GHz
+  Processor#7 speed: 2600 MHz
+  Processor#7 description: Intel(R) Core(TM) i7-6700HQ CPU @ 2.60GHz
+  Memory size: 16384 MByte
+  Memory available: 6337 MByte
+  Operating system: Darwin
+  Operating system version: 21.6.0
+  ```
+  - Here's the equivalent for my Arm Mac:
+```
+$ VBoxManage list hostinfo
+
+  Host Information:
+
+Host time: 2025-07-27T03:06:08.866000000Z
+Processor online count: 12
+Processor count: 12
+Processor online core count: 12
+Processor core count: 12
+Processor supports HW virtualization: yes
+Processor supports PAE: no
+Processor supports long mode: yes
+Processor supports nested paging: yes
+Processor supports unrestricted guest: yes
+Processor supports nested HW virtualization: no
+Processor supports virt. vmsave/vmload: no
+Processor#0 speed: unknown
+Processor#0 description: Apple M3 Pro E (sawtooth)
+Processor#1 speed: unknown
+Processor#1 description: Apple M3 Pro E (sawtooth)
+Processor#2 speed: unknown
+Processor#2 description: Apple M3 Pro E (sawtooth)
+Processor#3 speed: unknown
+Processor#3 description: Apple M3 Pro E (sawtooth)
+Processor#4 speed: unknown
+Processor#4 description: Apple M3 Pro E (sawtooth)
+Processor#5 speed: unknown
+Processor#5 description: Apple M3 Pro E (sawtooth)
+Processor#6 speed: 450971566 MHz
+Processor#6 description: Apple M3 Pro P (everest)
+Processor#7 speed: unknown
+Processor#7 description: Apple M3 Pro P (everest)
+Processor#8 speed: unknown
+Processor#8 description: Apple M3 Pro P (everest)
+Processor#9 speed: unknown
+Processor#9 description: Apple M3 Pro P (everest)
+Processor#10 speed: unknown
+Processor#10 description: Apple M3 Pro
+Processor#11 speed: unknown
+Processor#11 description: Apple M3 Pro
+Memory size: 36864 MByte
+Memory available: 17121 MByte
+Operating system: Darwin
+Operating system version: 24.5.0
+```
+- List the NAT Networks (recall that you created such a network in order to interact with your VM back in [Lab 2]).
+  ```
+  $ VBoxManage natnetwork list
+  NAT Networks:
+  
+  Name:         NatNetwork
+  Network:      10.0.2.0/24
+  Gateway:      10.0.2.1
+  DHCP Server:  Yes
+  IPv6:         No
+  IPv6 Prefix:  fd17:625c:f037:2::/64
+  IPv6 Default: No
+  Enabled:      Yes
+  
+  1 network found
+  ```
+
+If you explore the `VBoxManage` command's [documentation][VBoxManage documentation], you will usually find ways to achieve whatever you might have done through the GUI. Indeed there are a number of functions that are only easily available through the command line interface.
+
+[VBoxManage documentation]: https://www.virtualbox.org/manual/ch08.html
+
+## Motivation for the Vagrant tool
+
+[Vagrant] is a developer tool that allows you to conveniently interact with "headless" VMs, i.e., VMs that do not rely on you needing to see anything displayed on the "monitor" connected to their "graphics card". (It actually does far more than just support interacting with headless VMs, but we'll get on to that later...)
+
+Vagrant does not provide a virtualisation system itself, it instead uses an existing virtualisation system (or will explain that it can't run because it can't find a virtualisation system to use). The most common setup has Vagrant controlling headless VirtualBox VMs. Some of Vagrant's more common use patterns appear as a convenience layer over the VirtualBox command line interface.
+
+## Ensure that Vagrant is working ##
+
+- Check that Vagrant is installed. You can do so by running the following command from a terminal (don't worry that your version may not match mine here):
+
+```bash
+$ vagrant --version
+Vagrant 2.4.7
+```
+
+:::info
+:eyes: 
+Vagrant and VirtualBox can sometimes fail to work together depending on their specific versions. This will usually be documented online.
+
+The exercises are tested on CS Lab computers to try to ensure that you don't run into version problems. Sometimes there may be minor differences in the output shown in the lab exercises from the versions of software that you are using, however.
+:::
+
+- If you run into problems within the CS Labs and have a computer that you can administer yourself, you can [install Vagrant][Vagrant] on it. Note, however that because Vagrant uses VirtualBox, if you're on a Mac with an Arm CPU, you may run into difficulties with either tool (Arm support has only been recently added).
+
+[Vagrant]: https://www.vagrantup.com
+
+## Set up from scratch a `Vagrantfile`, i.e., a Vagrant environment
+
+In a command shell (e.g., Git Bash on a CS Lab computer), create a new directory on your `J:` drive in which to store your Vagrant environment, and change into that new directory.
+
+Now run the `vagrant init` command. Vagrant has been written to try to provide useful feedback, so please do read it, and indeed it has indicated what the `vagrant init` command actually did. (Of course the notice abut there being a new Vagrant version will probably be different in your environment.)
+
+```
+$ vagrant init
+A `Vagrantfile` has been placed in this directory. You are now
+ready to `vagrant up` your first virtual environment! Please read
+the comments in the Vagrantfile as well as documentation on
+`vagrantup.com` for more information on using Vagrant.
+```
+
+Let's list our working directory with `ls -a` to see hidden files too—
+
+```
+$ ls -a
+.           ..          Vagrantfile
+```
+
+—and indeed we see no change other than the creation of the Vagrantfile.
+
+### The purpose of a `Vagrantfile`
+
+A `Vagrantfile` is intended to sit at the top-level directory of a project that software developers, such as yourselves, are working on. It seems likely that the name is analogous to a `Makefile`, which also (often) sits at the top-level of a project, and specifies how to build the software that makes up that project.
+
+A very common and convenient working model is that the `Vagrantfile` is contained in the top-level of a Git repository. It is likely that this way of working will be useful for your first COSC349 assignment.
+
+The context of many `vagrant` command invocations is determined by Vagrant searching the current working directory and each parent directory in turn until it first finds a `Vagrantfile`. This means that the Vagrant commands are run in the context of a particular project. If Vagrant can't find a `Vagrantfile`, the tool with present an error message.
+
+The `Vagrantfile` specifies the configuration, initial (virtual) hard-disk content (a so-called Vagrant "box"), and scripting to set up one or more VMs that are relevant to a project. 
+
+As noted above, most common `vagrant` command invocations determine their context from the current working directory (or its parent directories, until a `Vagrantfile` is found), and thus you can easily check out two copies of a project into different directories, e.g., a stable version and an unstable one that you are working on, and the same `vagrant` command invocation will refer to independent instances of the VMs for that project.
+
+## A tour of Vagrant's features via the default `Vagrantfile`
+
+We will explore a number of Vagrant's key features and concepts by working through the default `Vagrantfile`.
+
+Although you can often treat a `Vagrantfile` just as a static configuration file, it's in fact valid code in the [Ruby] programming language. This can be used to positive effect (e.g., easy ability to use expressions, conditionals and loops in your configurations), although there is a risk that complex code in your `Vagrantfile` may make it very difficult for others to understand. (On one occasion I created a `Vagrantfile` so complex in its use of Ruby features that I subsequently found it extremely difficult to understand how it worked—so try not to do that!)
+
+[Ruby]: https://www.ruby-lang.org/en/
+
+It turns out that the default `Vagrantfile` is almost entirely comments aimed at helping you orient yourself. Some additional context will be provided, below.
+
+These following header lines tell editors that the file is Ruby source code (editors would typically use the extension of the filename to determine whether a source file is Ruby).
+
+```ruby=
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+```
+
+The following code can be considered immutable magic... along with a helpful URL and comment or two.
+
+```ruby=+
+# All Vagrant configuration is done below. The "2" in Vagrant.configure
+# configures the configuration version (we support older styles for
+# backwards compatibility). Please don't change it unless you know what
+# you're doing.
+Vagrant.configure("2") do |config|
+  # The most common configuration options are documented and commented below.
+  # For a complete reference, please see the online documentation at
+  # https://docs.vagrantup.com.
+
+```
+### Vagrant "box" files
+
+Vagrant uses its "box" files as the starting point for a VM's storage. Essentially Vagrant boxes are virtual hard disk files, but with some important considerations:
+- boxes are made conveniently available for sharing at the https://app.vagrantup.com/boxes/search cloud service, and
+- box files—certainly the official ones—are likely to have been carefully cut down in size, just to contain what's necessary to run a Vagrant VM. For example, the Vagrant box for Ubuntu 20.04 leaves out the parts of the distribution that support graphics, as Vagrant VMs are intended only to be interacted with using a command line.
+:::info
+:bulb: 
+Note that Vagrant boxes not supporting graphical output devices is a pragmatic limitation rather than a technical one: it is usually technically possible to start with a box that doesn't support graphics and then install all the files necessary to support graphics... but to do so would feel (pragmatically) like using the wrong tool for the job... (e.g., perhaps just use VirtualBox's GUI?)
+::: 
+
+One key, required configuration parameter is the Vagrant "box" to use. It is likely that you will change the box to something other than `base`, as shown in the default `Vagrantfile`. For general purpose development, Ubuntu Linux boxes are popular and useful.
+
+```ruby=+
+  # Every Vagrant development environment requires a box. You can search for
+  # boxes at https://vagrantcloud.com/search.
+  config.vm.box = "base"
+
+  # Disable automatic box update checking. If you disable this, then
+  # boxes will only be checked for updates when the user runs
+  # `vagrant box outdated`. This is not recommended.
+  # config.vm.box_check_update = false
+
+```
+
+### Vagrant will configure network port forwarding
+
+Another important feature that Vagrant expects to configure for your VMs is network port forwarding. In general VMs will be configured with a network that uses NAT (see [Lab 2]), since this provides an easy way for the VMs to be able to pull data from the internet.
+
+However in NAT modes of networking, port forwarding is required to allow the host machine (or computers elsewhere on the Internet) to connect to servers running on the VM. We will explore this further, below.
+
+Note that all of the suggested parameters are actually commented out, here.
+
+```ruby=+
+  # Create a forwarded port mapping which allows access to a specific port
+  # within the machine from a port on the host machine. In the example below,
+  # accessing "localhost:8080" will access port 80 on the guest machine.
+  # NOTE: This will enable public access to the opened port
+  # config.vm.network "forwarded_port", guest: 80, host: 8080
+
+  # Create a forwarded port mapping which allows access to a specific port
+  # within the machine from a port on the host machine and only allow access
+  # via 127.0.0.1 to disable public access
+  # config.vm.network "forwarded_port", guest: 80, host: 8080, host_ip: "127.0.0.1"
+
+```
+
+### Vagrant can define virtual networks that you need
+
+As noted above, Vagrant VMs usually use NAT to reach the Internet. Vagrant can configure additional private or public networks for your VMs to use—this is particularly useful if your `Vagrantfile` creates multiple VMs, and those VMs should be able to communicate with each other, e.g., on a private network, in addition to how they connect to the outside world.
+
+:::warning
+:warning: 
+Note that in the CS Labs, you should not create `public_networks`. This is for the same reasons given in the [Lab 2] regarding not creating VirtualBox "bridged" network adapters.
+:::
+
+```ruby=+
+  # Create a private network, which allows host-only access to the machine
+  # using a specific IP.
+  # config.vm.network "private_network", ip: "192.168.33.10"
+
+  # Create a public network, which generally matched to bridged network.
+  # Bridged networks make the machine appear as another physical device on
+  # your network.
+  # config.vm.network "public_network"
+
+```
+
+### Synchronised folders
+
+Vagrant supports a really useful developer feature: the directory containing the `Vagrantfile` is normally set up as a shared folder between the host, and the guest VM, where it is set up to appear in the filesystem under the `/vagrant` subdirectory.
+
+We will explore this feature below. The configuration parameters here, that are commented out, relate to creating extra shared folders, in addition to the one that appears at `/vagrant`.
+
+```ruby=+
+  # Share an additional folder to the guest VM. The first argument is
+  # the path on the host to the actual folder. The second argument is
+  # the path on the guest to mount the folder. And the optional third
+  # argument is a set of non-required options.
+  # config.vm.synced_folder "../data", "/vagrant_data"
+
+  # Disable the default share of the current code directory. Doing this
+  # provides improved isolation between the vagrant box and your host
+  # by making sure your Vagrantfile isn't accessable to the vagrant box.
+  # If you use this you may want to enable additional shared subfolders as
+  # shown above.
+  # config.vm.synced_folder ".", "/vagrant", disabled: true
+
+```
+
+### Provider-specific parameters
+
+As mentioned above, Vagrant doesn't provide a virtualisation engine itself. It instead uses what it terms to be a "provider". The default provider is VirtualBox.
+
+Vagrant is intended to allow you to change provider and still do useful work for you, e.g., you should be able to set up your environment, and then change the provider from VirtualBox to VMware, or change to a provider that deploys directly to cloud services.
+
+Nonetheless, it can be useful to include configuration parameters that are specific for a given virtualisation provider. The VirtualBox-specific parameters shown here allow you to turn on display of the "monitor" (i.e., virtual display device) of the VirtualBox VM, and/or to change the memory allocated (although in this case you would probably first need to first look up in the Vagrant documentation what units that "1024" number is using!).
+
+```ruby=+
+  # Provider-specific configuration so you can fine-tune various
+  # backing providers for Vagrant. These expose provider-specific options.
+  # Example for VirtualBox:
+  #
+  # config.vm.provider "virtualbox" do |vb|
+  #   # Display the VirtualBox GUI when booting the machine
+  #   vb.gui = true
+  #
+  #   # Customize the amount of memory on the VM:
+  #   vb.memory = "1024"
+  # end
+  #
+  # View the documentation for the provider you are using for more
+  # information on available options.
+
+```
+
+### VM provisioning
+
+Another key feature of Vagrant is its extensive support for integration with provisioning systems. These systems configure computers (i.e., the VMs that Vagrant has created, in our case here) that are running to match a particular specification.
+
+:::info
+:thought_balloon: 
+As a specific example of a provisioning system, CFEngine used to be used in the CS Labs to install software, and generally check that the machines are running as expected.
+:::
+
+The simplest provisioning approach is to run a shell script as soon as the VM has been created and has booted. The commented-out lines of shell script here (74 and 75) would install the Apache Web Server (version 2) on a Linux system that uses the `apt` package management system, such as Debian or Ubuntu.
+
+The point of provisioning is that you automate steps you'd otherwise have to repeat each time you set up a new instance of a particular design of VM you want to use. A particular point of use is during collaborative development: instead of providing written instructions to your teammates as to how to set up a matching VM environment to yours, you can automate all the setup within the provisioning sections.
+
+A good way of checking that your provisioner is functioning as intended and that your scripting is complete is to create another working directory, `git clone` (or otherwise copy over) the content of your repository, and try deploying fresh VMs temporarily. The behaviour of the fresh, temporary VMs and those associated with your working copy should match.
+
+:::info
+:bulb: 
+Note that configuring provisioning scripts can take a significant amount of time: many commands may not work in precisely the same way in a provisioning script as they do when you run them manually on the command-line. Nonetheless, the effort expended typically pays off rapidly, when you need to share or rebuild the systems that you have provisioned.
+:::
+
+```ruby=+
+  # Enable provisioning with a shell script. Additional provisioners such as
+  # Puppet, Chef, Ansible, Salt, and Docker are also available. Please see the
+  # documentation for more information about their specific syntax and use.
+  # config.vm.provision "shell", inline: <<-SHELL
+  #   apt-get update
+  #   apt-get install -y apache2
+  # SHELL
+end
+```
+## Let's create a Vagrant VM
+
+In your `Vagrantfile` change the box specified from ``"base"`` to ``"ubuntu/focal64"``. This is on line 15 of the Vagrantfile shown here, but your line number may differ, depending on software versions.
+
+:::info
+:warning:
+On my Arm MAC I was able to start Ubuntu using the box ``"bento/ubuntu-22.04"``: the Ubuntu-provided boxes don't support Arm CPUs.
+:::
+
+You should now be able to have Vagrant set up a Ubuntu Focal 64-bit VM for you. Run the `vagrant up` command. An example interaction is shown, below.
+
+:::warning
+:warning: 
+The first time you use a Vagrant box, it needs to be downloaded (it's about 270 megabytes (Arm image is more like 700 megabytes...), and stored locally. After that time, it will not be downloaded again: any other 
+VMs that you request that use the same box name will reuse the box file that has already been cached.
+:::
+
+```
+$ vagrant up
+Bringing machine 'default' up with 'virtualbox' provider...
+==> default: Box 'ubuntu/focal64' could not be found. Attempting to find and install...
+    default: Box Provider: virtualbox
+    default: Box Version: >= 0
+==> default: Loading metadata for box 'ubuntu/focal64'
+    default: URL: https://vagrantcloud.com/ubuntu/focal64
+==> default: Adding box 'ubuntu/focal64' (v20230719.0.0) for provider: virtualbox
+    default: Downloading: https://vagrantcloud.com/ubuntu/boxes/focal64/versions/20230719.0.0/providers/virtualbox.box
+Download redirected to host: cloud-images.ubuntu.com
+==> default: Successfully added box 'ubuntu/focal64' (v20230719.0.0) for 'virtualbox'!
+```
+
+At this point the Vagrant box for `ubuntu/focal64` has been cached, so the output below relates to creating your specific VM. Hopefully you can get the general gist of what is being done from the output below. You do not need to understand all of the output that is produced in order to use the VM you've requested.
+
+:::info
+:eyes: 
+Some of the output shown here will not match exactly what you see, but the general shape should match.
+:::
+
+```
+==> default: Importing base box 'ubuntu/focal64'...
+==> default: Matching MAC address for NAT networking...
+==> default: Checking if box 'ubuntu/focal64' version '20230719.0.0' is up to date...
+==> default: Setting the name of the VM: test-vagrant_default_1690278387153_76923
+==> default: Clearing any previously set network interfaces...
+==> default: Preparing network interfaces based on configuration...
+    default: Adapter 1: nat
+==> default: Forwarding ports...
+    default: 22 (guest) => 2222 (host) (adapter 1)
+==> default: Running 'pre-boot' VM customizations...
+==> default: Booting VM...
+==> default: Waiting for machine to boot. This may take a few minutes...
+    default: SSH address: 127.0.0.1:2222
+    default: SSH username: vagrant
+    default: SSH auth method: private key
+    default:
+    default: Vagrant insecure key detected. Vagrant will automatically replace
+    default: this with a newly generated keypair for better security.
+    default:
+    default: Inserting generated public key within guest...
+    default: Removing insecure key from the guest if it's present...
+    default: Key inserted! Disconnecting and reconnecting using new SSH key...
+==> default: Machine booted and ready!
+==> default: Checking for guest additions in VM...
+    default: The guest additions on this VM do not match the installed version of
+    default: VirtualBox! In most cases this is fine, but in rare cases it can
+    default: prevent things such as shared folders from working properly. If you see
+    default: shared folder errors, please make sure the guest additions within the
+    default: virtual machine match the version of VirtualBox you have installed on
+    default: your host and reload your VM.
+    default:
+    default: Guest Additions Version: 6.1.38
+    default: VirtualBox Version: 7.0
+==> default: Mounting shared folders...
+    default: /vagrant => /Users/dme26/tmp/nospot/test-vagrant
+```
+
+After the `vagrant up` command completes you are returned to your shell, and nothing obvious seems to have happened. That's because the VirtualBox VM is "headless": it is running on your computer, but it has no (emulated) monitor attached to it, so you see no obvious evidence that it is running.
+
+If you run the VirtualBox command to list running VMs, you should see the above-mentioned VM in your list:
+
+```
+$ VBoxManage list runningvms
+"test-vagrant_default_1690278387153_76923" {c00401c1-9742-4dec-9131-f35b20009eb9}
+```
+Note also that if you start the main VirtualBox application, you will also see Vagrant's VMs displayed there. 
+
+Alternatively you can ask Vagrant about the status of the VM associated with the current directory (which contains a `Vagrantfile`, so Vagrant can determine the context).
+
+```
+$ vagrant status
+Current machine states:
+
+default                   running (virtualbox)
+
+The VM is running. To stop this VM, you can run `vagrant halt` to
+shut it down forcefully, or you can run `vagrant suspend` to simply
+suspend the virtual machine. In either case, to restart it again,
+simply run `vagrant up`.
+```
+
+To interact with a Unix shell on your new VM, run the `vagrant ssh` command. An example interaction is shown, but note that there is now a mix of macOS / Git Bash shell interaction and interaction with your new VM.
+
+```
+$ vagrant ssh
+Welcome to Ubuntu 20.04.6 LTS (GNU/Linux 5.4.0-153-generic x86_64)
+
+ * Documentation:  https://help.ubuntu.com
+ * Management:     https://landscape.canonical.com
+ * Support:        https://ubuntu.com/advantage
+
+  System information as of Tue Jul 25 09:49:32 UTC 2023
+
+  System load:  0.13              Processes:               121
+  Usage of /:   3.7% of 38.70GB   Users logged in:         0
+  Memory usage: 21%               IPv4 address for enp0s3: 10.0.2.15
+  Swap usage:   0%
+
+
+Expanded Security Maintenance for Applications is not enabled.
+
+0 updates can be applied immediately.
+
+Enable ESM Apps to receive additional future security updates.
+See https://ubuntu.com/esm or run: sudo pro status
+
+New release '22.04.2 LTS' available.
+Run 'do-release-upgrade' to upgrade to it.
+
+
+vagrant@ubuntu-focal:~$ uname -a
+Linux ubuntu-focal 5.4.0-153-generic #170-Ubuntu SMP Fri Jun 16 13:43:31 UTC 2023 x86_64 x86_64 x86_64 GNU/Linux
+vagrant@ubuntu-focal:~$ whaomi
+
+Command 'whaomi' not found, did you mean:
+
+  command 'whoami' from deb coreutils (8.30-3ubuntu2)
+
+Try: apt install <deb name>
+
+vagrant@ubuntu-focal:~$ ls /vagrant
+Vagrantfile
+vagrant@ubuntu-focal:~$ echo "Hello from Ubuntu!" >/vagrant/new-file.txt
+vagrant@ubuntu-focal:~$ logout
+Connection to 127.0.0.1 closed.
+$ uname -a
+Darwin Laptopofdme112 21.6.0 Darwin Kernel Version 21.6.0: Thu Jun  8 23:57:12 PDT 2023; root:xnu-8020.240.18.701.6~1/RELEASE_X86_64 x86_64
+$ cat new-file.txt 
+Hello from Ubuntu!
+```
+
+Note that we created `new-file.txt` within the VM, and were able to read it from the host (macOS in my case). This is due to the shared folder that Vagrant gets VirtualBox to create, sharing between the host (macOS / Windows / Linux / etc.) file system, and the guest (Linux) file system.
+
+:::success
+:pencil: 
+Exercise: change the file on your host and ensure that you can indeed see the changes reflected within your VM.
+:::
+
+:::info
+:bulb: 
+In the days before the Windows Subsystem for Linux (WSL), the above type of Vagrant-powered interaction with Ubuntu Linux was a handy way to get access to Unix commands from Windows hosts.
+:::
+
+While Vagrant has hopefully already shown itself to be useful, it is typical to manage `Vagrantfiles`—and thus Vagrant environments—within Git repositories. We will explore doing so in the next section.
+
+We are done with our VM for the moment, so let's remove it using the `vagrant destroy` command.
+
+```
+$ vagrant destroy
+    default: Are you sure you want to destroy the 'default' VM? [y/N] y
+==> default: Forcing shutdown of VM...
+==> default: Destroying VM and associated drives...
+```
+
+We will not reuse the working directory that you created, so feel free to delete it now.
+
+## Deploy a Git repository containing an existing `Vagrantfile`
+
+A common development workflow is to place `Vagrantfile`s within Git repositories. The working directory, and thus Git working copy will be accessible both from the host—where you `git clone` it—and also from the guest (VM)—via `/vagrant`. Thus you can use both host and guest tools on the repository.
+
+:::info
+:bulb: 
+Note that this workflow has been useful for a number of other CS papers, including COSC345, COSC312, COSC412, etc.
+:::
+
+Move to a directory in which you are happy to check out an example Git repository (for example, you may have a `checkouts` directory that contains all your Git working copies, or a `cosc349` directory containing files relevant to the COSC349 labs).
+
+Clone the Git repository at https://altitude.otago.ac.nz/cosc349/lab03-apache and change into the directory that is created. Note the contents of the repository—as below, you can use the `ls -a` command.
+
+:::info
+:bulb: 
+On my Arm Mac changing the box to `bento/ubuntu-22.04` before running `vagrant up` worked.
+:::
+
+```
+$ git clone https://altitude.otago.ac.nz/cosc349/lab03-apache cosc349-lab03-apache
+Cloning into 'cosc349-lab03-apache'...
+warning: redirecting to https://altitude.otago.ac.nz/cosc349/lab03-apache.git/
+remote: Enumerating objects: 24, done.
+remote: Total 24 (delta 0), reused 0 (delta 0), pack-reused 24
+Receiving objects: 100% (24/24), 4.30 KiB | 880.00 KiB/s, done.
+Resolving deltas: 100% (7/7), done.
+$ cd cosc349-lab03-apache 
+$ ls -a
+.                 .git              Vagrantfile       www
+..                .gitignore        test-website.conf
+```
+
+Since a `Vagrantfile` is present, you can create the specified VM using `vagrant up`.
+
+:::success
+:pencil: 
+Exercise: examine the `Vagrantfile` to see if you can determine where the differences are from the default `Vagrantfile` created by the `vagrant init` command, and the purpose of these changes.
+:::
+
+```
+$ vagrant up
+Bringing machine 'default' up with 'virtualbox' provider...
+==> default: Importing base box 'ubuntu/focal64'...
+==> default: Matching MAC address for NAT networking...
+==> default: Checking if box 'ubuntu/focal64' version '20230719.0.0' is up to date...
+==> default: Setting the name of the VM: cosc349-lab03-apache_default_1690278946483_82287
+==> default: Clearing any previously set network interfaces...
+==> default: Preparing network interfaces based on configuration...
+    default: Adapter 1: nat
+==> default: Forwarding ports...
+    default: 80 (guest) => 8080 (host) (adapter 1)
+    default: 22 (guest) => 2222 (host) (adapter 1)
+==> default: Running 'pre-boot' VM customizations...
+==> default: Booting VM...
+==> default: Waiting for machine to boot. This may take a few minutes...
+    default: SSH address: 127.0.0.1:2222
+    default: SSH username: vagrant
+    default: SSH auth method: private key
+    default: Warning: Connection reset. Retrying...
+    default: Warning: Remote connection disconnect. Retrying...
+    default:
+    default: Vagrant insecure key detected. Vagrant will automatically replace
+    default: this with a newly generated keypair for better security.
+    default:
+    default: Inserting generated public key within guest...
+    default: Removing insecure key from the guest if it's present...
+    default: Key inserted! Disconnecting and reconnecting using new SSH key...
+==> default: Machine booted and ready!
+==> default: Checking for guest additions in VM...
+    default: The guest additions on this VM do not match the installed version of
+    default: VirtualBox! In most cases this is fine, but in rare cases it can
+    default: prevent things such as shared folders from working properly. If you see
+    default: shared folder errors, please make sure the guest additions within the
+    default: virtual machine match the version of VirtualBox you have installed on
+    default: your host and reload your VM.
+    default:
+    default: Guest Additions Version: 6.1.38
+    default: VirtualBox Version: 7.0
+==> default: Mounting shared folders...
+    default: /vagrant => /Users/dme26/tmp/nospot/cosc349-lab03-apache
+==> default: Detected mount owner ID within mount options. (uid: 1000 guestpath: /vagrant)
+==> default: Detected mount group ID within mount options. (gid: 1000 guestpath: /vagrant)
+```
+
+Note that at this point, the VM is created, and booted. The output then switches to showing what the provisioning script shell commands are doing, starting with the command that updates the Ubuntu packages.
+
+```
+==> default: Running provisioner: shell...
+    default: Running: inline script
+    default: Hit:1 http://archive.ubuntu.com/ubuntu focal InRelease
+    default: Get:2 http://security.ubuntu.com/ubuntu focal-security InRelease [114 kB]
+    default: Get:3 http://archive.ubuntu.com/ubuntu focal-updates InRelease [114 kB]
+    default: Get:4 http://security.ubuntu.com/ubuntu focal-security/main amd64 Packages [2335 kB]
+    default: Get:5 http://archive.ubuntu.com/ubuntu focal-backports InRelease [108 kB]
+    default: Get:6 http://archive.ubuntu.com/ubuntu focal/universe amd64 Packages [8628 kB]
+    default: Get:7 http://security.ubuntu.com/ubuntu focal-security/main Translation-en [370 kB]
+    default: Get:8 http://security.ubuntu.com/ubuntu focal-security/main amd64 c-n-f Metadata [13.0 kB]
+    default: Get:9 http://security.ubuntu.com/ubuntu focal-security/restricted amd64 Packages [2027 kB]
+    default: Get:10 http://security.ubuntu.com/ubuntu focal-security/restricted Translation-en [284 kB]
+    default: Get:11 http://security.ubuntu.com/ubuntu focal-security/universe amd64 Packages [864 kB]
+    default: Get:12 http://security.ubuntu.com/ubuntu focal-security/universe Translation-en [180 kB]
+    default: Get:13 http://security.ubuntu.com/ubuntu focal-security/universe amd64 c-n-f Metadata [18.8 kB]
+    default: Get:14 http://security.ubuntu.com/ubuntu focal-security/multiverse amd64 Packages [23.6 kB]
+    default: Get:15 http://security.ubuntu.com/ubuntu focal-security/multiverse Translation-en [5504 B]
+    default: Get:16 http://archive.ubuntu.com/ubuntu focal/universe Translation-en [5124 kB]
+    default: Get:17 http://security.ubuntu.com/ubuntu focal-security/multiverse amd64 c-n-f Metadata [548 B]
+    default: Get:18 http://archive.ubuntu.com/ubuntu focal/universe amd64 c-n-f Metadata [265 kB]
+    default: Get:19 http://archive.ubuntu.com/ubuntu focal/multiverse amd64 Packages [144 kB]
+    default: Get:20 http://archive.ubuntu.com/ubuntu focal/multiverse Translation-en [104 kB]
+    default: Get:21 http://archive.ubuntu.com/ubuntu focal/multiverse amd64 c-n-f Metadata [9136 B]
+    default: Get:22 http://archive.ubuntu.com/ubuntu focal-updates/main amd64 Packages [2718 kB]
+    default: Get:23 http://archive.ubuntu.com/ubuntu focal-updates/main Translation-en [452 kB]
+    default: Get:24 http://archive.ubuntu.com/ubuntu focal-updates/main amd64 c-n-f Metadata [16.9 kB]
+    default: Get:25 http://archive.ubuntu.com/ubuntu focal-updates/restricted amd64 Packages [2140 kB]
+    default: Get:26 http://archive.ubuntu.com/ubuntu focal-updates/restricted Translation-en [299 kB]
+    default: Get:27 http://archive.ubuntu.com/ubuntu focal-updates/universe amd64 Packages [1091 kB]
+    default: Get:28 http://archive.ubuntu.com/ubuntu focal-updates/universe Translation-en [260 kB]
+    default: Get:29 http://archive.ubuntu.com/ubuntu focal-updates/universe amd64 c-n-f Metadata [25.3 kB]
+    default: Get:30 http://archive.ubuntu.com/ubuntu focal-updates/multiverse amd64 Packages [25.8 kB]
+    default: Get:31 http://archive.ubuntu.com/ubuntu focal-updates/multiverse Translation-en [7424 B]
+    default: Get:32 http://archive.ubuntu.com/ubuntu focal-updates/multiverse amd64 c-n-f Metadata [620 B]
+    default: Get:33 http://archive.ubuntu.com/ubuntu focal-backports/main amd64 Packages [45.7 kB]
+    default: Get:34 http://archive.ubuntu.com/ubuntu focal-backports/main Translation-en [16.3 kB]
+    default: Get:35 http://archive.ubuntu.com/ubuntu focal-backports/main amd64 c-n-f Metadata [1420 B]
+    default: Get:36 http://archive.ubuntu.com/ubuntu focal-backports/restricted amd64 c-n-f Metadata [116 B]
+    default: Get:37 http://archive.ubuntu.com/ubuntu focal-backports/universe amd64 Packages [25.0 kB]
+    default: Get:38 http://archive.ubuntu.com/ubuntu focal-backports/universe Translation-en [16.3 kB]
+    default: Get:39 http://archive.ubuntu.com/ubuntu focal-backports/universe amd64 c-n-f Metadata [880 B]
+    default: Get:40 http://archive.ubuntu.com/ubuntu focal-backports/multiverse amd64 c-n-f Metadata [116 B]
+    default: Fetched 27.9 MB in 10s (2833 kB/s)
+    default: Reading package lists...
+    default: Reading package lists...
+    default: Building dependency tree...
+    default: Reading state information...
+    default: The following additional packages will be installed:
+    default:   apache2-bin apache2-data apache2-utils libapr1 libaprutil1
+    default:   libaprutil1-dbd-sqlite3 libaprutil1-ldap libjansson4 liblua5.2-0 ssl-cert
+    default: Suggested packages:
+    default:   apache2-doc apache2-suexec-pristine | apache2-suexec-custom www-browser
+    default:   openssl-blacklist
+    default: The following NEW packages will be installed:
+    default:   apache2 apache2-bin apache2-data apache2-utils libapr1 libaprutil1
+    default:   libaprutil1-dbd-sqlite3 libaprutil1-ldap libjansson4 liblua5.2-0 ssl-cert
+    default: 0 upgraded, 11 newly installed, 0 to remove and 7 not upgraded.
+    default: Need to get 1867 kB of archives.
+    default: After this operation, 8098 kB of additional disk space will be used.
+    default: Get:1 http://archive.ubuntu.com/ubuntu focal/main amd64 libapr1 amd64 1.6.5-1ubuntu1 [91.4 kB]
+    default: Get:2 http://archive.ubuntu.com/ubuntu focal-updates/main amd64 libaprutil1 amd64 1.6.1-4ubuntu2.1 [84.9 kB]
+    default: Get:3 http://archive.ubuntu.com/ubuntu focal-updates/main amd64 libaprutil1-dbd-sqlite3 amd64 1.6.1-4ubuntu2.1 [10.6 kB]
+    default: Get:4 http://archive.ubuntu.com/ubuntu focal-updates/main amd64 libaprutil1-ldap amd64 1.6.1-4ubuntu2.1 [8756 B]
+    default: Get:5 http://archive.ubuntu.com/ubuntu focal/main amd64 libjansson4 amd64 2.12-1build1 [28.9 kB]
+    default: Get:6 http://archive.ubuntu.com/ubuntu focal/main amd64 liblua5.2-0 amd64 5.2.4-1.1build3 [106 kB]
+    default: Get:7 http://archive.ubuntu.com/ubuntu focal-updates/main amd64 apache2-bin amd64 2.4.41-4ubuntu3.14 [1182 kB]
+    default: Get:8 http://archive.ubuntu.com/ubuntu focal-updates/main amd64 apache2-data all 2.4.41-4ubuntu3.14 [158 kB]
+    default: Get:9 http://archive.ubuntu.com/ubuntu focal-updates/main amd64 apache2-utils amd64 2.4.41-4ubuntu3.14 [84.4 kB]
+    default: Get:10 http://archive.ubuntu.com/ubuntu focal-updates/main amd64 apache2 amd64 2.4.41-4ubuntu3.14 [95.6 kB]
+    default: Get:11 http://archive.ubuntu.com/ubuntu focal/main amd64 ssl-cert all 1.0.39 [17.0 kB]
+    default: dpkg-preconfigure: unable to re-open stdin: No such file or directory
+    default: Fetched 1867 kB in 2s (808 kB/s)
+    default: Selecting previously unselected package libapr1:amd64.
+(Reading database ... 63693 files and directories currently installed.)
+    default: Preparing to unpack .../00-libapr1_1.6.5-1ubuntu1_amd64.deb ...
+    default: Unpacking libapr1:amd64 (1.6.5-1ubuntu1) ...
+    default: Selecting previously unselected package libaprutil1:amd64.
+    default: Preparing to unpack .../01-libaprutil1_1.6.1-4ubuntu2.1_amd64.deb ...
+    default: Unpacking libaprutil1:amd64 (1.6.1-4ubuntu2.1) ...
+    default: Selecting previously unselected package libaprutil1-dbd-sqlite3:amd64.
+    default: Preparing to unpack .../02-libaprutil1-dbd-sqlite3_1.6.1-4ubuntu2.1_amd64.deb ...
+    default: Unpacking libaprutil1-dbd-sqlite3:amd64 (1.6.1-4ubuntu2.1) ...
+    default: Selecting previously unselected package libaprutil1-ldap:amd64.
+    default: Preparing to unpack .../03-libaprutil1-ldap_1.6.1-4ubuntu2.1_amd64.deb ...
+    default: Unpacking libaprutil1-ldap:amd64 (1.6.1-4ubuntu2.1) ...
+    default: Selecting previously unselected package libjansson4:amd64.
+    default: Preparing to unpack .../04-libjansson4_2.12-1build1_amd64.deb ...
+    default: Unpacking libjansson4:amd64 (2.12-1build1) ...
+    default: Selecting previously unselected package liblua5.2-0:amd64.
+    default: Preparing to unpack .../05-liblua5.2-0_5.2.4-1.1build3_amd64.deb ...
+    default: Unpacking liblua5.2-0:amd64 (5.2.4-1.1build3) ...
+    default: Selecting previously unselected package apache2-bin.
+    default: Preparing to unpack .../06-apache2-bin_2.4.41-4ubuntu3.14_amd64.deb ...
+    default: Unpacking apache2-bin (2.4.41-4ubuntu3.14) ...
+    default: Selecting previously unselected package apache2-data.
+    default: Preparing to unpack .../07-apache2-data_2.4.41-4ubuntu3.14_all.deb ...
+    default: Unpacking apache2-data (2.4.41-4ubuntu3.14) ...
+    default: Selecting previously unselected package apache2-utils.
+    default: Preparing to unpack .../08-apache2-utils_2.4.41-4ubuntu3.14_amd64.deb ...
+    default: Unpacking apache2-utils (2.4.41-4ubuntu3.14) ...
+    default: Selecting previously unselected package apache2.
+    default: Preparing to unpack .../09-apache2_2.4.41-4ubuntu3.14_amd64.deb ...
+    default: Unpacking apache2 (2.4.41-4ubuntu3.14) ...
+    default: Selecting previously unselected package ssl-cert.
+    default: Preparing to unpack .../10-ssl-cert_1.0.39_all.deb ...
+    default: Unpacking ssl-cert (1.0.39) ...
+    default: Setting up libapr1:amd64 (1.6.5-1ubuntu1) ...
+    default: Setting up libjansson4:amd64 (2.12-1build1) ...
+    default: Setting up ssl-cert (1.0.39) ...
+    default: Setting up liblua5.2-0:amd64 (5.2.4-1.1build3) ...
+    default: Setting up apache2-data (2.4.41-4ubuntu3.14) ...
+    default: Setting up libaprutil1:amd64 (1.6.1-4ubuntu2.1) ...
+    default: Setting up libaprutil1-ldap:amd64 (1.6.1-4ubuntu2.1) ...
+    default: Setting up libaprutil1-dbd-sqlite3:amd64 (1.6.1-4ubuntu2.1) ...
+    default: Setting up apache2-utils (2.4.41-4ubuntu3.14) ...
+    default: Setting up apache2-bin (2.4.41-4ubuntu3.14) ...
+    default: Setting up apache2 (2.4.41-4ubuntu3.14) ...
+    default: Enabling module mpm_event.
+    default: Enabling module authz_core.
+    default: Enabling module authz_host.
+    default: Enabling module authn_core.
+    default: Enabling module auth_basic.
+    default: Enabling module access_compat.
+    default: Enabling module authn_file.
+    default: Enabling module authz_user.
+    default: Enabling module alias.
+    default: Enabling module dir.
+    default: Enabling module autoindex.
+    default: Enabling module env.
+    default: Enabling module mime.
+    default: Enabling module negotiation.
+    default: Enabling module setenvif.
+    default: Enabling module filter.
+    default: Enabling module deflate.
+    default: Enabling module status.
+    default: Enabling module reqtimeout.
+    default: Enabling conf charset.
+    default: Enabling conf localized-error-pages.
+    default: Enabling conf other-vhosts-access-log.
+    default: Enabling conf security.
+    default: Enabling conf serve-cgi-bin.
+    default: Enabling site 000-default.
+    default: Created symlink /etc/systemd/system/multi-user.target.wants/apache2.service → /lib/systemd/system/apache2.service.
+    default: Created symlink /etc/systemd/system/multi-user.target.wants/apache-htcacheclean.service → /lib/systemd/system/apache-htcacheclean.service.
+    default: Processing triggers for ufw (0.36-6ubuntu1) ...
+    default: Processing triggers for systemd (245.4-4ubuntu3.22) ...
+    default: Processing triggers for man-db (2.9.1-1) ...
+    default: Processing triggers for libc-bin (2.31-0ubuntu9.9) ...
+    default: Enabling site test-website.
+    default: To activate the new configuration, you need to run:
+    default:   systemctl reload apache2
+    default: Site 000-default disabled.
+    default: To activate the new configuration, you need to run:
+    default:   systemctl reload apache2
+```
+
+By now the Apache webserver has been installed and has started. The remaining output comes from the commands that switch the website configuration being used.
+
+```
+    default: Enabling site test-website.
+    default: To activate the new configuration, you need to run:
+    default:   systemctl reload apache2
+    default: Site 000-default disabled.
+    default: To activate the new configuration, you need to run:
+    default:   systemctl reload apache2
+```
+
+:::warning
+:warning: 
+Since 2020 the CS lab environment seemed to require some extra tweaking: what worked on my CS lab account didn't work on student accounts for reasons that were not immediately clear to our sysadmins.
+
+Back then I pushed a change to the Git repository to fix the issue. This should mean that your `Vagrantfile` contains a line including "dmode".
+
+Now that the CS Labs have moved to Microsoft Windows, I can likely remove the lines I added, but have not done so yet...
 
 In any case, if I ever need to make further changes to the repository you can always run `git pull` to update your clone of the repository.
 :::
