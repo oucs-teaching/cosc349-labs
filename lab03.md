@@ -1,5 +1,5 @@
 ---
-title: Vagrant beyond lab 3...
+title: COSC349 Lab 3—Cloud Architecture—2025
 tags: [cosc349, lab]
 
 ---
@@ -8,13 +8,13 @@ tags: [cosc349, lab]
 
 ## Lab 3—Vagrant for automating virtualisation
 
-The CS Labs' computers' installation of Vagrant has had some very recent fixes. It should now work OK, but let me know if anything seems broken, still.
+The CS Labs' computers' installation of Vagrant has had some very recent fixes. It should now work OK, but let Aaron or Dave know if anything seems broken, still.
 
 :::info
 :bulb: 
-This is another lab for which the most consistent experience is Intel CPUs. Apple Mac users with Arm CPUs _may_ run into difficulties, because VirtualBox (which sits beneath Vagrant) only recently began supporting Arm CPUs. But now that we (Dave and Aaron) have Arm Macs ourselves we're working to update the instructions where we can. 
+This is another lab for which the most consistent experience is with Intel CPUs. Apple Mac users with Arm CPUs _may_ run into difficulties, because VirtualBox (which sits beneath Vagrant) only recently began supporting Arm CPUs. But now that we (Dave and Aaron) have Arm Macs ourselves we're working to update the instructions where we can. I (Dave) was able to work through the lab on my Arm-based Mac successfully.
 
-Even if VirtualBox fails to work, you can take a related path, if you are willing to try it, using Vagrant with Docker behind it, rather than VirtualBox. You can try the instructions at   https://altitude.otago.ac.nz/cosc412/demo-vm/-/tree/docker?ref_type=heads to the point of getting `vagrant ssh` to work, and then see what lines up and what doesn't in the exercise below. David or Aaron can provide more context as to what's going on.
+If VirtualBox fails to work on your Arm-CPU-based Mac, you can take a related path, if you are willing to try it, using Vagrant with a different virtualisation provider: Docker, rather than VirtualBox. You can try the instructions at https://altitude.otago.ac.nz/cosc412/demo-vm/-/tree/docker?ref_type=heads to the point of getting `vagrant ssh` to work, and then see what lines up and what doesn't in the exercise below. David or Aaron can provide more context as to what's going on.
 :::
 
 :::warning
@@ -391,14 +391,15 @@ end
 ```
 ## Let's create a Vagrant VM
 
-In your `Vagrantfile` change the box specified from ``"base"`` to ``"ubuntu/focal64"``. This is on line 15 of the Vagrantfile shown here, but your line number may differ, depending on software versions.
+In your `Vagrantfile` let's change the box specified from ``"base"`` (which is just a stub) to a choice of substance: Ubunu Linux. Specifically let's use ``"bento/ubuntu-22.04"`` which is a particular organisation's packaging of Ubuntu for use with Vagrant. That should be on around line 15 of the `Vagrantfile` shown here, but your line number may differ, depending on software versions.
+Past labs on Intel machines suggested using ``"ubuntu/focal64"``, which is why that appears in the output snippets below.
 
 :::info
-:warning:
-On my Arm MAC I was able to start Ubuntu using the box ``"bento/ubuntu-22.04"``: the Ubuntu-provided boxes don't support Arm CPUs.
+:thought_balloon: 
+Note that in the past this lab exercise instead used ``"ubuntu/focal64"`` so if you run into any major problems first check in with Aaron or Dave, but you could also try changing the box back to ``"ubuntu/focal64"``. The reason we changed to ``"bento/ubuntu-22.04"`` is that the same box should now work on Intel CPUs and Arm-based Macs.
 :::
 
-You should now be able to have Vagrant set up a Ubuntu Focal 64-bit VM for you. Run the `vagrant up` command. An example interaction is shown, below.
+You should now be able to have Vagrant set up a Ubuntu 64-bit VM for you. Run the `vagrant up` command. An example interaction is shown, below.
 
 :::warning
 :warning: 
@@ -420,7 +421,7 @@ Download redirected to host: cloud-images.ubuntu.com
 ==> default: Successfully added box 'ubuntu/focal64' (v20230719.0.0) for 'virtualbox'!
 ```
 
-At this point the Vagrant box for `ubuntu/focal64` has been cached, so the output below relates to creating your specific VM. Hopefully you can get the general gist of what is being done from the output below. You do not need to understand all of the output that is produced in order to use the VM you've requested.
+At this point the Vagrant box will have been cached, so the output below relates to creating your specific VM. Hopefully you can get the general gist of what is being done from the output below. You do not need to understand all of the output that is produced in order to use the VM you've requested.
 
 :::info
 :eyes: 
@@ -842,7 +843,7 @@ Recall that when you first `vagrant ssh` into your VM, you will be in the `/home
 :pencil: 
 Exercise---test some shell commands on your VM and then "bake" these commands into your provisioning: Modify the provisioning shell script in your `Vagrantfile` to fetch some content from the Internet *at the time that the VM is deployed*, and change a local web page to reflect this content. 
 
-For example, you can use a shell command like `date > my-file.txt` which will execute the `date` command and write the output to the file `my-file.txt`. Or a more complex operation is to use `wget` to retrieve a file from the web, for example `wget 'https://www.otago.ac.nz/_assets/_gfx/logo@2x.png'` will download a file `logo@2x.png` of the University of Otago crest (... an exercise which by next year should also include the new University of Otago graphics) into the working directory at the time you ran `wget`.
+For example, you can use a shell command like `date > my-file.txt` which will execute the `date` command and write the output to the file `my-file.txt`. Or a more complex operation is to use `wget` to retrieve a file from the web, for example `wget 'https://www.otago.ac.nz/_assets/_gfx/logo@2x.png'` will download a file `logo@2x.png` of the University of Otago wordmark (logo) into the working directory at the time you ran `wget`.
 
 (By default when you view http://127.0.0.1:8080/ in your host computer's web browser, your VM will retrieve the `index.html` file from `/vagrant/www`. You can add a filename to the end of the URL, e.g., http://127.0.0.1:8080/my-file.txt will retrieve `/vagrant/www/my-file.txt` and show it as plain text in your web browser.)
 
@@ -874,7 +875,7 @@ In the meantime, though, you can interact with the repository that I have set up
 
 :::warning
 :warning: 
-When using this repository in the CS Labs running macOS, the `synced_folder` line in the `Vagrantfile` needed to set default permissions for files and directories (`fmode` and `dmode`). The repository has been updated to contain this option, since it seems not to break non-CS Lab environments (even if it is not necessary for them).
+When using this repository in the old CS Lab environment running macOS, the `synced_folder` line in the `Vagrantfile` needed to set default permissions for files and directories (`fmode` and `dmode`). The repository has been updated to contain this option, since it seems not to break non-CS Lab environments or the Windows CS Lab environment (even if it is not necessary for them).
 :::
 
 ## Advice on provisioning scripts
@@ -887,13 +888,13 @@ After a development session I typically `git clone` and `vagrant up` in a termin
 
 ## Lab 3—Vagrant for automating virtualisation
 
-The CS Labs' computers' installation of Vagrant has had some very recent fixes. It should now work OK, but let me know if anything seems broken, still.
+The CS Labs' computers' installation of Vagrant has had some very recent fixes. It should now work OK, but let Aaron or Dave know if anything seems broken, still.
 
 :::info
 :bulb: 
-This is another lab for which the most consistent experience is Intel CPUs. Apple Mac users with Arm CPUs _may_ run into difficulties, because VirtualBox (which sits beneath Vagrant) only recently began supporting Arm CPUs. But now that we (Dave and Aaron) have Arm Macs ourselves we're working to update the instructions where we can. 
+This is another lab for which the most consistent experience is with Intel CPUs. Apple Mac users with Arm CPUs _may_ run into difficulties, because VirtualBox (which sits beneath Vagrant) only recently began supporting Arm CPUs. But now that we (Dave and Aaron) have Arm Macs ourselves we're working to update the instructions where we can. I (Dave) was able to work through the lab on my Arm-based Mac successfully.
 
-Even if VirtualBox fails to work, you can take a related path, if you are willing to try it, using Vagrant with Docker behind it, rather than VirtualBox. You can try the instructions at   https://altitude.otago.ac.nz/cosc412/demo-vm/-/tree/docker?ref_type=heads to the point of getting `vagrant ssh` to work, and then see what lines up and what doesn't in the exercise below. David or Aaron can provide more context as to what's going on.
+If VirtualBox fails to work on your Arm Mac, you can take a related path, if you are willing to try it, using Vagrant with Docker behind it, rather than VirtualBox. You can try the instructions at   https://altitude.otago.ac.nz/cosc412/demo-vm/-/tree/docker?ref_type=heads to the point of getting `vagrant ssh` to work, and then see what lines up and what doesn't in the exercise below. David or Aaron can provide more context as to what's going on.
 :::
 
 :::warning
