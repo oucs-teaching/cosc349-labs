@@ -1,5 +1,4 @@
 ## Preliminaries for Lab 4
-These preliminary steps should ideally be performed within week 2, to ensure that you are prepared for the lab in week 4... although you are indeed most welcome to start using the AWS credit on COSC349 labs and other exploration as soon as you receive it (just don't use it all up!).
 
 :::warning
 :warning: 
@@ -28,11 +27,11 @@ You should have received, to your student email address, an email that instructs
 
 ## Lab 4—AWS IaaS with EC2
 
-You should be able to complete this lab using any operating system, e.g., macOS, Linux, or Windows, such as within the CS Labs. The instructions have been developed on a macOS system, though.
+You should be able to complete this lab using any operating system, e.g., macOS, Linux, or Windows, such as within the Owheo Building Labs. The instructions have been developed on a macOS system, though.
 
 :::info
 :bulb: 
-On the CS Labs computers running Windows, I would recommend trying Git Bash as your shell. There are certainly ways to use PowerShell and `cmd.exe`, but where Git Bash works, all three major operating system types can follow the same instructions.
+On the Owheo Building Labs computers running Windows, I would recommend trying Git Bash as your shell. There are certainly ways to use PowerShell and `cmd.exe`, but where Git Bash works, all three major operating system types can follow the same instructions.
 :::
 
 In this lab we will introduce use of Amazon's Elastic Compute Cloud service (EC2), which provides (among other features) Infrastructure as a Service—i.e., the provision of (headless) virtual machines of the type you have experimented with using Vagrant in [Lab 3](/bi1pAIlXT3O4WezjVtqPrA).
@@ -67,7 +66,7 @@ AWS are currently still the world's leading public cloud provider. You may then 
 
 ### Log into AWS Academy
 
-As noted above, to gain access to the AWS Management Console you first need to log into [AWS Academy](http://awsacademy.instructure.com) or more specifically the [COSC349 course within AWS Academy](http://awsacademy.instructure.com/courses/51619) ... but actually you may be able to [jump straight to the Learner Lab controls](https://awsacademy.instructure.com/courses/51619/modules/items/4451296) with the COSC349 AWS Academy course. I named the course "COSC349-2023".
+As noted above, to gain access to the AWS Management Console you first need to log into [AWS Academy](http://awsacademy.instructure.com) or more specifically the [COSC349 course within AWS Academy](http://awsacademy.instructure.com/courses/87101) ... but actually you may be able to [jump straight to the Learner Lab controls](https://awsacademy.instructure.com/courses/87101/modules/items/7924680) with the COSC349 AWS Academy course. The course is helpfully named "AWS Academy Learner Lab".
 
 ### Reach the Learner Lab
 
@@ -76,7 +75,7 @@ As noted above, to gain access to the AWS Management Console you first need to l
 On macOS it seems that Safari does not work to reach the Learner Lab page. I thus switched to using Chrome to do this lab (and the screen captures contained within it).
 :::
 
-After I had successfully logged into AWS Academy and assumed the persona of "test student", I was able to rach a page such as shown in the following screen capture:
+After I had successfully logged into AWS Academy and assumed the persona of "test student", I was able to reach a page such as shown in the following screen capture:
 
 ![](https://hackmd.io/_uploads/HkrwJDUo2.png)
 
@@ -131,15 +130,15 @@ If you are first accessing AWS, you will need to use the option to the right to 
 
 ![](https://hackmd.io/_uploads/ry8gGvIs3.png)
 
-I recommend using a name without spaces, such as `cosc349-2023`. RSA keys should be OK. Most variants of SSH should work with the `.pem` format---the default---however if you are ussing PuTTY on Windows, instead choose the `.ppk` format.
+I recommend using a name without spaces, such as `cosc349-2024`. RSA keys should be OK. Most variants of SSH should work with the `.pem` format---the default---however if you are ussing PuTTY on Windows, instead choose the `.ppk` format.
 
 Finally, select "Create key pair", and note that your selected type of file (I chose `.pem` will be downloaded by your web browser). This is your private key (file) for the named key pair.
 
-Click "Download Key Pair", and move the private key file to somewhere safe, and make the file private. On a macOS / Linux machines / Git Bash on CS Lab Windows, a good place to move it to is the `.ssh` subdirectory of your home directory. This is a conventional place to store encryption keys used for SSH (and the default place that must SSH software looks for keys).
+Click "Download Key Pair", and move the private key file to somewhere safe, and make the file private. On a macOS / Linux machines / Git Bash on Owheo Building Lab Windows computers, a good place to move it to is the `.ssh` subdirectory of your home directory. This is a conventional place to store encryption keys used for SSH (and the default place that must SSH software looks for keys).
 
 :::warning
 :warning:
-The `~` in shell commands should be expanded to your home directory. On the CS Lab computers in Git Bash, it seems that `~` expands to `/h/` (i.e., the H drive), which is odd, since it shouldn't have the trailing `/`. Indeed, I don't think it had the trailing slash last week, so I'll follow up with the IT powers-that-be as to what might be going on. You can manually rewrite a command like `ls -ld ~/.ssh` that is referring to the `.ssh` directory within your home directory, into `ls -ld /h/.ssh` on the CS Lab computers.
+The `~` in shell commands should be expanded to your home directory. On the Owheo Building Lab computers in Git Bash, it seems that `~` expands to `/h/` (i.e., the H drive), which is odd, since it shouldn't have the trailing `/`. Indeed, I don't think it had the trailing slash last week, so I'll follow up with the IT powers-that-be as to what might be going on. You can manually rewrite a command like `ls -ld ~/.ssh` that is referring to the `.ssh` directory within your home directory, into `ls -ld /h/.ssh` on the Owheo Building Lab computers.
 :::
 
 :::warning
@@ -155,11 +154,20 @@ drwx------  34 dme  11306  1088  3 Aug 16:08 /Users/dme/.ssh
 You may need to rename the key file that was downloaded by my web-browser to remove the `.txt` extension if there is one. I changed the permissions to make the file only readable by my user using the following shell invocations:
 
 ```
-$ mv ~/Downloads/cosc349-2023.pem ~/.ssh/
-$ chmod 400 ~/.ssh/cosc349-2023.pem
-$ ls -l ~/.ssh/cosc349-2023.pem
--r--------@ 1 dme26  staff  1678  1 Aug 22:44 /Users/dme26/.ssh/cosc349-2023.pem
+$ mv ~/Downloads/cosc349-2024.pem ~/.ssh/
+$ chmod 400 ~/.ssh/cosc349-2024.pem
+$ ls -l ~/.ssh/cosc349-2024.pem
+-r--------@ 1 dme26  staff  1678  1 Aug 22:44 /Users/dme26/.ssh/cosc349-2024.pem
 ```
+
+:::warning
+:warning: 
+Note that on the lab machines, your Desktop, Downloads, and Documents folders are in `/h/RedirectedFolders`. So to move the key file, you would use:
+
+```
+$ mv /h/RedirectedFolders/Downloads/cosc349-2024.pem ~/.ssh/
+```
+:::
 
 Next, scroll down to the "Network settings" controls.
 
@@ -228,7 +236,7 @@ The "A standalone SSH client" panel tab does not actually allow you to connect d
 :eyes: 
 You may see slightly different information from what's shown in the following screen capture: for example, the DNS records for EC2 VMs may not be immediatly ready, and in those cases IP addresses will be provided instead of DNS names.
 
-You can read up on the Domain Name System (DNS) but essentially DNS provides a mapping from names to IP addresses. So `www.google.co.nz` is a DNS name, and on pretty much any Linux / macOS / Windows terminal or command prompt, if you run the command `nslookup www.google.co.nz` then you will be told the IP address for that DNS name, `172.217.167.67`. Web browsers will happily reach the CS site with either form, but `www.google.co.nz` is easier for humans to work with, since the name encodes semantics. (Actually, this is not entirely true---it may be that multiple DNS names point to the same IP address, which allows one webserver to serve up pages for multiple different websites, and thus if you visit the site by its IP address alone, the webserver will need to pick a default site for you to visit, of the possible choices.)
+You can read up on the Domain Name System (DNS) but essentially DNS provides a mapping from names to IP addresses. So `www.google.co.nz` is a DNS name, and on pretty much any Linux / macOS / Windows terminal or command prompt, if you run the command `nslookup www.google.co.nz` then you will be told the IP address for that DNS name, `172.217.167.67`. Web browsers will happily reach the chosen site with either form, but `www.google.co.nz` is easier for humans to work with, since the name encodes semantics. (Actually, this is not entirely true---it may be that multiple DNS names point to the same IP address, which allows one webserver to serve up pages for multiple different websites, and thus if you visit the site by its IP address alone, the webserver will need to pick a default site for you to visit, of the possible choices.)
 :::
 
 ![](https://hackmd.io/_uploads/r1PlSDLj2.png)
@@ -274,7 +282,7 @@ This time, let's specify the key-pair file that we downloaded when we set up the
 You should be able to log in. You will see a command prompt similar to that shown below. As I have done, you can try running the `uname -a` command to request information about the running operating system. I then log out. (Typing <kbd>control</kbd><kbd>d</kbd> works to log out, too.)
 
 ```
-$ ssh -i ~/.ssh/cosc349-2023.pem ec2-user@ec2-34-238-121-97.compute-1.amazonaws.com
+$ ssh -i ~/.ssh/cosc349-2024.pem ec2-user@ec2-34-238-121-97.compute-1.amazonaws.com
    ,     #_
    ~\_  ####_        Amazon Linux 2023
   ~~  \_#####\
@@ -309,7 +317,7 @@ There are multiple commands **within** the transcript below: you need to read th
 :::
 
 ```
-$ ssh -i ~/.ssh/cosc349-2023.pem ec2-user@ec2-34-238-121-97.compute-1.amazonaws.com
+$ ssh -i ~/.ssh/cosc349-2024.pem ec2-user@ec2-34-238-121-97.compute-1.amazonaws.com
    ,     #_
    ~\_  ####_        Amazon Linux 2023
   ~~  \_#####\
@@ -534,7 +542,7 @@ Amazon has clear [documentation of the instance lifecycle](https://docs.aws.amaz
 
 ## Build your own LAMP stack
 
-The instructions above are intended to provide enough context specific to the CS Labs to allow you to work through tutorial material on the AWS website.
+The instructions above are intended to provide enough context specific to the Owheo Building Labs to allow you to work through tutorial material on the AWS website.
 
 Now that you've created, visited, modified and destroyed a single EC2 VM, you can move on to a more complex example that involves creating multiple VMs.
 
