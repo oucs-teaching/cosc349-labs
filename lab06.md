@@ -55,13 +55,13 @@ Another special address is the `localhost` address `127.0.0.1`, which always ref
 
 Finally, when starting a server, you usually need to specify which IP address to use, but there is a convention of using `0.0.0.0` to mean that all network interfaces should be used: i.e., that the server should accept connections from any IP address, local or from across the LAN or Internet.
 
-Despite having a non-Internet routable IP address, a host (e.g., a VM) with such a non-Internet routable address can still interact with the Internet using network address translation (NAT), in which a gateway rewrites a host's requests to appear to come from itself. The gateway needs to have two IP addresses, one on the private network, and one on the Internet. Domestic Wi-Fi routers typically function as this sort of gateway. You can see the COSC301 lab book if you want more information.
+Despite having a non-Internet routable IP address, a host (e.g., a VM) with such a non-Internet routable address can still interact with the Internet using network address translation (NAT), in which a gateway rewrites a host's requests to appear to come from itself. The gateway needs to have two IP addresses, one on the private network, and one on the Internet. Domestic Wi-Fi routers typically function as this sort of gateway. (You can see the COSC301 teaching materials if you want more information, and it will also be covered in many places online.)
 
 ### Very quick primer on TCP and UDP ports
 
 IP addresses allow computers on the Internet to reach each other, however specifying the purpose of communication involves a higher layer of the networking stack. The IP layer just works in terms of trying to deliver packets of data from one computer to another. TCP and UDP are layered on top of IP in order to build more complete protocols useful to applications. In particular TCP incorporates acknowledgements of data packets, retransmissions of packets and acknowledgements if losses occur, and congestion control, to ensure that the network paths are not overloaded.
 
-An IP address refers to the specific network interface of a specific computer as a whole, but TCP addresses a _service_ running on that computer. TCP introduces port numbers, so that a given IP address may operate multiple independent network services. Port numbers less than 1024 are privileged, i.e., normal user processes cannot open up services on those ports. 
+An IP address refers to the specific network interface of a specific computer as a whole, but TCP addresses a _service_ running on that computer. Examples of different services would include: web servers, database servers, DNS servers, email servers, etc. TCP introduces port numbers, so that a given IP address may operate multiple independent network services. Port numbers less than 1024 are privileged, i.e., normal user processes cannot open up services on those ports. 
 
 Most operating systems allow you to refer to ports either by number, or by using symbolic names. For example the port for web traffic is port 80, or HTTP. Secure web traffic uses port 443, or HTTPS. The Secure Shell runs on port 22, or SSH.
 
@@ -259,7 +259,7 @@ rtt min/avg/max/mdev = 0.397/0.456/0.489/0.041 ms
 
 We'll continue working with the multi-VM `Vagrantfile` used in the preceding sections.
 
-If you are not already SSHed into your webserver VM, the n do so now (`vagrant ssh webserver`).
+If you are not already SSHed into your webserver VM, then do so now (`vagrant ssh webserver`).
 
 First let's test whether the web server appears to be listening on TCP port 80 (or whatever you have chosen to use instead).
 
@@ -281,7 +281,7 @@ sshd     10329  vagrant    3u  IPv4  29922      0t0  TCP 10.0.2.15:ssh->10.0.2.2
 
 This output indicates that the `apache2` process (i.e., the webserver that was installed), is indeed listening for connections on the `http` port, as expected.
 
-You can check whether the webserver is handling requests by manually submitting one. This can be done using `wget http://localhost` or `curl http://localhost` if those commands are installed on your VM. Otherwise, you can create a simple HTTP request directly on the command line, as in the following example, if the netcat command `nc` is installed which is usually true these days. Netcat is a utility that supports performing simple network diagnostics. In this case we are using `nc`'s ability to send standard input (the output from the `printf` command) to a network service, and show the network data that gets sent back (if any).
+You can check whether the webserver is handling requests by manually submitting one. This can be done using `wget http://localhost` or `curl http://localhost` if those commands are installed on your VM. Otherwise, you can create a simple HTTP request directly on the command line, as in the following example, if the netcat command `nc` is installed which is usually true these days. Netcat is a utility that supports performing simple network diagnostics. In this case we are using `nc`'s ability to send standard input (the output from the shell `printf` command) to a network service, and show the network data that gets sent back (if any).
 
 ```
 vagrant@webserver:~$ printf "GET / HTTP/1.1\r\nHOST: localhost\r\n\r\n" | nc localhost 80
@@ -380,9 +380,9 @@ Note that if you are making changes to a `Vagrantfile`, it may be advisable to `
 
 If you are running on Windows, it may be useful to add your new scripts' names into the `.gitattributes` file, to tell `git` to use Unix line endings. Looking inside the existing `.gitattributes` files, you can see the two lines that specify Unix line endings (LF) for the scripts `setup-database.sql` and `test-website.conf`.
 
-## Pitfalls
+## Some potential pitfalls to watch out for
 
-- The `2` in the top of the `Vagrantfile` in the line `Vagrant.configure("2") do |config|` is not the number of VMs, it's the version number of the `Vagrantfile` format itself, so you shouldn't change it.
+- The `2` in the top of the `Vagrantfile` in the line `Vagrant.configure("2") do |config|` is not the number of VMs, it's the version number of the `Vagrantfile` format itself, so you shouldn't change it unless you have a specific reason to do so.
 - One potential source of confusion is the paths `/home/vagrant` versus `/vagrant`. When you login to your VM, e.g., using the `vagrant ssh` command, you will be in the home directory of the `vagrant` user, namely `/home/vagrant`. However if you want to access the shared folder between the VM and the host, this is at the different folder, `/vagrant`.
 - During provisioning your scripting within your `Vagrantfile` runs as `root`, but `vagrant ssh` takes you to a shell for the `vagrant` user. Thus to run privileged commands as they worked within the `Vagrantfile`'s shell provisioner, if you've logged in as the `vagrant` user, you will need to use `sudo` before the privileged command (`sudo` stands for "super-user do", i.e., run the command that follows as the (almost) all powerful superuser).
 - Remember that `/vagrant` is, essentially, a network drive from the perspective of your VM. Exactly how access control and file permissions operate can depend on the host operating system. For example, a Windows host is unlikely to preserve all of the file permissions you might make within the VM using a command such as `chmod`.
