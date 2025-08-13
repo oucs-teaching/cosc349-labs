@@ -1,6 +1,6 @@
 ## Lab 5—An introduction to Docker
 
-Docker Desktop should be able to be installed on recent versions of macOS (including Apple computers with Arm CPUs!), Windows and Linux. However, the assumption in the instructions below is that you will be trying to work through the lab on a Windows computer in the Owheo CS Labs.
+Docker Desktop should be able to be installed on recent versions of macOS (including Apple computers with Arm CPUs!), Windows, and Linux. However, the assumption in the instructions below is that you will be trying to work through the lab on a Windows computer in the Owheo Labs.
 
 :::info
 :eyes: 
@@ -21,27 +21,29 @@ I (David) initiated an introduction to Docker in the style of a Software Carpent
 
 You are very welcome to follow the instructions in those materials to install Docker Desktop (most likely) on your own computers. 
 
-See below for suggetsions on how to get a Docker environment within the CS Labs.
+See below for suggetsions on how to get a Docker environment within the Owheo Labs.
 
-Rather than copy the material over from the Software Carpentry lesson here, please work through this snapshot of the  [Introduction to Docker](https://dme-forks.github.io/2021-07-07-docker-introduction/) material that I used for a workshop I ran in July 2021. It would be good for you to complete the core lesson material, you are of course welcome to complete the extension exercises if you want to.
+The exercises are on the Software Carpentry site, and I suggest that we work through [the active exercises](https://carpentries-incubator.github.io/docker-introduction/). (I've also [created a snapshot](https://github.com/dme-forks/2024-08-14-docker-introduction), since the Software Carpentry site will continue to evolve.)
 
-For your interest, ongoing development of the Docker lesson is continuing collaboratively on the [Carpentries Incubator](https://carpentries-incubator.github.io/docker-introduction/), after I contributed the initial verison of the material.
+It would be good for you to complete the core lesson material, you are of course welcome to complete the extension exercises if you want to.
 
-Comments and pull-requests are most welcome on that material. It has been used for teaching at many other institutions, but still is at a reasonably early stage of development. Because you all (now) have experience with the Unix shell, and a CS background, it is likely that you will progress through the material more quickly than the suggested time guide.
+Comments and pull-requests are most welcome on that material. It has been used for teaching at many other institutions, but still is at a fairly early stage of development. Because you all (now) have experience with the Unix shell, and a CS background, it is likely that you will progress through the material more quickly than the suggested time guide.
 
-## Working with Docker in the CS Labs
+## Working with Docker in the Owheo Labs
 
-The Software Carpentry lesson is intended to be used on learners' computers rather than a managed environment such as the CS labs, where you don't have administrator privileges. (You are welcome to work through the lesson on your own computer, too, of course.)
+The Software Carpentry lesson is intended to be used on learners' computers rather than a managed environment such as the Owheo Labs, where you don't have administrator privileges. (You are welcome to work through the lesson on your own computer, too, of course.)
 
 There are two routes to running Docker containers, and hopefully you only need to look at the first one, namely using Docker Desktop.
 
-### Using the Docker Desktop application
+### Using the Docker Desktop application (preferred option)
 
-Docker Desktop is installed on the CS Labs.
+Docker Desktop is installed on the Owheo Labs.
+Ideally, if you start up Docker on the lab computers, it should "just work". Fingers crossed! But otherwise...
+
 
 :::warning
 :fire: 
-Getting Docker Desktop to start up for the first time in the CS Labs involves ignoring some error messages... but here's what worked for me:
+From 2023, getting Docker Desktop to start up for the first time in the Owheo Labs may involve ignoring some error messages... but here's what worked for me:
 - Run the Docker Desktop application
 - Agree the terms and conditions presented
 - Acknowledge the need to update the Windows Subsystem for Linux (WSL)
@@ -52,7 +54,7 @@ Getting Docker Desktop to start up for the first time in the CS Labs involves ig
 - Run Docker Desktop again, and wait for a few minutes for it to start (not sure why it's quite so slow)
 :::
 
-In your systray (bottom right) a whale icon should eventuall appear—when the square containers on top of the whale within the icon stop animating, then the underlying Linux VM has started up.
+In your systray (bottom right) a whale icon should eventually appear—when the square containers on top of the whale within the icon stop animating, then the underlying Linux VM has started up.
 
 After that point, `docker` commands in the terminal will work, and you can switch from these instructions over to the Software Carpentry lesson.
 
@@ -60,7 +62,7 @@ Once you have completed the core parts of the Docker lesson, you may wish to cli
 
 When you have finished with the lab exercise you should delete your containers, e.g., from the Docker Desktop dashboard window. Ideally you should also delete the Docker image files that were downloaded in the course of the lab exercise. In a terminal window `docker image ls` will list the container images on your computer, including displaying numerical IDs for each. The `docker image rm` command followed by a space-separated list of container image IDs will remove all of those container images from your computer.
 
-### Hosting Docker containers within a Linux VM
+### Hosting Docker containers within a Linux VM (non-preferred option)
 
 If you are unable to get Docker Desktop working, it is possible to run Docker containers first applying an extra level of virtualisation: using Vagrant to run Ubuntu, which in turn can run Docker containers (since the Ubuntu VM provides a Linux kernel on which to run containers).
 
