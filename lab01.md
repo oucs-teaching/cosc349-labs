@@ -1,22 +1,26 @@
 ---
-title: COSC349 Lab 1—Cloud Architecture—2025
+title: COSC349 Lab 1—Cloud Architecture—2026
 tags: [cosc349, lab]
 
 ---
 
-## Lab 1—Git, Owheo Building labs, and Unix shells
+## Lab 1—Git, Ōwheo Building labs, and Unix shells
 
-This year the computers in Owheo Lab E and Lab F are machines running Microsoft Windows, but with appropriate software to support this lab. (In fairly recent years the labs have transitioned through being iMacs running macOS, then iMacs running Windows...) Linux and macOS are Unix-based operating systems, so have ready access to a Unix shell, e.g., if you are using your own computer.
+The computers in the School of Computing's Ōwheo Building teaching labs (SoC labs) have seen many hardware and software (and building) changes over the past few years.
 
-On Owheo Lab Computers running Windows, I was able to reach a Unix shell by searching for `Git bash` and running the program that was found (it's under the "Git" folder in the Start menu). 
+This year the machines are running Microsoft Windows, but with appropriate software to support this lab.
+
+I aim for you to be able to do the labs on your own computers too, although clearly I can't well support all possible environments. If your computer runs Microsoft Windows you should have a similar experience to that in the teaching labs. Linux and macOS are Unix-based operating systems, so have ready access to a Unix shell, e.g., if you are using your own computer.
+
+On SoC lab computers running Windows, I was able to reach a Unix shell by searching for `Git bash` and running the program that was found (it's under the "Git" folder in the Start menu). 
 
 :::warning
-:exclamation: Note that the COSC349 was launched back in 2019 with the expectation of an updated CS 200-level set of papers. These were first run in 2022. Finally the School of Computing was formed in 2023, but the curriculum will still be in flux for a few years. For the next few years there will be students who have taken different paths through the School of Computing, CompSci, and InfoSci 200-level papers, and this may affect your experience in COSC349. Please just let the COSC349 teaching team know where the pace is too fast (or too slow).
+:exclamation: Note that the COSC349 was launched back in 2019 with the expectation of an updated CS 200-level set of papers. These were first run in 2022. Finally the School of Computing was formed in 2023, but the curriculum will still be in flux for a few years. Thus there will be students who have taken different paths through the School of Computing, CompSci, and InfoSci papers, and this may affect your experience in COSC349. Please just let the COSC349 teaching team know where the pace is too fast (or too slow).
 :::
 
 ### Lab objectives
 
-1. To ensure all students understand how to gain basic proficiency with the Unix shell and the School of Computing (SoC) teaching lab environment. The majority of students in COSC349 will already have this proficiency, and can skip [Lab 1(a)][].
+1. To ensure all students understand how to gain basic proficiency with the Unix shell and the teaching lab environment. The majority of students in COSC349 will already have this proficiency, and can skip [Lab 1(a)][].
 1. To ensure all students have at least basic proficiency in using the Git version management tool. We will provide you with two different resources for learning Git in [Lab 1(b)][].
 
 [Lab 1(a)]: #Lab-1a—Proficiency-with-Unix-shell-and-the-CS-lab-environment
@@ -26,7 +30,7 @@ On Owheo Lab Computers running Windows, I was able to reach a Unix shell by sear
 
 We link to Software Carpentry material both for Unix shell and Git teaching within this lab. For some more context, as stated online: "Software Carpentry is a volunteer project dedicated to teaching basic computing skills to researchers". All of the Software Carpentry lessons are open source and freely available at at https://software-carpentry.org/
 
-I (Dave) am a certified Software Carpentry instructor, and have been involved in the development and use of the Software Carpentry teaching material.
+I (Dave) have been involved in the development and use of the Software Carpentry teaching material, and am a certified Software Carpentry instructor.
 
 ## Lab 1(a)—Proficiency with Unix shell and the SoC lab environment
 
@@ -44,7 +48,7 @@ This teaching material aims to support use of the shell on any computer, and is 
 
 :::warning
 :exclamation:
-All students in COSC349 are expected to be able to use the Git version control system to create and manage your own repositories, and to clone and collaborate on others' repositories.
+All students in COSC349 are expected to be able to use the Git version control system to create and manage your own repositories, and to be able to clone and collaborate with others using their repositories.
 :::
 
 ### (optional) We're keen to study your Git learning journey
@@ -63,7 +67,7 @@ You should expect to cover the material up to and including episode 9 "Conflicts
 
 :::warning
 :warning: 
-It seems that the Microsoft Edge browser does not work properly with Learn Git branching, but Google Chrome works, and is installed on the Owheo lab computers.
+The Microsoft Edge browser has been reported not to work properly with Learn Git branching, but Google Chrome works, and is installed on the SoC lab computers.
 :::
 
 These exercises are targeted at those who already have some familiarity with Git. If you are completely new to Git we recommend starting with the Software Carpentry lesson (above).
@@ -74,19 +78,23 @@ They are available at https://learngitbranching.js.org/
 
 You should try to complete the first ten "Main" levels (the "Introduction Sequence", "Ramping Up", and "Moving Work Around" sections), and the first seven "Remote" levels (the "Push & Pull -- Git Remotes!" section). They do not have to be completed in order.
 
-You can change level at any time by entering the command `levels` into the interpreter. Help is available via the `help` command.## Lab 1—Git, Owheo Building labs, and Unix shells
+You can change level at any time by entering the command `levels` into the interpreter. Help is available via the `help` command.## Lab 1—Git, Ōwheo Building labs, and Unix shells
 
-This year the computers in Owheo Lab E and Lab F are machines running Microsoft Windows, but with appropriate software to support this lab. (In fairly recent years the labs have transitioned through being iMacs running macOS, then iMacs running Windows...) Linux and macOS are Unix-based operating systems, so have ready access to a Unix shell, e.g., if you are using your own computer.
+The computers in the School of Computing's Ōwheo Building teaching labs (SoC labs) have seen many hardware and software (and building) changes over the past few years.
 
-On Owheo Lab Computers running Windows, I was able to reach a Unix shell by searching for `Git bash` and running the program that was found (it's under the "Git" folder in the Start menu). 
+This year the machines are running Microsoft Windows, but with appropriate software to support this lab.
+
+I aim for you to be able to do the labs on your own computers too, although clearly I can't well support all possible environments. If your computer runs Microsoft Windows you should have a similar experience to that in the teaching labs. Linux and macOS are Unix-based operating systems, so have ready access to a Unix shell, e.g., if you are using your own computer.
+
+On SoC lab computers running Windows, I was able to reach a Unix shell by searching for `Git bash` and running the program that was found (it's under the "Git" folder in the Start menu). 
 
 :::warning
-:exclamation: Note that the COSC349 was launched back in 2019 with the expectation of an updated CS 200-level set of papers. These were first run in 2022. Finally the School of Computing was formed in 2023, but the curriculum will still be in flux for a few years. For the next few years there will be students who have taken different paths through the School of Computing, CompSci, and InfoSci 200-level papers, and this may affect your experience in COSC349. Please just let the COSC349 teaching team know where the pace is too fast (or too slow).
+:exclamation: Note that the COSC349 was launched back in 2019 with the expectation of an updated CS 200-level set of papers. These were first run in 2022. Finally the School of Computing was formed in 2023, but the curriculum will still be in flux for a few years. Thus there will be students who have taken different paths through the School of Computing, CompSci, and InfoSci papers, and this may affect your experience in COSC349. Please just let the COSC349 teaching team know where the pace is too fast (or too slow).
 :::
 
 ### Lab objectives
 
-1. To ensure all students understand how to gain basic proficiency with the Unix shell and the School of Computing (SoC) teaching lab environment. The majority of students in COSC349 will already have this proficiency, and can skip [Lab 1(a)][].
+1. To ensure all students understand how to gain basic proficiency with the Unix shell and the teaching lab environment. The majority of students in COSC349 will already have this proficiency, and can skip [Lab 1(a)][].
 1. To ensure all students have at least basic proficiency in using the Git version management tool. We will provide you with two different resources for learning Git in [Lab 1(b)][].
 
 [Lab 1(a)]: #Lab-1a—Proficiency-with-Unix-shell-and-the-CS-lab-environment
@@ -96,7 +104,7 @@ On Owheo Lab Computers running Windows, I was able to reach a Unix shell by sear
 
 We link to Software Carpentry material both for Unix shell and Git teaching within this lab. For some more context, as stated online: "Software Carpentry is a volunteer project dedicated to teaching basic computing skills to researchers". All of the Software Carpentry lessons are open source and freely available at at https://software-carpentry.org/
 
-I (Dave) am a certified Software Carpentry instructor, and have been involved in the development and use of the Software Carpentry teaching material.
+I (Dave) have been involved in the development and use of the Software Carpentry teaching material, and am a certified Software Carpentry instructor.
 
 ## Lab 1(a)—Proficiency with Unix shell and the SoC lab environment
 
@@ -114,7 +122,7 @@ This teaching material aims to support use of the shell on any computer, and is 
 
 :::warning
 :exclamation:
-All students in COSC349 are expected to be able to use the Git version control system to create and manage your own repositories, and to clone and collaborate on others' repositories.
+All students in COSC349 are expected to be able to use the Git version control system to create and manage your own repositories, and to be able to clone and collaborate with others using their repositories.
 :::
 
 ### (optional) We're keen to study your Git learning journey
@@ -133,7 +141,7 @@ You should expect to cover the material up to and including episode 9 "Conflicts
 
 :::warning
 :warning: 
-It seems that the Microsoft Edge browser does not work properly with Learn Git branching, but Google Chrome works, and is installed on the Owheo lab computers.
+The Microsoft Edge browser has been reported not to work properly with Learn Git branching, but Google Chrome works, and is installed on the SoC lab computers.
 :::
 
 These exercises are targeted at those who already have some familiarity with Git. If you are completely new to Git we recommend starting with the Software Carpentry lesson (above).
