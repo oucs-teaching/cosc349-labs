@@ -1,50 +1,48 @@
 ---
-title: COSC349 Lab 5—Cloud Architecture—2025
+title: COSC349 Lab 4—Cloud Architecture—2026
 tags: [cosc349, lab]
 
 ---
 
-## Lab 5—An introduction to Docker
+## Lab 4—An introduction to Docker or Podman
 
-Docker Desktop should be able to be installed on recent versions of macOS (including Apple computers with Arm CPUs!), Windows, and Linux. However, the assumption in the instructions below is that you will be trying to work through the lab on a Windows computer in the Owheo Labs.
+Docker (the development team / company) pioneered user-focused, convient OS-level virtualisation. Much of Docker's earlier work was freely accessible. Indeed Docker Engine remains an open-source project. However Docker has increasingly shifted the licensing of its newer tools towards non-free use. The open source project Podman is aiming to develop a drop-in replacement for Docker tooling. (We will likely move over to Podman for this exercise eventually, so feel free to tell us how your journey goes if you try to use Podman this year.)
 
-:::info
-:eyes: 
-The next lab will explore Vagrant further, and will soon be linked from the labs page. You may want to look at it now given that it is one technology that you can use to complete your assignment 1 work.
-:::
+Software such as the GUI Docker Desktop application is not free for all types of users, but is very handy for support while learning to use software containers. If you install Docker Desktop in order to learn about convenient software container management, you are almost certainly covered under Docker's free use licensing, but of course I am not a lawyer, so this is not legal advice.
 
-[Lab 3]: /bi1pAIlXT3O4WezjVtqPrA
+Docker Desktop can be installed on macOS, Windows, and Linux. However, the assumption in the instructions below is that you will be trying to work through the exercise on a Windows computer in the Ōwheo Building computer labs.
 
 ### Lab objectives
 
-1. Understand what Docker aims to achieve.
+1. Understand what Docker tooling aims to achieve.
 2. Learn the main command line invocations for managing Docker.
 3. Examine the Docker Hub, and explore some of the virtual appliances on offer.
 
-## Docker lab materials
+## Docker / Podman lab materials
 
-I (David) initiated an introduction to Docker in the style of a Software Carpentry lesson (recall the Git lab included material from a Software Carpentry lesson).
+I (David) initiated an introduction to Docker (now focused on Podman, but the tool use should be interchangeable) in the style of a Software Carpentry lesson (recall the Git lab included material from a Software Carpentry lesson).
 
-You are very welcome to follow the instructions in those materials to install Docker Desktop (most likely) on your own computers. 
+See below for suggestions on how to get a Docker environment within the computer labs in the Ōwheo Building.
 
-See below for suggetsions on how to get a Docker environment within the Owheo Labs.
+The exercises are on the Software Carpentry site, and I suggest that we work through [the active exercises](https://carpentries-incubator.github.io/docker-introduction/). (I've also [created a snapshot](https://github.com/dme-forks/2026-08-02-docker-introduction), since the Software Carpentry site will continue to evolve.)
 
-The exercises are on the Software Carpentry site, and I suggest that we work through [the active exercises](https://carpentries-incubator.github.io/docker-introduction/). (I've also [created a snapshot](https://github.com/dme-forks/2024-08-14-docker-introduction), since the Software Carpentry site will continue to evolve.)
+It would be good for you to complete the lesson material in episodes 1 through 7, If you are familiar with Unix shell, it is likely that you will progress through the material more quickly than the suggested time guide.
 
-It would be good for you to complete the core lesson material, you are of course welcome to complete the extension exercises if you want to.
+However, do not worry if you cannot complete all the material within the lab time: if you choose to use Docker (or Podman) for assignment work, for example, you will always be able to look up the specific parts of documentation that you need to use and to ask any of the teaching team for help.
 
-Comments and pull-requests are most welcome on that material. It has been used for teaching at many other institutions, but still is at a fairly early stage of development. Because you all (now) have experience with the Unix shell, and a CS background, it is likely that you will progress through the material more quickly than the suggested time guide.
+Note also that comments and pull-requests are most welcome on that material. It has been used for teaching at many other institutions.
+
 
 ## Working with Docker in the Owheo Labs
 
-The Software Carpentry lesson is intended to be used on learners' computers rather than a managed environment such as the Owheo Labs, where you don't have administrator privileges. (You are welcome to work through the lesson on your own computer, too, of course.)
+The Software Carpentry lesson is intended to be used on learners' computers rather than a managed environment such as the computer labs in the Ōwheo Building, where you don't have administrator privileges. (You are welcome to work through the lesson on your own computer, too, of course.)
 
 There are two routes to running Docker containers, and hopefully you only need to look at the first one, namely using Docker Desktop.
 
 ### Using the Docker Desktop application (preferred option)
 
 Docker Desktop is installed on the Owheo Labs.
-Ideally, if you start up Docker on the lab computers, it should "just work". Fingers crossed! But otherwise...
+Ideally, if you start up "Docker" on the lab computers, it should "just work". Fingers crossed! But otherwise...
 
 
 :::warning
@@ -72,7 +70,7 @@ When you have finished with the lab exercise you should delete your containers, 
 
 If you are unable to get Docker Desktop working, it is possible to run Docker containers first applying an extra level of virtualisation: using Vagrant to run Ubuntu, which in turn can run Docker containers (since the Ubuntu VM provides a Linux kernel on which to run containers).
 
-You can clone a Git repository containing a `Vagrantfile` that creates Ubuntu boxes ready to run the Docker command-line tools. This is similar to a step you performed in lab 3. After changing to the directory in which you want to store your local clone of the Git repository, you can run a command sequence such as—
+You can clone a Git repository containing a `Vagrantfile` that creates Ubuntu boxes ready to run the Docker command-line tools. This is similar to a step you performed in lab 2. After changing to the directory in which you want to store your local clone of the Git repository, you can run a command sequence such as—
 ```
 git clone https://altitude.otago.ac.nz/cosc349/lab05-docker cosc349-lab05-docker
 cd cosc349-lab05-docker
@@ -104,47 +102,45 @@ After setting up port forwarding, let's say `localhost` port 4000 to `localhost`
 
 When you have completed the lab exercise, you should `vagrant destroy` the VM that you have used for hosting Docker containers: this will remove the VM itself, as well as the Docker images that were downloaded in the course of the lab exercises.
 
-## Lab 5—An introduction to Docker
+## Lab 4—An introduction to Docker or Podman
 
-Docker Desktop should be able to be installed on recent versions of macOS (including Apple computers with Arm CPUs!), Windows, and Linux. However, the assumption in the instructions below is that you will be trying to work through the lab on a Windows computer in the Owheo Labs.
+Docker (the development team / company) pioneered user-focused, convient OS-level virtualisation. Much of Docker's earlier work was freely accessible. Indeed Docker Engine remains an open-source project. However Docker has increasingly shifted the licensing of its newer tools towards non-free use. The open source project Podman is aiming to develop a drop-in replacement for Docker tooling. (We will likely move over to Podman for this exercise eventually, so feel free to tell us how your journey goes if you try to use Podman this year.)
 
-:::info
-:eyes: 
-The next lab will explore Vagrant further, and will soon be linked from the labs page. You may want to look at it now given that it is one technology that you can use to complete your assignment 1 work.
-:::
+Software such as the GUI Docker Desktop application is not free for all types of users, but is very handy for support while learning to use software containers. If you install Docker Desktop in order to learn about convenient software container management, you are almost certainly covered under Docker's free use licensing, but of course I am not a lawyer, so this is not legal advice.
 
-[Lab 3]: /bi1pAIlXT3O4WezjVtqPrA
+Docker Desktop can be installed on macOS, Windows, and Linux. However, the assumption in the instructions below is that you will be trying to work through the exercise on a Windows computer in the Ōwheo Building computer labs.
 
 ### Lab objectives
 
-1. Understand what Docker aims to achieve.
+1. Understand what Docker tooling aims to achieve.
 2. Learn the main command line invocations for managing Docker.
 3. Examine the Docker Hub, and explore some of the virtual appliances on offer.
 
-## Docker lab materials
+## Docker / Podman lab materials
 
-I (David) initiated an introduction to Docker in the style of a Software Carpentry lesson (recall the Git lab included material from a Software Carpentry lesson).
+I (David) initiated an introduction to Docker (now focused on Podman, but the tool use should be interchangeable) in the style of a Software Carpentry lesson (recall the Git lab included material from a Software Carpentry lesson).
 
-You are very welcome to follow the instructions in those materials to install Docker Desktop (most likely) on your own computers. 
+See below for suggestions on how to get a Docker environment within the computer labs in the Ōwheo Building.
 
-See below for suggetsions on how to get a Docker environment within the Owheo Labs.
+The exercises are on the Software Carpentry site, and I suggest that we work through [the active exercises](https://carpentries-incubator.github.io/docker-introduction/). (I've also [created a snapshot](https://github.com/dme-forks/2026-08-02-docker-introduction), since the Software Carpentry site will continue to evolve.)
 
-The exercises are on the Software Carpentry site, and I suggest that we work through [the active exercises](https://carpentries-incubator.github.io/docker-introduction/). (I've also [created a snapshot](https://github.com/dme-forks/2024-08-14-docker-introduction), since the Software Carpentry site will continue to evolve.)
+It would be good for you to complete the lesson material in episodes 1 through 7, If you are familiar with Unix shell, it is likely that you will progress through the material more quickly than the suggested time guide.
 
-It would be good for you to complete the core lesson material, you are of course welcome to complete the extension exercises if you want to.
+However, do not worry if you cannot complete all the material within the lab time: if you choose to use Docker (or Podman) for assignment work, for example, you will always be able to look up the specific parts of documentation that you need to use and to ask any of the teaching team for help.
 
-Comments and pull-requests are most welcome on that material. It has been used for teaching at many other institutions, but still is at a fairly early stage of development. Because you all (now) have experience with the Unix shell, and a CS background, it is likely that you will progress through the material more quickly than the suggested time guide.
+Note also that comments and pull-requests are most welcome on that material. It has been used for teaching at many other institutions.
+
 
 ## Working with Docker in the Owheo Labs
 
-The Software Carpentry lesson is intended to be used on learners' computers rather than a managed environment such as the Owheo Labs, where you don't have administrator privileges. (You are welcome to work through the lesson on your own computer, too, of course.)
+The Software Carpentry lesson is intended to be used on learners' computers rather than a managed environment such as the computer labs in the Ōwheo Building, where you don't have administrator privileges. (You are welcome to work through the lesson on your own computer, too, of course.)
 
 There are two routes to running Docker containers, and hopefully you only need to look at the first one, namely using Docker Desktop.
 
 ### Using the Docker Desktop application (preferred option)
 
 Docker Desktop is installed on the Owheo Labs.
-Ideally, if you start up Docker on the lab computers, it should "just work". Fingers crossed! But otherwise...
+Ideally, if you start up "Docker" on the lab computers, it should "just work". Fingers crossed! But otherwise...
 
 
 :::warning
@@ -172,7 +168,7 @@ When you have finished with the lab exercise you should delete your containers, 
 
 If you are unable to get Docker Desktop working, it is possible to run Docker containers first applying an extra level of virtualisation: using Vagrant to run Ubuntu, which in turn can run Docker containers (since the Ubuntu VM provides a Linux kernel on which to run containers).
 
-You can clone a Git repository containing a `Vagrantfile` that creates Ubuntu boxes ready to run the Docker command-line tools. This is similar to a step you performed in lab 3. After changing to the directory in which you want to store your local clone of the Git repository, you can run a command sequence such as—
+You can clone a Git repository containing a `Vagrantfile` that creates Ubuntu boxes ready to run the Docker command-line tools. This is similar to a step you performed in lab 2. After changing to the directory in which you want to store your local clone of the Git repository, you can run a command sequence such as—
 ```
 git clone https://altitude.otago.ac.nz/cosc349/lab05-docker cosc349-lab05-docker
 cd cosc349-lab05-docker
