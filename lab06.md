@@ -1,18 +1,12 @@
-[Lab 3]: /bi1pAIlXT3O4WezjVtqPrA
+## Lab 5—Using Vagrant to manage multiple VMs, and some networking information
 
-## Lab 6—Additional Vagrant exploration
-
-Most students have progressed well in terms of following the lab instructions. However, completing the first assignment requires significant information synthesis and further background reading.
+Most students have progressed well in terms of following the lab instructions. However, completing the first assignment requires significant information synthesis and further background reading. There are many options available for implementing the assignment, although the lab exercises, including this one, most explicitly step through use of Vagrant.
 
 This lab has been added to emphasise some information, methods and techniques that you may find useful. Please let me know what else I might usefully add. You may want to refer back to this page later to see whether additional material has been added: if you note down when you were looking at this page, when you return you can visit the "revisions" available from the page menu, to see whether content has changed.
 
 ## Multiple VMs within one `Vagrantfile`
 
-:::info
-Material for running multiple VMs within one `Vagrantfile` was referenced at the end of [Lab 3], but we will explore it in more detail within this lab.
-:::
-
-An useful capability of Vagrant is to be able to manage multiple VMs within a single `Vagrantfile`. This type of use of Vagrant is likely to be useful for, say, COSC349 assignment work.
+A useful capability of Vagrant is to be able to manage multiple VMs within a single `Vagrantfile`. This type of use of Vagrant is likely to be useful for, say, COSC349 assignment work.
 
 The repository at https://altitude.otago.ac.nz/cosc349/vagrant-multivm shows a webserver and a database server interacting. Let me know if you want further elaboration of what's covered by the code comments contained within the that repository's `Vagrantfile`.
 
@@ -372,7 +366,7 @@ Note that you can use the VirtualBox GUI to open a console window for a Vagrant 
 
 ## Building and testing shell provisioning
 
-As mentioned in [Lab 3], when provisioning VMs, I recommend trying to take lots of small steps, repeatedly testing the complete VM building process (i.e., `vagrant destroy`, `vagrant up`).
+When provisioning VMs, I recommend trying to take lots of small steps, repeatedly testing the complete VM building process (i.e., `vagrant destroy`, `vagrant up`).
 
 In the multi-VM `Vagrantfile` we have been discussing in this lab, we have used internal provisioning scripts. You may find it more convenient to work with stand-alone scripts that can be edited independently of the `Vagrantfile`, and called upon from the shell purposes.
 
