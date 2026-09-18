@@ -1,5 +1,5 @@
 ---
-title: COSC349 Lab 11—Cloud Architecture—2025
+title: COSC349 Lab 11—Cloud Architecture—2026
 tags: [cosc349, lab]
 
 ---
@@ -22,7 +22,7 @@ As far as I can tell there is not an easy way to cause Apache to present this de
 
 :::info
 :thought_balloon: 
-This section discusses mechanisms for automating the setup of sets of VMs. However please remember that automated deployment is **not** a requirement of assignment two! You are free to manually `ssh` into your instances to give them the details required to get your application running in the cloud. Having said that, automation is more convenient when it works smoothly, but you don't want to get stuck on it.
+This section suggests some mechanisms for automating the setup of sets of VMs.
 :::
 
 - It's a common problem that a set of VMs need to find out each other's addresses so that they can interlink.
@@ -67,7 +67,7 @@ As far as I can tell there is not an easy way to cause Apache to present this de
 
 :::info
 :thought_balloon: 
-This section discusses mechanisms for automating the setup of sets of VMs. However please remember that automated deployment is **not** a requirement of assignment two! You are free to manually `ssh` into your instances to give them the details required to get your application running in the cloud. Having said that, automation is more convenient when it works smoothly, but you don't want to get stuck on it.
+This section suggests some mechanisms for automating the setup of sets of VMs.
 :::
 
 - It's a common problem that a set of VMs need to find out each other's addresses so that they can interlink.
